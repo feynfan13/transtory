@@ -30,5 +30,12 @@ class MobikeSysConfigs(object):
 
 
 get_configs = helpers.singleton(MobikeSysConfigs)
+
+
+def switch_to_test_mode():
+    # TODO: add mobike test mode
+    pass
+
+
 get_datetime_helper = helpers.singleton(helpers.DateTimeHelper, [get_configs().date_zero])
 logger = helpers.transtory_logger.getChild("mobike")

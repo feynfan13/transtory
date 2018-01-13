@@ -1,2 +1,2 @@
-python .\runmobikestats.py
+python .\runmobikestats.py --stats
 cmd /k

@@ -55,22 +55,20 @@ class MobikeBikeStats(object):
 
     def save_sn_segment_list(self):
         query_sn_seg = self.session.query(func.substr(Bike.sn, 1, 6).label("sn_seg")).group_by("sn_seg")
-        subtypes = self.session.query(BikeSubtype.name).order_by(BikeSubtype.name).all()
         with open(self._get_stats_full_path("bike_sn_segments.csv"), "w") as fout:
-            fout.write("sn_segment")
-            for subtype in subtypes:
-                fout.write(",{:s}".format(subtype[0]))
+            fout.write("sn_segment,count,per_subtype")
             fout.write("\n")
             for sn_seg in query_sn_seg.all():
                 sn_seg = sn_seg[0]
                 query = self.session.query(BikeSubtype.id, func.count(Bike.id).label("count")).join(BikeSubtype.bikes)
                 stmt = query.filter(Bike.sn.like(sn_seg+"%")).group_by(BikeSubtype.id).subquery()
-                query = self.session.query(BikeSubtype.name, stmt.c.count).outerjoin(stmt, BikeSubtype.id == stmt.c.id)
+                query = self.session.query(BikeSubtype.name, stmt.c.count).join(stmt, BikeSubtype.id == stmt.c.id)
                 query = query.order_by(BikeSubtype.name)
-                fout.write("|{:s}|".format(sn_seg))
+                total_count, per_subtype_str = 0, ""
                 for subtype_stat in query.all():
-                    count = subtype_stat[1]
-                    fout.write(",/") if count is None else fout.write(",{:d}".format(count))
+                    total_count += subtype_stat[1]
+                    per_subtype_str += "{:s}({:d}),".format(subtype_stat[0], subtype_stat[1])
+                fout.write("|{:s}|,{:d},{:s}".format(sn_seg, total_count, per_subtype_str))
                 fout.write("\n")
 
     def save_all_stats(self):

@@ -4,7 +4,9 @@ from datetime import datetime
 # Set the style of logging
 transtory_logger = logging.getLogger("transtory")
 transtory_logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler("transtory.log")
+# TODO: "temp" folder is hard-coded here means a bad design; need to separate config to two-level structure: global
+#     and per-module
+fh = logging.FileHandler("./temp/transtory.log")
 fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
