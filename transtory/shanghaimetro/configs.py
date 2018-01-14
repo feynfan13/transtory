@@ -15,6 +15,7 @@ class ShmSysConfigs(object):
         self.trip_xlsx_path = None
         self.stats_folder = None
         self.date_zero = None
+        self.test_mode = None
         self.define_configs()
 
     def define_configs(self):
@@ -27,6 +28,7 @@ class ShmSysConfigs(object):
         self.stats_folder = os.sep.join([self.root_folder, "report", self.module_name])
         # TODO: change trip index to datetime integer format
         # self.date_zero = "2017-03-04"  # !!!DO NOT CHANGE!!!
+        self.test_mode = False
 
     def switch_to_test_configs(self):
         self.db_name = "ShanghaiMetroTrips.sqlite"
@@ -37,6 +39,7 @@ class ShmSysConfigs(object):
         self.stats_folder = os.sep.join([test_folder, "report", self.module_name])
         # TODO: change trip index to datetime integer format
         # self.date_zero = "2017-03-04"  # !!!DO NOT CHANGE!!!
+        self.test_mode = True
 
 
 get_configs = helpers.singleton(ShmSysConfigs)

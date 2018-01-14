@@ -1,12 +1,13 @@
 import sys
 import argparse
 from transtory.shanghaimetro import switch_to_test_mode, logger
-from transtory.shanghaimetro import ShmRecorder
+from transtory.shanghaimetro import ShmRecorder, ShmTripStats
 
 
 parser = argparse.ArgumentParser(description="Shanghai metro database command.")
 parser.add_argument("--testmode", action="store_const", const=True, default=False)
 parser.add_argument("--recorder", action="store_const", const=True, default=False)
+parser.add_argument("--stats", action="store_const", const=True, default=False)
 args = parser.parse_args(sys.argv[1:])
 
 if args.testmode:
@@ -16,3 +17,6 @@ if args.testmode:
 if args.recorder:
     recorder = ShmRecorder()
     recorder.record_trips_from_xlsx()
+elif args.stats:
+    stator = ShmTripStats()
+    stator.save_all_stats()
