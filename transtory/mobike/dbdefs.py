@@ -54,27 +54,29 @@ class Bike(MobikeDbModel):
     subtype = relationship("BikeSubtype", backref="bikes")
 
     def __repr__(self):
-        return "<Bike (SN = %s, Subtype = %s)>".format(self.bike_sn, self.subtype.name)
+        return "<Bike (SN = {:s}, Subtype = {:s})>".format(self.sn, self.subtype.name)
 
 
 class Trip(MobikeDbModel):
     """Mobike trips: Event table
+    Trip can be identified by the time column. Currently, time is stored as a ISO8601 string in UTC time zone.
+        When query a string becomes efficiency bottleneck in the future, consider change time format to integer.
     """
     __tablename__ = "trips"
     id = Column(Integer, primary_key=True)
     bike_service_id = Column(Integer, ForeignKey('bike_services.id'))
     # TODO: move city to a table
     city = Column(Text)
-    departure_time = Column(Text)
+    time = Column(Text)
     departure_region = Column(Text)
     departure_place = Column(Text)
     departure_coordinate = Column(Text)
     arrival_region = Column(Text)
     arrival_place = Column(Text)
     arrival_coordinate = Column(Text)
-    trip_duration = Column(Integer)
-    trip_distance = Column(Float)
-    trip_note = Column(Text)
+    duration = Column(Integer)
+    distance = Column(Float)
+    note = Column(Text)
 
     def __repr__(self):
         return "<Trip(time = {:s}, departure = {:s}, arrival = {:s})>".format(

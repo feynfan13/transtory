@@ -85,5 +85,11 @@ class MobikePublicData(object):
         bike_subtypes.append(["Light 2.7", "Light 2.x"])
         return bike_subtypes
 
+    @staticmethod
+    def get_city_eng_name(chn_name):
+        city_name_map = {"上海": "Shanghai",
+                         "泰安": "Tai'an"}
+        return city_name_map[chn_name]
+
 
 get_public_data = helpers.singleton(MobikePublicData)

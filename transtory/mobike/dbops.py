@@ -10,6 +10,35 @@ from .publicdata import MobikePublicData, get_public_data
 from .dbdefs import MobikeDbModel, Bike, BikeType, BikeSubtype, Trip, BikeService
 
 
+class BikeEntry(object):
+    def __init__(self):
+        self.sn = None
+        self.subtype = None
+
+
+class TripEntry(object):
+    def __init__(self):
+        self.city = None
+        self.time = None
+        self.departure_region = None
+        self.departure_place = None
+        self.departure_coordinate = None
+        self.arrival_region = None
+        self.arrival_place = None
+        self.arrival_coordinate = None
+        self.duration = None
+        self.distance = None
+        self.trip_note = None
+        self.bike_sn = None
+        self.bike_subtype = None
+        self.bike_note = None
+
+    def get_bike_entry(self):
+        bike_entry = BikeEntry()
+        bike_entry.sn, bike_entry.subtype = self.bike_sn, self.bike_subtype
+        return bike_entry
+
+
 class MobikeDbOps(DatabaseOpsBase):
     """Operations of Mobike database, including
         -- data transformers: get trip id from date and time string
@@ -81,40 +110,54 @@ class MobikeDbOps(DatabaseOpsBase):
         query = self.session.query(Bike).filter(Bike.sn == bike_sn)
         return query.one() if query.count() != 0 else None
 
-    def insert_bike(self, sn, subtype):
-        subtype_orm = self.get_bike_subtype(subtype)
-        bike_orm = Bike(sn=sn)
+    def add_bike(self, bike_entry: BikeEntry):
+        subtype_orm = self.get_bike_subtype(bike_entry.subtype)
+        bike_orm = Bike(sn=bike_entry.sn)
         bike_orm.subtype = subtype_orm
         self.session.add(bike_orm)
-        # self.session.commit()
+        self.session.commit()
+        logger.info("Added bike {:s} of subtype {:s}".format(bike_entry.sn, bike_entry.subtype))
         return bike_orm
 
-    def insert_bike_service(self, big_dict):
-        bike_sn = big_dict["bike_sn"]
-        bike_orm = self.get_bike(bike_sn)
+    def get_trip(self, entry: TripEntry):
+        eng_city = self.public_data.get_city_eng_name(entry.city)
+        utc_time = self.dt_helper.get_datetime_str(self.dt_helper.get_utc_datetime(entry.time, eng_city))
+        query = self.session.query(Trip).filter_by(time=utc_time)
+        if query.count() != 0:
+            return query.one()
+        else:
+            return None
+
+    # def insert_trip(self, big_dict):
+    #     trip_dict = dict()
+    #     trip_fields = ["city", "departure_time", "departure_region", "departure_place",
+    #                    "departure_coordinate", "arrival_region", "arrival_place",
+    #                    "arrival_coordinate", "trip_duration", "trip_distance", "trip_note"]
+    #     for key in trip_fields:
+    #         trip_dict[key] = big_dict[key]
+    #     trip_dict["id"] = big_dict["trip_id"]
+    #     trip_orm = Trip(**trip_dict)
+    #     trip_orm.bike_service = self.insert_bike_service(big_dict)
+    #     self.session.add(trip_orm)
+    #     # self.session.commit()
+    #     return trip_orm
+
+    def add_trip(self, entry: TripEntry):
+        bike_orm = self.get_bike(entry.bike_sn)
         if bike_orm is None:
-            bike_orm = self.insert_bike(bike_sn, big_dict["bike_subtype_name"])
-        bike_service_orm = BikeService(note=big_dict["bike_service_note"], bike=bike_orm)
+            bike_orm = self.add_bike(entry.get_bike_entry())
+        bike_service_orm = BikeService(bike=bike_orm, note=entry.bike_note)
         self.session.add(bike_service_orm)
-        # self.session.commit()
-        return bike_service_orm
-
-    def get_trip(self, trip_id):
-        query = self.session.query(Trip).filter(Trip.id == trip_id)
-        return query.one() if query.count() != 0 else None
-
-    def insert_trip(self, big_dict):
-        trip_dict = dict()
-        trip_fields = ["city", "departure_time", "departure_region", "departure_place",
-                       "departure_coordinate", "arrival_region", "arrival_place",
-                       "arrival_coordinate", "trip_duration", "trip_distance", "trip_note"]
-        for key in trip_fields:
-            trip_dict[key] = big_dict[key]
-        trip_dict["id"] = big_dict["trip_id"]
-        trip_orm = Trip(**trip_dict)
-        trip_orm.bike_service = self.insert_bike_service(big_dict)
+        eng_city = self.public_data.get_city_eng_name(entry.city)
+        utc_time = self.dt_helper.get_datetime_str(self.dt_helper.get_utc_datetime(entry.time, eng_city))
+        trip_orm = Trip(city=entry.city, time=utc_time, departure_place=entry.departure_place,
+                        departure_region=entry.departure_region, departure_coordinate=entry.departure_coordinate,
+                        arrival_place=entry.arrival_place, arrival_region=entry.arrival_region,
+                        arrival_coordinate=entry.arrival_coordinate, duration=entry.duration, distance=entry.distance,
+                        note=entry.trip_note)
+        trip_orm.bike_service = bike_service_orm
         self.session.add(trip_orm)
-        # self.session.commit()
+        self.session.commit()
         return trip_orm
 
 

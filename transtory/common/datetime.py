@@ -1,4 +1,19 @@
-import datetime
+from datetime import datetime, timedelta, time
+from pytz import timezone
+from .infrastructure import singleton
+
+
+class CityTimeZoneMap(object):
+    city_to_time_zone = {
+        "Shanghai": timezone("Asia/Shanghai"),
+        "Tai'an": timezone("Asia/Shanghai")
+    }
+
+    def get_time_zone_of_city(self, city):
+        return self.city_to_time_zone[city]
+
+
+get_city_time_zone_map = singleton(CityTimeZoneMap)
 
 
 class DateTimeHelper(object):
@@ -6,12 +21,13 @@ class DateTimeHelper(object):
     """
     date_str_format = "%Y-%m-%d"
     time_str_format = "%H:%M"
+    # Use ISO8601 format
     datetime_str_format = date_str_format + " " + time_str_format
     time_stamp_format = "%Y%m%d%H%M%S"
 
     def __init__(self, date_zero=None):
         if date_zero is not None:
-            self.date_zero = datetime.datetime.strptime(date_zero, self.date_str_format)
+            self.date_zero = datetime.strptime(date_zero, self.date_str_format)
 
     @staticmethod
     def is_valid_date_str(date_str):
@@ -35,20 +51,23 @@ class DateTimeHelper(object):
         return date_obj.strftime(self.date_str_format)
 
     def get_date_from_str(self, date_str):
-        return datetime.datetime.strptime(date_str, self.date_str_format)
+        return datetime.strptime(date_str, self.date_str_format)
 
     def get_current_date_str(self):
-        return self.get_date_str(datetime.datetime.today())
+        return self.get_date_str(datetime.today())
 
     @staticmethod
     def plus_days(date, n):
-        return date + datetime.timedelta(days=n)
+        return date + timedelta(days=n)
 
-    def get_datetime_str(self, time_stamp):
+    def get_datetime_compact_str(self, time_stamp):
         return time_stamp.strftime(self.time_stamp_format)
 
+    def get_datetime_str(self, adatetime: datetime):
+        return adatetime.strftime(self.datetime_str_format)
+
     def get_current_datetime_str(self):
-        return self.get_datetime_str(datetime.datetime.now())
+        return self.get_datetime_str(datetime.now())
 
     def get_date_int_from_date_str(self, date_str):
         assert(self.date_zero is not None)
@@ -78,9 +97,22 @@ class DateTimeHelper(object):
         return dt.hour * 60 + dt.minute
 
     @staticmethod
-    def get_time_str_from_time_int(time):
-        hours, minutes = divmod(time, 60)
+    def get_time_str_from_time_int(atime):
+        hours, minutes = divmod(atime, 60)
         return "{:02d}:{:02d}".format(hours, minutes)
 
-    def get_time_str(self, time: datetime.time):
-        return time.strftime(self.time_str_format)
+    def get_time_str(self, atime: time):
+        return atime.strftime(self.time_str_format)
+
+    @staticmethod
+    def get_datetime_from_date_time(adate, atime: time):
+        return datetime(adate.year, adate.month, adate.day, atime.hour, atime.minute)
+
+    @staticmethod
+    def get_time_zone_of_city(city):
+        return get_city_time_zone_map().get_time_zone_of_city(city)
+
+    def get_utc_datetime(self, datetime_obj: datetime, city):
+        datetime_obj.replace(tzinfo=None)
+        tz = self.get_time_zone_of_city(city)
+        return tz.localize(datetime_obj).astimezone(timezone("UTC"))

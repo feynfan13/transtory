@@ -17,14 +17,18 @@ class DatabaseOpsBase(object):
         else:
             transtory_logger.info("Create new database.")
         self.connect_db(test)
+        self.create_db_structure()
+        sqlalchemy.orm.configure_mappers()
         self.backup_database()
 
     def connect_db(self, test):
         if self.engine is None:
-            sqlalchemy.orm.configure_mappers()
             self.engine = sqlalchemy.create_engine("sqlite:///" + self.db_path, echo=test)
             self.session_maker = sqlalchemy.orm.sessionmaker(bind=self.engine)
             self.session = self.session_maker()
+
+    def create_db_structure(self):
+        transtory_logger.info("Create or validate database {:s}.".format(self.db_path))
 
     def backup_database(self):
         time_stamp_str = datetime.now().strftime("%Y%m%d%H%M%S")
