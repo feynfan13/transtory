@@ -92,8 +92,9 @@ class Departure(ShmDbModel):
     id = Column(Integer, primary_key=True)
     route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
-    date = Column(Text)
     time = Column(Text)
+    date_retire = Column(Text)
+    time_retire = Column(Text)
     route = relationship("Route", uselist=False, backref="departure")
     station = relationship("Station", backref="departures")
 
@@ -107,6 +108,7 @@ class Arrival(ShmDbModel):
     route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
     time = Column(Text)
+    time_retire = Column(Text)
     route = relationship("Route", uselist=False, backref="arrival")
     station = relationship("Station", backref="arrivals")
 
@@ -118,7 +120,7 @@ class Route(ShmDbModel):
     __tablename__ = "routes"
     id = Column(Integer, primary_key=True)
     task_id = Column(Integer, ForeignKey("tasks.id"))
-    seq = Column(Integer)
+    seq_retire = Column(Integer)
     train_id = Column(Integer, ForeignKey("trains.id"))
     note = Column(Text)
     train = relationship("Train", backref="routes")

@@ -18,7 +18,6 @@ class TrainEntry(object):
 
 class RouteEntry(object):
     def __init__(self):
-        self.id = None
         self.task = None
         self.train = None
         self.departure_station = None
@@ -58,27 +57,31 @@ class ShmDbOps(DatabaseOpsBase):
     def get_line(self, line):
         return self.session.query(Line).filter_by(name=line).one()
 
-    def is_train_exist(self, train_sn):
-        query = self.session.query(Train).filter_by(sn=train_sn)
-        return query.count() == 1
-
-    def insert_train(self, train_entry: TrainEntry):
-        train = Train()
-        train.id = train_entry.id
-        train.sn = train_entry.sn
-        train.line = self.get_line(train_entry.line)
-        train.train_type = self.get_train_type(train_entry.type)
-        logger.info("Inserted train {:s}".format(repr(train)))
-
     def get_train(self, train_sn):
-        return self.session.query(Train).filter_by(sn=train_sn).one
+        query = self.session.query(Train).filter_by(sn=train_sn)
+        return None if query.count() == 0 else query.one()
 
-    def is_route_exist(self, route_id):
-        query = self.session.query(Route).filter_by(id=route_id)
-        return query.count() == 1
+    def add_train(self, train_entry: TrainEntry):
+        train_orm = Train()
+        train_orm.id = train_entry.id
+        train_orm.sn = train_entry.sn
+        train_orm.line = self.get_line(train_entry.line)
+        train_orm.train_type = self.get_train_type(train_entry.type)
+        logger.info("Added train {:s}".format(train_entry.sn))
 
-    def insert_route(self, route_entry: RouteEntry):
-        pass
+    def get_route(self, route_entry: RouteEntry):
+        query = self.session.query(Route, Departure).join(Route.departure).filter_by(time=route_entry.departure_time)
+        return None if query.count() == 0 else query.one()
+
+    def add_route(self, route_entry: RouteEntry):
+        self.task = None
+        self.train = None
+        self.departure_station = None
+        self.departure_date = None
+        self.departure_time = None
+        self.arrival_station = None
+        self.arrival_time = None
+        self.note = None
 
 
 get_shm_db_ops = singleton(ShmDbOps)

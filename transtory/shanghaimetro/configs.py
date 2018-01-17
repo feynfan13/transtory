@@ -14,8 +14,9 @@ class ShmSysConfigs(object):
         self.trip_xlsx_name = None
         self.trip_xlsx_path = None
         self.stats_folder = None
-        self.date_zero = None
+        self.city = None
         self.test_mode = None
+        self.date_zero = None
         self.define_configs()
 
     def define_configs(self):
@@ -26,8 +27,8 @@ class ShmSysConfigs(object):
         self.trip_xlsx_name = "ShanghaiMetroLog.xlsx"
         self.trip_xlsx_path = os.sep.join([self.root_folder, "log", self.module_name, self.trip_xlsx_name])
         self.stats_folder = os.sep.join([self.root_folder, "report", self.module_name])
-        # TODO: change trip index to datetime integer format
-        # self.date_zero = "2017-03-04"  # !!!DO NOT CHANGE!!!
+        self.city = "Shanghai"
+        self.date_zero = "2013-07-01"
         self.test_mode = False
 
     def switch_to_test_configs(self):
@@ -37,8 +38,6 @@ class ShmSysConfigs(object):
         self.trip_xlsx_name = "ShanghaiMetroLog.xlsx"
         self.trip_xlsx_path = os.sep.join([test_folder, "log", self.module_name, self.trip_xlsx_name])
         self.stats_folder = os.sep.join([test_folder, "report", self.module_name])
-        # TODO: change trip index to datetime integer format
-        # self.date_zero = "2017-03-04"  # !!!DO NOT CHANGE!!!
         self.test_mode = True
 
 
