@@ -1,7 +1,7 @@
 import sys
 import argparse
 from transtory.shanghaimetro import switch_to_test_mode, logger
-from transtory.shanghaimetro import ShmRecorder, ShmTripStats
+from transtory.shanghaimetro import ShmRecorder, ShmTripStats, ShmTrainStats
 
 
 parser = argparse.ArgumentParser(description="Shanghai metro database command.")
@@ -19,4 +19,6 @@ if args.recorder:
     recorder.record_trips_from_xlsx()
 elif args.stats:
     stator = ShmTripStats()
+    stator.save_all_stats()
+    stator = ShmTrainStats()
     stator.save_all_stats()

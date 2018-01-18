@@ -53,7 +53,7 @@ class Train(ShmDbModel):
     line_id = Column(Integer, ForeignKey("lines.id"))
     train_type_id = Column(Integer, ForeignKey("train_types.id"))
     line = relationship("Line", backref='trains')
-    trian_type = relationship("TrainType", backref="trains")
+    train_type = relationship("TrainType", backref="trains")
 
     def __repr__(self):
         return "<Train (sn = {:s}, type = {:s})>".format(self.sn, self.train_type.name)
