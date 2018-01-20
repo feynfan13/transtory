@@ -71,8 +71,20 @@ class MobikeBikeStats(object):
                 fout.write("|{:s}|,{:d},{:s}".format(sn_seg, total_count, per_subtype_str))
                 fout.write("\n")
 
+    def save_bike_reuse_list(self):
+        query = self.session.query(Bike).join(Bike.services).group_by(Bike.sn).order_by(Bike.sn)
+        query = query.having(func.count(BikeService.id) > 1)
+        with open(self._get_stats_full_path("bike_reuse.csv"), "w", encoding="utf16") as fout:
+            for bike_orm in query.all():
+                fout.write("|{:s}|\t{:s}\n".format(bike_orm.sn, bike_orm.subtype.name))
+                for service_orm in bike_orm.services:
+                    trip_orm = service_orm.trip
+                    fout.write("\t|{:s}|\t{:s}\t{:s}\n".format(trip_orm.time, trip_orm.departure_place,
+                                                               trip_orm.arrival_place))
+
     def save_all_stats(self):
         self.save_bike_list()
         self.save_type_list()
         self.save_subtype_list()
         self.save_sn_segment_list()
+        self.save_bike_reuse_list()
