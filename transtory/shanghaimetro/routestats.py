@@ -36,13 +36,13 @@ class ShmTripStats(object):
                 raise Exception("Unsupported data type in csv writer.")
 
     def _def_route_list_query(self):
-        columns = ["task", "line", "train", "date", "from", "from_time", "to", "to_time", "note"]
-        query_dp = self.session.query(Route.id, Departure.date, Station.chn_name.label("start"),
+        columns = ["task", "line", "train", "from", "from_time", "to", "to_time", "note"]
+        query_dp = self.session.query(Route.id, Station.chn_name.label("start"),
                                       Departure.time.label("start_time"), Line.name.label("line"))
         stmt_dp = query_dp.join(Route.departure).join(Departure.station).join(Station.line).subquery()
         query_av = self.session.query(Route.id, Station.chn_name.label("end"), Arrival.time.label("end_time"))
         stmt_av = query_av.join(Route.arrival).join(Arrival.station).subquery()
-        query = self.session.query(Task.task, stmt_dp.c.line, Train.sn, stmt_dp.c.date, stmt_dp.c.start,
+        query = self.session.query(Task.task, stmt_dp.c.line, Train.sn, stmt_dp.c.start,
                                    stmt_dp.c.start_time, stmt_av.c.end, stmt_av.c.end_time, Route.note)
         query = query.join(Task.routes).join(Route.train).join(stmt_dp, Route.id == stmt_dp.c.id)
         query = query.join(stmt_av, Route.id == stmt_av.c.id)
@@ -55,8 +55,12 @@ class ShmTripStats(object):
         with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf16") as fout:
             [fout.write("|{:s}|\t".format(x)) for x in columns]
             fout.write("\n")
+            from_time_index, to_time_index = columns.index("from_time"), columns.index("to_time")
             for route in query.all():
-                self._write_lists_to_csv(fout, route)
+                result = [val for val in route]
+                result[from_time_index] = self.dbops.get_local_time_from_db_time([result[from_time_index]])[0]
+                result[to_time_index] = self.dbops.get_local_time_from_db_time([result[to_time_index]])[0]
+                self._write_lists_to_csv(fout, result)
                 fout.write("\n")
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock()-start_time))
 

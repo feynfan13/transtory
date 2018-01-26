@@ -150,7 +150,7 @@ class MobikeDbOps(DatabaseOpsBase):
         else:
             return None
 
-    def add_trip(self, entry:TripEntry):
+    def add_trip(self, entry: TripEntry):
         """Add trip to database
         WARNING: check if the trip exist in the database; the function do not take this responsibility for efficiency.
         """
@@ -159,7 +159,7 @@ class MobikeDbOps(DatabaseOpsBase):
             bike_orm = self.add_bike(entry.get_bike_entry())
         else:
             assert(entry.bike_subtype == bike_orm.subtype.name)
-            logger.note("Bike {:s} is already in the database.".format(entry.bike_sn))
+            logger.info("Bike {:s} is already in the database.".format(entry.bike_sn))
         bike_service_orm = BikeService(bike=bike_orm, note=entry.bike_note)
         self.session.add(bike_service_orm)
         utc_time = self.get_db_time_from_entry_time(entry)
@@ -205,7 +205,7 @@ class MobikeDbOps(DatabaseOpsBase):
         for orm_field, entry_field in trip_fields:
             orm_val, entry_val = getattr(trip_orm, orm_field), getattr(entry, entry_field)
             if orm_val != entry_val:
-                logger.info("Update trip field {:s}: {:s} -> {:s}".format(orm_field, orm_val, entry_val))
+                logger.info("Update trip field {:s}: {:s} -> {:s}".format(str(orm_field), str(orm_val), str(entry_val)))
                 setattr(trip_orm, orm_field, entry_val)
                 trip_updated = True
         if trip_updated:

@@ -17,6 +17,10 @@ if args.testmode:
 if args.recorder:
     recorder = ShmRecorder()
     recorder.record_trips_from_xlsx()
+    stator = ShmTripStats()
+    stator.save_all_stats()
+    stator = ShmTrainStats()
+    stator.save_all_stats()
 elif args.stats:
     stator = ShmTripStats()
     stator.save_all_stats()

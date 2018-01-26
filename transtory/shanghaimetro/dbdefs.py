@@ -84,13 +84,30 @@ class Task(ShmDbModel):
     task = Column(Text)
 
 
+class Route(ShmDbModel):
+    """Route table: Event
+    Route means the event from one station to another by one trainset
+    """
+    __tablename__ = "routes"
+    id = Column(Integer, primary_key=True)
+    task_id = Column(Integer, ForeignKey("tasks.id"))
+    seq_retire = Column(Integer)
+    train_id = Column(Integer, ForeignKey("trains.id"))
+    departure_id = Column(Integer, ForeignKey("departures.id"))
+    arrival_id = Column(Integer, ForeignKey("arrivals.id"))
+    note = Column(Text)
+    train = relationship("Train", backref="routes")
+    task = relationship("Task", backref="routes")
+
+
 class Departure(ShmDbModel):
     """Route departure table: Action
     Departure means leaving a station at a specific time
     """
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    # Route id should be deprecated
+    # route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
     time = Column(Text)
     date_retire = Column(Text)
@@ -105,23 +122,10 @@ class Arrival(ShmDbModel):
     """
     __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    # Route id should be deprecated
+    # route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
     time = Column(Text)
     time_retire = Column(Text)
     route = relationship("Route", uselist=False, backref="arrival")
     station = relationship("Station", backref="arrivals")
-
-
-class Route(ShmDbModel):
-    """Route table: Event
-    Route means the event from one station to another by one trainset
-    """
-    __tablename__ = "routes"
-    id = Column(Integer, primary_key=True)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
-    seq_retire = Column(Integer)
-    train_id = Column(Integer, ForeignKey("trains.id"))
-    note = Column(Text)
-    train = relationship("Train", backref="routes")
-    task = relationship("Task", backref="routes")

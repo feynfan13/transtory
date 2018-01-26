@@ -109,6 +109,13 @@ class DateTimeHelper(object):
         return datetime(adate.year, adate.month, adate.day, atime.hour, atime.minute)
 
     @staticmethod
+    def get_datetime_from_str(datetime_str):
+        date_str, time_str = datetime_str.split()
+        year, month, day = [int(x) for x in date_str.split("-")]
+        hour, min = [int(x) for x in time_str.split(":")]
+        return datetime(year, month, day, hour, min, tzinfo=None)
+
+    @staticmethod
     def get_time_zone_of_city(city):
         return get_city_time_zone_map().get_time_zone_of_city(city)
 
