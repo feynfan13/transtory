@@ -21,7 +21,7 @@ class CrhSysConfigs(object):
     def define_configs(self):
         self.module_name = "crh"
         self.root_folder = fs_helper.get_parent_folder(os.path.abspath(__file__), 2)
-        self.db_name = "CrhTrips.sqlite"
+        self.db_name = "CrhTransits.sqlite"
         self.db_path = os.sep.join([self.root_folder, "database", self.module_name, self.db_name])
         self.log_folder = os.sep.join([self.root_folder, "log", self.module_name])
         self.log_archive_folder = os.sep.join([self.log_folder, "logarchive"])
@@ -39,6 +39,7 @@ class CrhSysConfigs(object):
 
 
 get_configs = helpers.singleton(CrhSysConfigs)
+
 
 def switch_to_test_mode():
     configs: CrhSysConfigs = get_configs()

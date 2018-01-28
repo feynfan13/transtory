@@ -3,6 +3,14 @@ import argparse
 
 from transtory.crh import logger, switch_to_test_mode
 from transtory.crh import get_public_data_app
+from transtory.crh import CrhRecorder, CrhTripStats, CrhTrainStats
+
+
+def save_all_stats():
+    stator = CrhTripStats()
+    stator.save_all_stats()
+    stator = CrhTrainStats()
+    stator.save_all_stats()
 
 
 parser = argparse.ArgumentParser(description="Shanghai metro database command.")
@@ -19,22 +27,16 @@ if args.testmode:
 
 if args.record:
     pass
-    # recorder = MobikeRecorder()
-    # recorder.record_trips_from_xlsx()
-    # stator = MobikeBikeStats()
-    # stator.save_all_stats()
+    recorder = CrhRecorder()
+    recorder.record_trips_from_xmls()
+    save_all_stats()
 elif args.update:
     pass
-    # recorder = MobikeRecorder()
-    # recorder.update_trips_from_xlsx()
-    # stator = MobikeBikeStats()
-    # stator.save_all_stats()
 elif args.stat:
-    pass
-    # stator = MobikeBikeStats()
-    # stator.save_all_stats()
+    save_all_stats()
 elif args.publicdata:
     app = get_public_data_app()
     app.save_public_data()
 else:
+    logger.info("中国高速铁路")
     logger.info("CRH module did nothing.")

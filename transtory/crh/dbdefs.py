@@ -11,7 +11,7 @@ from sqlalchemy import Column, Integer, Text, Float
 CrhDbModel = declarative_base()
 
 
-class TrainTypes(CrhDbModel):
+class TrainType(CrhDbModel):
     """Train type table: Category
     """
     __tablename__ = "train_types"
@@ -20,7 +20,7 @@ class TrainTypes(CrhDbModel):
     code = Column(Text)
 
 
-class Trains(CrhDbModel):
+class Train(CrhDbModel):
     """Train table: Object
     """
     __tablename__ = "trains"
@@ -28,7 +28,7 @@ class Trains(CrhDbModel):
     sn = Column(Text)
     note = Column(Text)
     type_id = Column(Integer, ForeignKey("train_types.id"))
-    type = relationship("TrainTypes", backref="trains")
+    type = relationship("TrainType", backref="trains")
 
 
 class Line(CrhDbModel):
@@ -41,7 +41,7 @@ class Line(CrhDbModel):
     name = Column(Text)
 
 
-class Stations(CrhDbModel):
+class Station(CrhDbModel):
     """Station table: Object
     Stations are specified station name. WARNING: station name may occasionally change, which needs manual update
     """
@@ -86,13 +86,13 @@ class Ticket(CrhDbModel):
     In some cases, some fields are lost, such as when using ID card or public transportation card
     """
     # TODO: at present ticket is mangled in trip table; we need to separate them out
-    __tablename__ = "trips"
+    __tablename__ = "tickets"
     id = Column(Integer, primary_key=True)
-    price = Column(Text)
     short_sn = Column(Text)
     long_sn = Column(Text)
     sold_by = Column(Text)
     sold_type = Column(Text)
+    trip = relationship("Trip", uselist=False, backref="ticket")
 
 
 class Trip(CrhDbModel):
@@ -108,11 +108,12 @@ class Trip(CrhDbModel):
     line = relationship("Line", backref="trips")
     seat_type = Column(Text)
     seat_number = Column(Text)
-    ticket_price = Column(Text)
+    price = Column(Text)
     ticket_number = Column(Text)
     ticket_sn = Column(Text)
     ticket_sold_by = Column(Text)
     ticket_sold_type = Column(Text)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"))
     note = Column(Text)
 
 
@@ -122,7 +123,7 @@ class Route(CrhDbModel):
     This layer is setup for the pattern of exchange within the same trip, such as getting of at Beijing for
         Shanghai-Changchun line. But this pattern is not seen up to now (2018-01-09)
     """
-    __tablename__ = "route"
+    __tablename__ = "routes"
     id = Column(Integer, primary_key=True)
     trip_id = Column(Integer, ForeignKey("trips.id"))
     carriage = Column(Text)
@@ -133,7 +134,7 @@ class Route(CrhDbModel):
 class Departure(CrhDbModel):
     """Departure table: Action
     """
-    __tablename__ = "departure"
+    __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
     route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
@@ -152,7 +153,7 @@ class Departure(CrhDbModel):
 class Arrival(CrhDbModel):
     """Arrival table: Action
     """
-    __tablename__ = "arrival"
+    __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
     route_id = Column(Integer, ForeignKey("routes.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))

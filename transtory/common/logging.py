@@ -6,7 +6,7 @@ transtory_logger = logging.getLogger("transtory")
 transtory_logger.setLevel(logging.DEBUG)
 # TODO: "temp" folder is hard-coded here means a bad design; need to separate config to two-level structure: global
 #     and per-module
-fh = logging.FileHandler("./temp/transtory.log")
+fh = logging.FileHandler("./temp/transtory.log", encoding="utf8")
 fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
