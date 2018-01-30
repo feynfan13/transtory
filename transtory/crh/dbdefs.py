@@ -127,8 +127,12 @@ class Route(CrhDbModel):
     id = Column(Integer, primary_key=True)
     trip_id = Column(Integer, ForeignKey("trips.id"))
     carriage = Column(Text)
+    departure_id = Column(Integer, ForeignKey("departures.id"))
+    arrival_id = Column(Integer, ForeignKey("arrivals.id"))
     note = Column(Text)
     trip = relationship("Trip", backref="routes")
+    departure = relationship("Departure", uselist=False, backref="route")
+    arrival = relationship("Arrival", uselist=False, backref="route")
 
 
 class Departure(CrhDbModel):
@@ -136,17 +140,18 @@ class Departure(CrhDbModel):
     """
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    route_id_retired = Column(Integer)
     station_id = Column(Integer, ForeignKey("stations.id"))
     # TODO: merge date and time to a single time
-    date = Column(Text)
+    date_deprecated = Column(Text)
+    time_deprecated = Column(Text)
     time = Column(Text)
     # TODO: change planned time to a datetime string
+    planned_time_deprecated = Column(Text)
     planned_time = Column(Text)
     gate = Column(Text)
     platform = Column(Text)
     note = Column(Text)
-    route = relationship("Route", uselist=False, backref="departure")
     station = relationship("Station", backref="departures")
 
 
@@ -155,9 +160,18 @@ class Arrival(CrhDbModel):
     """
     __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    route_id_retired = Column(Integer)
     station_id = Column(Integer, ForeignKey("stations.id"))
-    route = relationship("Route", uselist=False, backref="arrival")
+    # TODO: merge date and time to a single time
+    date_deprecated = Column(Text)
+    time_deprecated = Column(Text)
+    time = Column(Text)
+    # TODO: change planned time to a datetime string
+    planned_time_deprecated = Column(Text)
+    planned_time = Column(Text)
+    gate = Column(Text)
+    platform = Column(Text)
+    note = Column(Text)
     station = relationship("Station", backref="arrivals")
 
 
@@ -176,5 +190,5 @@ class TrainService(CrhDbModel):
     # TODO: improve the logic; it is ugly now
     operation_type = Column(Integer)
     note = Column(Text)
-    route = relationship("Route", uselist=False, backref="train_service")
+    route = relationship("Route", uselist=False, backref="train_services")
     train = relationship("Train", backref="services")

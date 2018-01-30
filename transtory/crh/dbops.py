@@ -27,7 +27,7 @@ class CrhDbOps(DatabaseOpsBase):
     def create_db_structure(self):
         """Create or validate database structure
         """
-        logger.info("Creating mobike database structure.")
+        logger.info("Creating CRH database structure.")
         CrhDbModel.metadata.create_all(bind=self.engine)
 
 
