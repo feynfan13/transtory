@@ -51,7 +51,7 @@ class Airport(FlightDbModel):
 class Airline(FlightDbModel):
     """Airline: Object
     """
-    __tablename__ = ""
+    __tablename__ = "airlines"
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     iata = Column(Text)
@@ -69,6 +69,10 @@ class Flight(FlightDbModel):
     number = Column(Text)
     airline_id = Column(Integer, ForeignKey("airlines.id"))
     airline = relationship("Airline", backref="flights")
+    start_id = Column(Integer, ForeignKey("flight_starts.id"))
+    final_id = Column(Integer, ForeignKey("flight_finals.id"))
+    start = relationship("FlightStart", uselist=False, backref="flight")
+    final = relationship("FlightFinal", uselist=False, backref="flight")
 
 
 class FlightStart(FlightDbModel):
@@ -76,9 +80,8 @@ class FlightStart(FlightDbModel):
     """
     __tablename__ = "flight_starts"
     id = Column(Integer, primary_key=True)
-    flight_id = Column(Integer, ForeignKey("flights.id"))
+    flight_id_retired = Column(Integer)
     airport_id = Column(Integer, ForeignKey("airports.id"))
-    flight = relationship("Flight", uselist=False, backref="start")
     airport = relationship("Airport", backref="as_starts")
 
 
@@ -87,9 +90,8 @@ class FlightFinal(FlightDbModel):
     """
     __tablename__ = "flight_finals"
     id = Column(Integer, primary_key=True)
-    flight_id = Column(Integer, ForeignKey("flights.id"))
+    flight_id_retired = Column(Integer)
     airport_id = Column(Integer, ForeignKey("airports.id"))
-    flight = relationship("Flight", uselist=False, backref="final")
     airport = relationship("Airport", backref="as_finals")
 
 
@@ -119,6 +121,10 @@ class Route(FlightDbModel):
     distance = Column(Text)
     plane = relationship("Plane", backref="routes")
     flight = relationship("Flight", backref="routes")
+    departure_id = Column(Integer, ForeignKey("departures.id"))
+    arrival_id = Column(Integer, ForeignKey("arrivals.id"))
+    departure = relationship("Departure", uselist=False, backref="route")
+    arrival = relationship("Arrival", uselist=False, backref="route")
 
 
 class Departure(FlightDbModel):
@@ -126,7 +132,7 @@ class Departure(FlightDbModel):
     """
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    route_id_retired = Column(Integer)
     type = Column(Text)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     terminal = Column(Text)
@@ -138,7 +144,6 @@ class Departure(FlightDbModel):
     takeoff_time = Column(Text)
     planned_takeoff_time = Column(Text)
     note = Column(Text)
-    route = relationship("Route", uselist=False, backref="departure")
     airport = relationship("Airport", backref="departures")
 
 
@@ -147,7 +152,7 @@ class Arrival(FlightDbModel):
     """
     __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
-    route_id = Column(Integer, ForeignKey("routes.id"))
+    route_id_retired = Column(Integer)
     type = Column(Text)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     runway = Column(Text)
@@ -159,5 +164,4 @@ class Arrival(FlightDbModel):
     gate_arrival_time = Column(Text)
     planned_gate_arrival_time = Column(Text)
     note = Column(Text)
-    route = relationship("Route", uselist=False, backref="arrival")
     airport = relationship("Airport", backref="arrivals")

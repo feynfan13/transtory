@@ -40,6 +40,7 @@ class CrhTripStats(object):
         for task, trip, route in query.all():
             results = list()
             results.append(task.content)
+            # TODO: we should consider adding a null object for each object table, including line
             if trip.line is not None:
                 results.append(trip.line.name)
             else:

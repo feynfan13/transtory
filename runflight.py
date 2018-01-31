@@ -1,19 +1,19 @@
 import sys
 import argparse
 
-from transtory.crh import logger, switch_to_test_mode
-from transtory.crh import get_public_data_app
-from transtory.crh import CrhRecorder, CrhTripStats, CrhTrainStats
+from transtory.flight import logger, switch_to_test_mode
+from transtory.flight import get_public_data_app
+from transtory.flight import FlightRecorder, FlightTripStats
 
 
 def save_all_stats():
-    stator = CrhTripStats()
+    stator = FlightTripStats()
     stator.save_all_stats()
-    stator = CrhTrainStats()
-    stator.save_all_stats()
+    # stator = CrhTrainStats()
+    # stator.save_all_stats()
 
 
-parser = argparse.ArgumentParser(description="Shanghai metro database command.")
+parser = argparse.ArgumentParser(description="Flight database command.")
 parser.add_argument("--testmode", action="store_const", const=True, default=False)
 parser.add_argument("--record", action="store_const", const=True, default=False)
 parser.add_argument("--update", action="store_const", const=True, default=False)
@@ -27,7 +27,7 @@ if args.testmode:
 
 if args.record:
     pass
-    recorder = CrhRecorder()
+    recorder = FlightRecorder()
     recorder.record_trips_from_xmls()
     save_all_stats()
 elif args.update:
@@ -38,4 +38,4 @@ elif args.publicdata:
     app = get_public_data_app()
     app.save_public_data()
 else:
-    logger.info("CRH module did nothing.")
+    logger.info("Flight module did nothing.")
