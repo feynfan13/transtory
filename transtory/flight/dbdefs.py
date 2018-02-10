@@ -14,6 +14,7 @@ FlightDbModel = declarative_base()
 class PlaneType(FlightDbModel):
     """Plane type table: Category
     """
+    # TODO: build up plane_type table
     __tablename__ = "plane_types"
     id = Column(Integer, primary_key=True)
     name = Column(Text)
@@ -119,10 +120,11 @@ class Route(FlightDbModel):
     fare_code = Column(Text)
     boarding_group = Column(Text)
     distance = Column(Text)
-    plane = relationship("Plane", backref="routes")
-    flight = relationship("Flight", backref="routes")
     departure_id = Column(Integer, ForeignKey("departures.id"))
     arrival_id = Column(Integer, ForeignKey("arrivals.id"))
+    trip = relationship("Trip", backref="routes")
+    flight = relationship("Flight", backref="routes")
+    plane = relationship("Plane", backref="routes")
     departure = relationship("Departure", uselist=False, backref="route")
     arrival = relationship("Arrival", uselist=False, backref="route")
 

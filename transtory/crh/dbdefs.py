@@ -4,7 +4,7 @@ China Railway Highspeed (CRH) database definitions
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Column, Integer, Text, Float
 
 
@@ -39,6 +39,30 @@ class Line(CrhDbModel):
     __tablename__ = "lines"
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    line_start_id = Column(Integer, ForeignKey("line_starts.id"))
+    line_final_id = Column(Integer, ForeignKey("line_finals.id"))
+
+
+class LineStart(CrhDbModel):
+    """Line start table: Action
+    """
+    __tablename__ = "line_starts"
+    id = Column(Integer, primary_key=True)
+    # line_id_retired = Column(Integer, ForeignKey("lines.id"))
+    station_id = Column(Integer, ForeignKey("stations.id"))
+    line = relationship("Line", uselist=False, backref="start")
+    station = relationship("Station", backref="as_starts")
+
+
+class LineFinal(CrhDbModel):
+    """Line final table: Action
+    """
+    __tablename__ = "line_finals"
+    id = Column(Integer, primary_key=True)
+    # line_id_retired = Column(Integer, ForeignKey("lines.id"))
+    station_id = Column(Integer, ForeignKey("stations.id"))
+    ine = relationship("Line", uselist=False, backref="final")
+    station = relationship("Station", backref="as_finals")
 
 
 class Station(CrhDbModel):
@@ -48,28 +72,6 @@ class Station(CrhDbModel):
     __tablename__ = "stations"
     id = Column(Integer, primary_key=True)
     chn_name = Column(Text)
-
-
-class LineStart(CrhDbModel):
-    """Line start table: Action
-    """
-    __tablename__ = "line_origins"
-    id = Column(Integer, primary_key=True)
-    line_id = Column(Integer, ForeignKey("lines.id"))
-    station_id = Column(Integer, ForeignKey("stations.id"))
-    line = relationship("Line", uselist=False, backref="line_origin")
-    station = relationship("Station", backref="as_starts")
-
-
-class LineFinal(CrhDbModel):
-    """Line final table: Action
-    """
-    __tablename__ = "line_destinations"
-    id = Column(Integer, primary_key=True)
-    line_id = Column(Integer, ForeignKey("lines.id"))
-    station_id = Column(Integer, ForeignKey("stations.id"))
-    line = relationship("Line", uselist=False, backref="line_destination")
-    station = relationship("Station", backref="as_finals")
 
 
 class Task(CrhDbModel):

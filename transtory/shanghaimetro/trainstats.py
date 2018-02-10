@@ -50,6 +50,7 @@ class ShmTrainStats(object):
         logger.info("Finished validating train types (time used is {:f}s)".format(time.clock() - start_time))
 
     def save_train_list_csv(self):
+        # TODO: saving all train list
         pass
 
     def save_all_stats(self):

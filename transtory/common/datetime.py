@@ -6,7 +6,16 @@ from .infrastructure import singleton
 class CityTimeZoneMap(object):
     city_to_time_zone = {
         "Shanghai": timezone("Asia/Shanghai"),
-        "Tai'an": timezone("Asia/Shanghai")
+        "Tai'an": timezone("Asia/Shanghai"),
+        "Los Angeles": timezone("America/Los_Angeles"),
+        "San José": timezone("America/Los_Angeles"),
+        "San Francisco": timezone("America/Los_Angeles"),
+        "Denver": timezone("America/Denver"),
+        "London": timezone("Europe/London"),
+        "Helsinki": timezone("Europe/Helsinki"),
+        "Tallahassee": timezone("America/New_York"),
+        "Atlanta": timezone("America/New_York"),
+        "Orlando": timezone("America/New_York")
     }
 
     def get_time_zone_of_city(self, city):

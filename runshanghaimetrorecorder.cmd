@@ -1,2 +1,2 @@
-python .\runmobike.py --recorder --testmode
+python .\runshanghaimetro.py --recorder
 cmd /k

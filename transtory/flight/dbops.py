@@ -1,3 +1,5 @@
+from pytz import timezone
+
 from transtory.common import DatabaseOpsBase, singleton
 from transtory.common import DateTimeHelper
 
@@ -7,7 +9,7 @@ from .configs import FlightSysConfigs, get_configs
 
 from .publicdata import FlightPublicDataApp, get_public_data_app
 
-from .dbdefs import FlightDbModel
+from .dbdefs import FlightDbModel, Flight, Airline
 
 
 class InputTripEntry(object):
@@ -30,6 +32,15 @@ class FlightDbOps(DatabaseOpsBase):
         """
         logger.info("Creating flight database structure.")
         FlightDbModel.metadata.create_all(bind=self.engine)
+
+    def get_flight_num(self, flight_orm: Flight):
+        return flight_orm.airline.iata + " " + flight_orm.number
+
+    def get_local_time_from_db_time(self, atime_str, city):
+        atz = self.dt_helper.get_time_zone_of_city(city)
+        adt = self.dt_helper.get_datetime_from_str(atime_str)
+        adt = adt.replace(tzinfo=timezone("UTC"))
+        return self.dt_helper.get_datetime_str(adt.astimezone(atz))
 
 
 get_db_ops = singleton(FlightDbOps)

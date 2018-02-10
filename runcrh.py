@@ -28,7 +28,7 @@ if args.testmode:
 if args.record:
     pass
     recorder = CrhRecorder()
-    recorder.record_trips_from_xmls()
+    recorder.record_trips_from_json()
     save_all_stats()
 elif args.update:
     pass

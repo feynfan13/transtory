@@ -23,3 +23,7 @@ class FileSystemHelper(object):
             raise ValueError(self._log_message(func_name, "up-level %d is too large "
                                                           "for total folder level %d").format(up_level, len_parts))
         return os.sep.join(actual_folder_parts[0:-up_level])
+
+    def get_file_name(self, fpath):
+        assert(os.path.isfile(fpath))
+        return fpath.split(os.sep)[-1]
