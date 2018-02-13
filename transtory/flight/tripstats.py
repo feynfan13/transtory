@@ -4,8 +4,8 @@ import time
 from .configs import FlightSysConfigs, get_configs
 from .configs import logger
 
-from .dbdefs import Trip, Route, Departure, Arrival, Airport, Airline
-from .dbdefs import Plane, PlaneType
+from .dbdefs import Trip, Route, Leg, Departure, Arrival, Airport, Airline
+from .dbdefs import Plane, PlaneModel
 
 from .dbops import FlightDbOps, get_db_ops
 
@@ -37,13 +37,14 @@ class FlightTripStats(object):
                 raise Exception("Unsupported data type in csv writer: ", type(val))
 
     def _yield_route_list_entries(self):
-        query = self.session.query(Trip, Route).join(Trip.routes)
-        for trip, route in query.all():
+        query = self.session.query(Trip, Route, Leg, Departure).join(Trip.routes).join(Route.legs)
+        query = query.join(Leg.departure).order_by(Departure.pushback_time)
+        for trip, route, leg, departure in query.all():
             results = list()
             results.append(trip.confirmation_number)
             flight_number = self.dbops.get_flight_num(route.flight)
             results.append(flight_number)
-            departure, arrival = route.departure, route.arrival
+            departure, arrival = leg.departure, leg.arrival
             airport0, airport1 = departure.airport, arrival.airport
             pushback, gate_arrival = departure.pushback_time, arrival.gate_arrival_time
             assert(pushback is not None and len(pushback) != 0)
@@ -56,7 +57,7 @@ class FlightTripStats(object):
             results.append(gate_arrival)
             results.append(route.plane.tail_number)
             # TODO: after plane_type table is built up, change this
-            results.append(route.plane.type)
+            results.append(route.plane.model.name)
             # results.append(route.plane.type.name)
             yield results
 

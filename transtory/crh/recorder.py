@@ -1,7 +1,6 @@
 import os
 import shutil
 import glob
-from datetime import time
 import jsmin
 import json
 
@@ -11,14 +10,6 @@ from .configs import get_configs, CrhSysConfigs
 from .configs import get_datetime_helper
 from .dbops import get_db_ops, CrhDbOps
 from .dbops import InputTripEntry, InputRouteEntry
-
-
-class JsonLogEntry(object):
-    def __init__(self):
-        pass
-
-    def make_trip_entry(self):
-        pass
 
 
 class CrhRecorder(object):

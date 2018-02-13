@@ -9,8 +9,8 @@ from transtory.flight import FlightRecorder, FlightTripStats
 def save_all_stats():
     stator = FlightTripStats()
     stator.save_all_stats()
-    # stator = CrhTrainStats()
-    # stator.save_all_stats()
+    stator = FlightTripStats()
+    stator.save_all_stats()
 
 
 parser = argparse.ArgumentParser(description="Flight database command.")
@@ -28,7 +28,7 @@ if args.testmode:
 if args.record:
     pass
     recorder = FlightRecorder()
-    recorder.record_trips_from_xmls()
+    recorder.record_trips_from_json()
     save_all_stats()
 elif args.update:
     pass

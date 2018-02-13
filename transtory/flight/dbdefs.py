@@ -11,11 +11,11 @@ from sqlalchemy import Column, Integer, Text
 FlightDbModel = declarative_base()
 
 
-class PlaneType(FlightDbModel):
+class PlaneModel(FlightDbModel):
     """Plane type table: Category
     """
     # TODO: build up plane_type table
-    __tablename__ = "plane_types"
+    __tablename__ = "plane_models"
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     maker = Column(Text)
@@ -34,8 +34,10 @@ class Plane(FlightDbModel):
     airline_id = Column(Integer, ForeignKey("airlines.id"))
     # TODO: move the plane type to a separate table
     type = Column(Text)
+    model_id = Column(Integer, ForeignKey("plane_models.id"))
     nickname = Column(Text)
     airline = relationship("Airline", backref="planes")
+    model = relationship("PlaneModel", backref="planes")
 
 
 class Airport(FlightDbModel):
@@ -112,21 +114,33 @@ class Route(FlightDbModel):
     __tablename__ = "routes"
     id = Column(Integer, primary_key=True)
     trip_id = Column(Integer, ForeignKey("trips.id"))
-    leg_type = Column(Integer)
+    seq = Column(Integer)
+    type = Column(Integer)
     plane_id = Column(Integer, ForeignKey("planes.id"))
     flight_id = Column(Integer, ForeignKey("flights.id"))
     cabin = Column(Text)
     seat = Column(Text)
     fare_code = Column(Text)
     boarding_group = Column(Text)
-    distance = Column(Text)
-    departure_id = Column(Integer, ForeignKey("departures.id"))
-    arrival_id = Column(Integer, ForeignKey("arrivals.id"))
+    distance_FA = Column(Text)
+    # departure_id = Column(Integer, ForeignKey("departures.id"))
+    # arrival_id = Column(Integer, ForeignKey("arrivals.id"))
     trip = relationship("Trip", backref="routes")
     flight = relationship("Flight", backref="routes")
     plane = relationship("Plane", backref="routes")
-    departure = relationship("Departure", uselist=False, backref="route")
-    arrival = relationship("Arrival", uselist=False, backref="route")
+
+
+class Leg(FlightDbModel):
+    """Leg table: Event
+    """
+    __tablename__ = "legs"
+    id = Column(Integer, primary_key=True)
+    route_id = Column(Integer, ForeignKey("routes.id"))
+    seq = Column(Integer)
+    type = Column(Text)
+    departure_id = Column(Integer, ForeignKey("departures.id"))
+    arrival_id = Column(Integer, ForeignKey("arrivals.id"))
+    route = relationship("Route", backref="legs")
 
 
 class Departure(FlightDbModel):
@@ -135,7 +149,6 @@ class Departure(FlightDbModel):
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
     route_id_retired = Column(Integer)
-    type = Column(Text)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     terminal = Column(Text)
     concourse = Column(Text)
@@ -147,6 +160,7 @@ class Departure(FlightDbModel):
     planned_takeoff_time = Column(Text)
     note = Column(Text)
     airport = relationship("Airport", backref="departures")
+    leg = relationship("Leg", uselist=False, backref="departure")
 
 
 class Arrival(FlightDbModel):
@@ -167,3 +181,4 @@ class Arrival(FlightDbModel):
     planned_gate_arrival_time = Column(Text)
     note = Column(Text)
     airport = relationship("Airport", backref="arrivals")
+    leg = relationship("Leg", uselist=False, backref="arrival")
