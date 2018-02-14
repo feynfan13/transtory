@@ -6,3 +6,4 @@ from .dbdefs import Route, Departure, Arrival, Flight, FlightStart, FlightFinal
 from .dbops import FlightDbOps
 from .recorder import FlightRecorder
 from .tripstats import FlightTripStats
+from .planestats import FlightPlaneStats

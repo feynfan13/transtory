@@ -3,13 +3,13 @@ import argparse
 
 from transtory.flight import logger, switch_to_test_mode
 from transtory.flight import get_public_data_app
-from transtory.flight import FlightRecorder, FlightTripStats
+from transtory.flight import FlightRecorder, FlightTripStats, FlightPlaneStats
 
 
 def save_all_stats():
     stator = FlightTripStats()
     stator.save_all_stats()
-    stator = FlightTripStats()
+    stator = FlightPlaneStats()
     stator.save_all_stats()
 
 
@@ -31,6 +31,7 @@ if args.record:
     recorder.record_trips_from_json()
     save_all_stats()
 elif args.update:
+    # TODO: add update functionality
     pass
 elif args.stat:
     save_all_stats()
