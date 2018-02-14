@@ -1,4 +1,6 @@
 import os
+import jsmin
+import json
 
 
 class FileSystemHelper(object):
@@ -27,3 +29,25 @@ class FileSystemHelper(object):
     def get_file_name(self, fpath):
         assert(os.path.isfile(fpath))
         return fpath.split(os.sep)[-1]
+
+
+class ModuleSysConfigs(object):
+    def __init__(self):
+        self.fs_helper = FileSystemHelper()
+        self.root_folder = self.fs_helper.get_parent_folder(os.path.abspath(__file__), 2)
+        self.data_folder = self.root_folder
+        self.temp_folder = self.root_folder
+        self.result_folder = self.root_folder
+        self.import_configs()
+
+    def import_configs(self):
+        with open(os.sep.join([self.root_folder, "configs.json"]), "r") as fin:
+            configs = json.loads(jsmin.jsmin(fin.read()))
+            self.data_folder = configs["data_folder"]
+            self.temp_folder = configs["temp_folder"]
+            self.result_folder = configs["result_folder"]
+
+    def switch_to_test_configs(self):
+        self.data_folder = self.root_folder
+        self.temp_folder = self.root_folder
+        self.result_folder = self.root_folder

@@ -5,8 +5,9 @@ import transtory.common as helpers
 fs_helper = helpers.FileSystemHelper()
 
 
-class FlightSysConfigs(object):
+class FlightSysConfigs(helpers.ModuleSysConfigs):
     def __init__(self):
+        super().__init__()
         self.module_name = None
         self.root_folder = None
         self.db_name = None
@@ -22,14 +23,15 @@ class FlightSysConfigs(object):
         self.module_name = "flight"
         self.root_folder = fs_helper.get_parent_folder(os.path.abspath(__file__), 2)
         self.db_name = "FlightTransits.sqlite"
-        self.db_path = os.sep.join([self.root_folder, "database", self.module_name, self.db_name])
-        self.log_folder = os.sep.join([self.root_folder, "log", self.module_name])
+        self.db_path = os.sep.join([self.data_folder, "database", self.module_name, self.db_name])
+        self.log_folder = os.sep.join([self.data_folder, "log", self.module_name])
         self.log_archive_folder = os.sep.join([self.log_folder, "logarchive"])
-        self.stats_folder = os.sep.join([self.root_folder, "report", self.module_name])
+        self.stats_folder = os.sep.join([self.result_folder, self.module_name])
         self.date_zero = "2010-07-29"
         self.test_mode = False
 
     def switch_to_test_configs(self):
+        super().switch_to_test_configs()
         test_folder = os.sep.join([self.root_folder, "test"])
         self.db_path = os.sep.join([test_folder, "database", self.module_name, self.db_name])
         self.log_folder = os.sep.join([self.root_folder, "log", self.module_name])
