@@ -1,10 +1,11 @@
 import os
 import time
-import pandas as pd
+from sqlalchemy import func
 
 from .configs import logger
 from .publicdata import ShmPublicDataApp, get_public_data_app
 
+from .dbdefs import Route, Departure, Arrival
 from .dbdefs import Train, TrainType, Line
 from .dbops import ShmDbOps, get_shm_db_ops
 from .dbops import ShmSysConfigs, get_configs
@@ -18,9 +19,24 @@ class ShmTrainStats(object):
         self.dbops: ShmDbOps = get_shm_db_ops()
         self.session = self.dbops.session
         self.data_app: ShmPublicDataApp = get_public_data_app()
+        self.train_fields = ["train", "model", "count", "manufacturer"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
+
+    @staticmethod
+    def _write_lists_to_csv(fout, val_list):
+        """Goal of the function is to handle the None values properly
+        """
+        for val in val_list:
+            if val is None:
+                fout.write("||\t")
+            elif isinstance(val, int):
+                fout.write("|{:d}|\t".format(val))
+            elif isinstance(val, str):
+                fout.write("|{:s}|\t".format(val))
+            else:
+                raise Exception("Unsupported data type in csv writer.")
 
     def _def_train_list_query(self):
         columns = ["line", "sn", "type"]
@@ -49,9 +65,27 @@ class ShmTrainStats(object):
             logger.warning("Validation of train type failed.")
         logger.info("Finished validating train types (time used is {:f}s)".format(time.clock() - start_time))
 
+    def _yield_train_list_entries(self):
+        query = self.session.query(func.count(Route.id), Train, TrainType).join(Route.train).join(Train.train_type)
+        query = query.group_by(Train.id).order_by(Train.sn)
+        for count, train, train_type in query.all():
+            results = list()
+            results.append(train.sn)
+            results.append(train_type.name)
+            results.append(count)
+            results.append(train_type.maker)
+            yield results
+
     def save_train_list_csv(self):
-        # TODO: saving all train list
-        pass
+        logger.info("Begin saving all planes.")
+        start_time = time.clock()
+        with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf16") as fout:
+            [fout.write("|{:s}|\t".format(x)) for x in self.train_fields]
+            fout.write("\n")
+            for result in self._yield_train_list_entries():
+                self._write_lists_to_csv(fout, result)
+                fout.write("\n")
+        logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
 
     def save_all_stats(self):
         self.validate_train_type()
