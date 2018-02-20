@@ -4,7 +4,7 @@ import time
 from .configs import CrhSysConfigs, get_configs
 from .configs import logger
 
-from .dbdefs import Task, Trip, Route, Departure, Arrival, Station, Line
+from .dbdefs import Task, Trip, Route, Departure, Arrival, Station, Line, Ticket
 from .dbdefs import Train, TrainService, TrainType
 
 from .dbops import CrhDbOps, get_db_ops
@@ -16,7 +16,10 @@ class CrhTripStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.route_fields = ["task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note"]
+        self.route_fields = ["task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note",
+                             "seat_type", "seat", "from_gate", "from_platform", "to_platform", "to_gate",
+                             "from_time_plan", "to_time_plan", "from_note", "to_note", "train_origin", "train_final",
+                             "price", "ticket_short_sn", "ticket_long_sn", "ticket_sold_by", "ticket_sold_type"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -36,7 +39,7 @@ class CrhTripStats(object):
                 raise Exception("Unsupported data type in csv writer.")
 
     def _yield_route_list_entries(self):
-        query = self.session.query(Task, Trip, Route).join(Task.trips).join(Trip.routes)
+        query = self.session.query(Task, Trip, Route).join(Task.trips).join(Trip.routes).join()
         for task, trip, route in query.all():
             results = list()
             results.append(task.content)
@@ -72,6 +75,34 @@ class CrhTripStats(object):
                 raise Exception("More than 2 train service entry for one route.")
             results.append(trainset_str)
             results.append(route.note)
+            results.append(trip.seat_type)
+            results.append(trip.seat_number)
+            results.append(route.departure.gate)
+            results.append(route.departure.platform)
+            results.append(route.arrival.platform)
+            results.append(route.arrival.gate)
+            results.append(route.departure.planned_time)
+            results.append(route.arrival.planned_time)
+            results.append(route.departure.note)
+            results.append(route.arrival.note)
+            if trip.line is None:
+                results.append(None)
+                results.append(None)
+                results.append(None)
+            else:
+                results.append(trip.line.start.station.chn_name)
+                results.append(trip.line.final.station.chn_name)
+                results.append(trip.price)
+            if trip.ticket is None:
+                results.append(None)
+                results.append(None)
+                results.append(None)
+                results.append(None)
+            else:
+                results.append(trip.ticket.short_sn)
+                results.append(trip.ticket.long_sn)
+                results.append(trip.ticket.sold_by)
+                results.append(trip.ticket.sold_type)
             yield results
 
     def save_route_list_csv(self):

@@ -3,5 +3,6 @@ __all__ = [
     "mobike",
     "flight",
     "crh",
-    "shanghaimetro"
+    "shanghaimetro",
+    "ui"
 ]

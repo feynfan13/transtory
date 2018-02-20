@@ -3,13 +3,13 @@ import argparse
 
 from transtory.crh import logger, switch_to_test_mode
 from transtory.crh import get_public_data_app
-from transtory.crh import CrhRecorder, CrhTripStats, CrhTrainStats
+from transtory.crh import CrhRecorder, CrhTripStats, CrhElementStats
 
 
 def save_all_stats():
     stator = CrhTripStats()
     stator.save_all_stats()
-    stator = CrhTrainStats()
+    stator = CrhElementStats()
     stator.save_all_stats()
 
 

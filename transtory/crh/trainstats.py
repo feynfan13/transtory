@@ -6,17 +6,19 @@ from .configs import CrhSysConfigs, get_configs
 from .configs import logger
 
 from .dbdefs import Train, TrainType, TrainService
+from .dbdefs import Station, Line, LineStart
 
 from .dbops import CrhDbOps, get_db_ops
 
 
-class CrhTrainStats(object):
+class CrhElementStats(object):
     def __init__(self):
         self.configs: CrhSysConfigs = get_configs()
         self.save_folder = self.configs.stats_folder
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.plane_fields = ["model", "train", "seat_count", "join_count"]
+        self.train_fields = ["model", "train", "seat_count", "join_count"]
+        self.line_fields = ["train_number", "from", "to"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -35,7 +37,7 @@ class CrhTrainStats(object):
             else:
                 raise Exception("Unsupported data type in csv writer.")
 
-    def _yield_plane_list_entries(self):
+    def _yield_train_list_entries(self):
         # Seat trains
         query = self.session.query(TrainService.train_id, func.count('*').label("count"))
         stmt = query.filter(TrainService.operation_type == 0).group_by(TrainService.train_id).subquery()
@@ -60,12 +62,34 @@ class CrhTrainStats(object):
         logger.info("Begin saving all trains.")
         start_time = time.clock()
         with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in self.plane_fields]
+            [fout.write("|{:s}|\t".format(x)) for x in self.train_fields]
             fout.write("\n")
-            for result in self._yield_plane_list_entries():
+            for result in self._yield_train_list_entries():
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
         logger.info("Finished saving all trains (time used is {:f}s)".format(time.clock() - start_time))
 
+    def _yield_line_list_entries(self):
+        query = self.session.query(Line, LineStart, Station).join(Line.start).join(LineStart.station)
+        query = query.order_by(Station.chn_name)
+        for line, _, station in query.all():
+            results = list()
+            results.append(line.name)
+            results.append(station.chn_name)
+            results.append(line.final.station.chn_name)
+            yield results
+
+    def save_line_list_csv(self):
+        logger.info("Begin saving all lines.")
+        start_time = time.clock()
+        with open(self._get_stats_full_path("lines.csv"), "w", encoding="utf16") as fout:
+            [fout.write("|{:s}|\t".format(x)) for x in self.line_fields]
+            fout.write("\n")
+            for result in self._yield_line_list_entries():
+                self._write_lists_to_csv(fout, result)
+                fout.write("\n")
+        logger.info("Finished saving all lines (time used is {:f}s)".format(time.clock() - start_time))
+
     def save_all_stats(self):
         self.save_train_list_csv()
+        self.save_line_list_csv()

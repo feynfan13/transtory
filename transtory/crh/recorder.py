@@ -20,6 +20,12 @@ class CrhRecorder(object):
         self.fs_helper = FileSystemHelper()
 
     @staticmethod
+    def _assign_none_fields(val):
+        if val is None or len(val) == 0:
+            return None
+        return val
+
+    @staticmethod
     def _make_datetime_str_from_log_data(log_date, log_time):
         date_str = "-".join([log_date[0:4], log_date[4:6], log_date[6:]])
         time_str = ":".join([log_time[0:2], log_time[2:]])
@@ -49,10 +55,10 @@ class CrhRecorder(object):
         trip_entry.train_num = log_struct["Train Number"]
         trip_entry.train_num_start = log_struct["Origin"]
         trip_entry.train_num_final = log_struct["Terminal"]
-        trip_entry.ticket_short_sn = log_struct["Ticket Number"]
-        trip_entry.ticket_long_sn = log_struct["Ticket SN"]
-        trip_entry.ticket_sold_by = log_struct["Ticket Sold By"]
-        trip_entry.ticket_sold_type = log_struct["Ticket Sold Type"]
+        trip_entry.ticket_short_sn = self._assign_none_fields(log_struct["Ticket Number"])
+        trip_entry.ticket_long_sn = self._assign_none_fields(log_struct["Ticket SN"])
+        trip_entry.ticket_sold_by = self._assign_none_fields(log_struct["Ticket Sold By"])
+        trip_entry.ticket_sold_type = self._assign_none_fields(log_struct["Ticket Sold Type"])
         trip_entry.price = log_struct["Ticket Price"]
         trip_entry.seat_type = log_struct["Seat Type"]
         trip_entry.seat_num = log_struct["Seat Number"]

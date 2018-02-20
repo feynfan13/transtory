@@ -141,8 +141,8 @@ class CrhPublicData(object):
                 ET.SubElement(level2, "level3", name="CRH380BG 统型")
             elif name == "CRH380B":
                 ET.SubElement(level2, "level3", name="CRH380B 统型")
-            elif name == "CRH380C":
-                ET.SubElement(level2, "level3", name="CRH380C")
+            elif name == "CRH380CL":
+                ET.SubElement(level2, "level3", name="CRH380CL")
             elif name == "CRH380D":
                 ET.SubElement(level2, "level3", name="CRH380D")
                 ET.SubElement(level2, "level3", name="CRH380D 统型")
@@ -187,7 +187,7 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(2001, 2009), (2011, 2060), (2151, 2211)])
             elif name == "CRH2A 统型":
                 sn_list = get_num_set_from_multiple_ranges([(2212, 2416), (2427, 2459), (2473, 2499),
-                                                             (4001, 4071), (4082, 4095)])
+                                                            (4001, 4071), (4082, 4095)])
             elif name == "CRH2A 2G头型":
                 sn_list = get_num_set_from_multiple_ranges([(2460, 2460)])
             elif name == "CRH2B":
@@ -218,7 +218,7 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(2501, 2537), (2539, 2540)])
             elif name == "CRH380A 统型":
                 sn_list = get_num_set_from_multiple_ranges([(2641, 2807), (2809, 2817), (2819, 2827),
-                                                             (2829, 2912), (2921, 2925)])
+                                                            (2829, 2912), (2921, 2925)])
             elif name == "CRH380AL 第一阶段":
                 sn_list = get_num_set_from_multiple_ranges([(2541, 2570)])
             elif name == "CRH380AL 第二阶段":
@@ -235,10 +235,10 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(5546, 5600), (5626, 5636)])
             elif name == "CRH380BG 统型":
                 sn_list = get_num_set_from_multiple_ranges([(5684, 5729), (5762, 5786), (5803, 5822)])
-            elif name == "CRH380B":
+            elif name == "CRH380B 统型":
                 sn_list = get_num_set_from_multiple_ranges([(3571, 3731), (3738, 3774), (5637, 5683),
-                                                             (5730, 5761), (5787, 5802), (5829, 5888)])
-            elif name == "CRH380C":
+                                                            (5730, 5761), (5787, 5802), (5829, 5888)])
+            elif name == "CRH380CL":
                 sn_list = get_num_set_from_multiple_ranges([(5601, 5625)])
             elif name == "CRH380D":
                 sn_list = get_num_set_from_multiple_ranges([(1501, 1510)])

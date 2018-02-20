@@ -48,7 +48,6 @@ class LineStart(CrhDbModel):
     """
     __tablename__ = "line_starts"
     id = Column(Integer, primary_key=True)
-    # line_id_retired = Column(Integer, ForeignKey("lines.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
     line = relationship("Line", uselist=False, backref="start")
     station = relationship("Station", backref="as_starts")
@@ -59,7 +58,6 @@ class LineFinal(CrhDbModel):
     """
     __tablename__ = "line_finals"
     id = Column(Integer, primary_key=True)
-    # line_id_retired = Column(Integer, ForeignKey("lines.id"))
     station_id = Column(Integer, ForeignKey("stations.id"))
     ine = relationship("Line", uselist=False, backref="final")
     station = relationship("Station", backref="as_finals")
@@ -87,7 +85,6 @@ class Ticket(CrhDbModel):
     Ticket means the paper you got from 12306.
     In some cases, some fields are lost, such as when using ID card or public transportation card
     """
-    # TODO: at present ticket is mangled in trip table; we need to separate them out
     __tablename__ = "tickets"
     id = Column(Integer, primary_key=True)
     short_sn = Column(Text)
@@ -101,7 +98,6 @@ class Trip(CrhDbModel):
     """Trip table: Event
     Trip means the transit specified by a railway ticket
     """
-    # TODO: at present ticket is mangled in trip table; we need to separate them out
     __tablename__ = "trips"
     id = Column(Integer, primary_key=True)
     task_id = Column(Integer, ForeignKey("tasks.id"))
@@ -111,10 +107,6 @@ class Trip(CrhDbModel):
     seat_type = Column(Text)
     seat_number = Column(Text)
     price = Column(Text)
-    ticket_number = Column(Text)
-    ticket_sn = Column(Text)
-    ticket_sold_by = Column(Text)
-    ticket_sold_type = Column(Text)
     ticket_id = Column(Integer, ForeignKey("tickets.id"))
     note = Column(Text)
 
@@ -142,14 +134,8 @@ class Departure(CrhDbModel):
     """
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
-    route_id_retired = Column(Integer)
     station_id = Column(Integer, ForeignKey("stations.id"))
-    # TODO: merge date and time to a single time
-    date_deprecated = Column(Text)
-    time_deprecated = Column(Text)
     time = Column(Text)
-    # TODO: change planned time to a datetime string
-    planned_time_deprecated = Column(Text)
     planned_time = Column(Text)
     gate = Column(Text)
     platform = Column(Text)
@@ -162,14 +148,8 @@ class Arrival(CrhDbModel):
     """
     __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
-    route_id_retired = Column(Integer)
     station_id = Column(Integer, ForeignKey("stations.id"))
-    # TODO: merge date and time to a single time
-    date_deprecated = Column(Text)
-    time_deprecated = Column(Text)
     time = Column(Text)
-    # TODO: change planned time to a datetime string
-    planned_time_deprecated = Column(Text)
     planned_time = Column(Text)
     gate = Column(Text)
     platform = Column(Text)

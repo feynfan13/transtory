@@ -125,7 +125,7 @@ class CrhDbOps(DatabaseOpsBase):
         line_orm.start = line_start_orm
         line_orm.final = line_final_orm
         self.session.add(line_orm)
-        logger.info("Added line ", line_orm)
+        logger.info("Added line {:s} from {:s} to {:s}".format(line, start, final))
         return line_orm
 
     def get_or_add_line(self, line, start, final):
@@ -133,6 +133,10 @@ class CrhDbOps(DatabaseOpsBase):
         if line_orm is None:
             line_orm = self._add_line(line, start, final)
         return line_orm
+
+    def _get_train_type(self, train_type):
+        query = self.session.query(TrainType).filter_by(name=train_type)
+        return query.one()
 
     def _get_train(self, train_sn):
         query = self.session.query(Train).filter_by(sn=train_sn)
@@ -143,9 +147,10 @@ class CrhDbOps(DatabaseOpsBase):
     def _add_train(self, train_sn):
         train_orm = Train()
         train_orm.sn = train_sn
-        train_orm.train_type = self.data_app.get_train_type(train_sn)
+        train_type = self.data_app.get_train_type(train_sn)
+        train_orm.type = self._get_train_type(train_type)
         self.session.add(train_orm)
-        logger.info("Added train ", train_orm)
+        logger.info("Added train {:s}".format(train_sn))
         return train_orm
 
     def get_or_add_train(self, train_sn):
@@ -187,11 +192,20 @@ class CrhDbOps(DatabaseOpsBase):
         arrival_orm.station = self.get_or_add_station(route_entry.final)
         arrival_orm.gate = route_entry.final_gate
         arrival_orm.platform = route_entry.final_platform
-        arrival_orm.note = route_entry.note
+        arrival_orm.note = route_entry.final_note
         self.session.add(arrival_orm)
         route_orm.arrival = arrival_orm
         self.session.add(route_orm)
         return route_orm
+
+    @staticmethod
+    def _is_valid_ticket(trip_entry: InputTripEntry):
+        is_invalid = True
+        is_invalid = is_invalid and (trip_entry.ticket_short_sn is None)
+        is_invalid = is_invalid and (trip_entry.ticket_long_sn is None)
+        is_invalid = is_invalid and (trip_entry.ticket_sold_type is None)
+        is_invalid = is_invalid and (trip_entry.ticket_sold_by is None)
+        return not is_invalid
 
     def _add_trip(self, trip_entry: InputTripEntry):
         trip_orm = Trip()
@@ -200,14 +214,16 @@ class CrhDbOps(DatabaseOpsBase):
                                              trip_entry.train_num_final)
         trip_orm.seat_type = trip_entry.seat_type
         trip_orm.seat_number = trip_entry.seat_num
+        trip_orm.price = trip_entry.price
         trip_orm.note = trip_entry.note
-        ticket_orm = Ticket()
-        ticket_orm.short_sn = trip_entry.ticket_short_sn
-        ticket_orm.long_sn = trip_entry.ticket_long_sn
-        ticket_orm.sold_type = trip_entry.ticket_sold_type
-        ticket_orm.sold_by = trip_entry.ticket_sold_by
-        ticket_orm.trip = trip_orm
-        self.session.add(ticket_orm)
+        if self._is_valid_ticket(trip_entry):
+            ticket_orm = Ticket()
+            ticket_orm.short_sn = trip_entry.ticket_short_sn
+            ticket_orm.long_sn = trip_entry.ticket_long_sn
+            ticket_orm.sold_type = trip_entry.ticket_sold_type
+            ticket_orm.sold_by = trip_entry.ticket_sold_by
+            ticket_orm.trip = trip_orm
+            self.session.add(ticket_orm)
         for route_entry in trip_entry.routes:
             self._add_route(route_entry, trip_orm)
         return trip_orm

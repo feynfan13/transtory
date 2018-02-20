@@ -7,4 +7,4 @@ from .dbdefs import Trip, Ticket, Departure, Arrival, Route, Line
 from .dbops import CrhDbOps
 from .recorder import CrhRecorder
 from .tripstats import CrhTripStats
-from .trainstats import CrhTrainStats
+from .trainstats import CrhElementStats
