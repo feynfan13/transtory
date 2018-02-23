@@ -20,6 +20,7 @@ class ShmTrainStats(object):
         self.session = self.dbops.session
         self.data_app: ShmPublicDataApp = get_public_data_app()
         self.train_fields = ["train", "model", "count", "manufacturer"]
+        self.train_type_fields = ["type", "taken_count", "total_count", "ratio"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -51,8 +52,8 @@ class ShmTrainStats(object):
         columns, query = self._def_train_list_query()
         for train in query.all():
             train_sn, type_from_db = train[1], train[2]
-            line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)
-            type_from_app = self.data_app.get_type_of_train(line, seq)
+            # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)
+            type_from_app = self.data_app.get_type_of_train(train_sn)
             logger.info("Train {:s}: {:s} passed".format(train_sn, type_from_db))
             if type_from_app != train[2]:
                 validate_pass = False
@@ -87,6 +88,67 @@ class ShmTrainStats(object):
                 fout.write("\n")
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
 
+    def _yield_train_type_list_entries(self):
+        all_train_types = self.data_app.get_train_type_list()
+        query = self.session.query(Train.train_type_id, func.count('*').label("count")).group_by(Train.train_type_id)
+        stmt = query.subquery()
+        query = self.session.query(TrainType, stmt.c.count).outerjoin(stmt, TrainType.id == stmt.c.train_type_id)
+        query = query.order_by(TrainType.name)
+        all_type_total, all_type_taken = 0, 0
+        for train_type, count in query.all():
+            name = train_type.name
+            count = 0 if count is None else count
+            total = int(all_train_types[name])
+            results = list()
+            results.append(name)
+            results.append(count)
+            results.append(total)
+            results.append("{:d}%".format(int(count*100.0/total)))
+            all_type_total += total
+            all_type_taken += count
+            yield results
+        results = list()
+        results.append("Sum")
+        results.append(all_type_taken)
+        results.append(all_type_total)
+        results.append("{:d}%".format(int(all_type_taken*100.0/all_type_total)))
+        yield results
+
+    def save_train_type_list_csv(self):
+        logger.info("Begin saving all planes.")
+        start_time = time.clock()
+        with open(self._get_stats_full_path("train_type.csv"), "w", encoding="utf16") as fout:
+            [fout.write("|{:s}|\t".format(x)) for x in self.train_type_fields]
+            fout.write("\n")
+            for result in self._yield_train_type_list_entries():
+                self._write_lists_to_csv(fout, result)
+                fout.write("\n")
+        logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
+
+    def _yield_line_list_entries(self):
+        query = self.session.query(func.count(Route.id), Train, TrainType).join(Route.train).join(Train.train_type)
+        query = query.group_by(Train.id).order_by(Train.sn)
+        for count, train, train_type in query.all():
+            results = list()
+            results.append(train.sn)
+            results.append(train_type.name)
+            results.append(count)
+            results.append(train_type.maker)
+            yield results
+
+    def save_line_list_csv(self):
+        logger.info("Begin saving all planes.")
+        start_time = time.clock()
+        with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf16") as fout:
+            [fout.write("|{:s}|\t".format(x)) for x in self.train_fields]
+            fout.write("\n")
+            for result in self._yield_train_list_entries():
+                self._write_lists_to_csv(fout, result)
+                fout.write("\n")
+        logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
+
     def save_all_stats(self):
         self.validate_train_type()
         self.save_train_list_csv()
+        self.save_train_type_list_csv()
+        # self.save_line_list_csv()

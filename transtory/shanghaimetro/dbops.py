@@ -143,8 +143,8 @@ class ShmDbOps(DatabaseOpsBase):
         if train_orm is None:
             train_entry = TrainEntry()
             train_entry.sn = entry.train_sn
-            line, seq = self.data_app.get_line_and_seq_from_train_sn(train_entry.sn)
-            train_entry.type = self.data_app.get_type_of_train(line, seq)
+            # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_entry.sn)
+            train_entry.type = self.data_app.get_type_of_train(train_entry.sn)
             train_entry.line = entry.line
             train_orm = self._add_train(train_entry)
         departure_orm = Departure()  # For departure

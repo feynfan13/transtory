@@ -1,3 +1,5 @@
+import pandas as pd
+
 from transtory.common import singleton
 
 
@@ -11,10 +13,15 @@ class ShmPublicData(object):
         self.train_vs_type = None
 
     @staticmethod
-    def _add_train_and_type_in_sn_range(train_dict, train_type: str, sn_range):
+    def _get_train_from_line_and_seq(line, seq):
+        return "{:02d}{:03d}".format(line, seq)
+
+    def _add_train_and_type_in_sn_range(self, line, train_type: str, sn_range):
         seq_list = range(sn_range[0], sn_range[1] + 1)
         for seq in seq_list:
-            train_dict[seq] = train_type
+            self.train_line_type_list[0].append(self._get_train_from_line_and_seq(line, seq))
+            self.train_line_type_list[1].append(line)
+            self.train_line_type_list[2].append(train_type)
 
     def get_train_vs_type_table(self):
         if self.train_vs_type is None:
@@ -22,101 +29,88 @@ class ShmPublicData(object):
         return self.train_vs_type
 
     def _make_train_vs_type_table(self):
-        train_vs_type_table = dict()
+        self.train_line_type_list = [[], [], []]
         # Line 01
-        line_01_dict = dict()
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A01-01", (1, 1))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A01-02", (2, 2))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A01-01", (3, 10))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A03", (11, 13))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A01-01", (14, 14))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A03", (15, 16))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A02-02", (17, 17))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A02-01", (18, 25))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A04-01", (26, 29))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A04-02", (30, 37))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A05", (40, 55))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A06", (56, 66))
-        self._add_train_and_type_in_sn_range(line_01_dict, "01A06", (67, 86))
-        train_vs_type_table[1] = line_01_dict
+        self._add_train_and_type_in_sn_range(1, "01A01-01", (1, 1))
+        self._add_train_and_type_in_sn_range(1, "01A01-02", (2, 2))
+        self._add_train_and_type_in_sn_range(1, "01A01-01", (3, 10))
+        self._add_train_and_type_in_sn_range(1, "01A03", (11, 13))
+        self._add_train_and_type_in_sn_range(1, "01A01-01", (14, 14))
+        self._add_train_and_type_in_sn_range(1, "01A03", (15, 16))
+        self._add_train_and_type_in_sn_range(1, "01A02-02", (17, 17))
+        self._add_train_and_type_in_sn_range(1, "01A02-01", (18, 25))
+        self._add_train_and_type_in_sn_range(1, "01A04-01", (26, 29))
+        self._add_train_and_type_in_sn_range(1, "01A04-02", (30, 37))
+        self._add_train_and_type_in_sn_range(1, "01A05", (40, 55))
+        self._add_train_and_type_in_sn_range(1, "01A06", (56, 66))
+        self._add_train_and_type_in_sn_range(1, "01A06", (67, 86))
         # Line 02
-        line_02_dict = dict()
-        self._add_train_and_type_in_sn_range(line_02_dict, "02A01", (1, 16))
-        self._add_train_and_type_in_sn_range(line_02_dict, "02A02", (33, 53))
-        self._add_train_and_type_in_sn_range(line_02_dict, "02A03", (54, 69))
-        self._add_train_and_type_in_sn_range(line_02_dict, "02A04", (70, 85))
-        train_vs_type_table[2] = line_02_dict
+        self._add_train_and_type_in_sn_range(2, "02A01", (1, 16))
+        self._add_train_and_type_in_sn_range(2, "02A02", (33, 53))
+        self._add_train_and_type_in_sn_range(2, "02A03", (54, 69))
+        self._add_train_and_type_in_sn_range(2, "02A04", (70, 85))
+        self._add_train_and_type_in_sn_range(2, "02A05", (86, 116))
         # Line 03
-        line_03_dict = dict()
-        self._add_train_and_type_in_sn_range(line_03_dict, "03A01", (1, 28))
-        self._add_train_and_type_in_sn_range(line_03_dict, "03A02&04A02", (29, 42))
-        train_vs_type_table[3] = line_03_dict
+        self._add_train_and_type_in_sn_range(3, "03A01", (1, 28))
+        self._add_train_and_type_in_sn_range(3, "03A02&04A02", (29, 36))
+        #   Train 37-49 is borrowed from Line 04 and patched to 03xxx
+        #   Change these trains to 04xxx when they are returned back
+        #   and consider adding notes to train records when they are added
+        self._add_train_and_type_in_sn_range(3, "03A02&04A02", (37, 49))
         # Line 04
-        line_04_dict = dict()
-        self._add_train_and_type_in_sn_range(line_04_dict, "04A01", (1, 28))
-        self._add_train_and_type_in_sn_range(line_04_dict, "03A02&04A02", (29, 44))
-        train_vs_type_table[4] = line_04_dict
+        self._add_train_and_type_in_sn_range(4, "04A01", (1, 2))  # Siemens
+        self._add_train_and_type_in_sn_range(4, "04A01", (3, 28))  # 南车株洲
+        self._add_train_and_type_in_sn_range(4, "03A02&04A02", (29, 29))  # 中车长春
+        self._add_train_and_type_in_sn_range(4, "03A02&04A02", (30, 36))  # Alstom上海
+        self._add_train_and_type_in_sn_range(4, "03A02&04A02", (50, 55))  # Alstom上海
         # Line 05
-        line_05_dict = dict()
-        self._add_train_and_type_in_sn_range(line_05_dict, "05C01", (1, 17))
-        train_vs_type_table[5] = line_05_dict
+        self._add_train_and_type_in_sn_range(5, "05C01", (1, 13))
+        self._add_train_and_type_in_sn_range(5, "05C01", (15, 18))
+        self._add_train_and_type_in_sn_range(5, "05C02", (19, 51))
         # Line 06
-        line_06_dict = dict()
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C01", (1, 3))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C01", (5, 13))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C01", (15, 23))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C02", (25, 33))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C02-01", (35, 36))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C03", (37, 43))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C03", (45, 53))
-        self._add_train_and_type_in_sn_range(line_06_dict, "06C03", (55, 56))
-        train_vs_type_table[6] = line_06_dict
+        self._add_train_and_type_in_sn_range(6, "06C01", (1, 3))
+        self._add_train_and_type_in_sn_range(6, "06C01", (5, 13))
+        self._add_train_and_type_in_sn_range(6, "06C01", (15, 23))
+        self._add_train_and_type_in_sn_range(6, "06C02", (25, 33))
+        self._add_train_and_type_in_sn_range(6, "06C02", (35, 36))
+        self._add_train_and_type_in_sn_range(6, "06C03", (37, 43))
+        self._add_train_and_type_in_sn_range(6, "06C03", (45, 53))
+        self._add_train_and_type_in_sn_range(6, "06C03", (55, 56))
         # Line 07
-        line_07_dict = dict()
-        self._add_train_and_type_in_sn_range(line_07_dict, "07A01", (1, 42))
-        train_vs_type_table[7] = line_07_dict
+        self._add_train_and_type_in_sn_range(7, "07A01", (1, 42))
+        self._add_train_and_type_in_sn_range(7, "07A02", (43, 72))
         # Line 08
-        line_08_dict = dict()
-        self._add_train_and_type_in_sn_range(line_08_dict, "08C01", (1, 28))
-        self._add_train_and_type_in_sn_range(line_08_dict, "08C02", (29, 45))
-        self._add_train_and_type_in_sn_range(line_08_dict, "08C03", (46, 66))
-        train_vs_type_table[8] = line_08_dict
+        self._add_train_and_type_in_sn_range(8, "08C01", (1, 28))
+        self._add_train_and_type_in_sn_range(8, "08C02", (29, 45))
+        self._add_train_and_type_in_sn_range(8, "08C03", (46, 66))
         # Line 09
-        line_09_dict = dict()
-        self._add_train_and_type_in_sn_range(line_09_dict, "09A01", (1, 10))
-        self._add_train_and_type_in_sn_range(line_09_dict, "09A02", (11, 51))
-        self._add_train_and_type_in_sn_range(line_09_dict, "09A03", (54, 89))
-        train_vs_type_table[9] = line_09_dict
+        self._add_train_and_type_in_sn_range(9, "09A01", (1, 10))
+        self._add_train_and_type_in_sn_range(9, "09A02", (11, 51))
+        self._add_train_and_type_in_sn_range(9, "09A03", (54, 89))
         # Line 10
-        line_10_dict = dict()
-        self._add_train_and_type_in_sn_range(line_10_dict, "10A01", (1, 41))
-        train_vs_type_table[10] = line_10_dict
+        self._add_train_and_type_in_sn_range(10, "10A01", (1, 41))
+        self._add_train_and_type_in_sn_range(10, "10A02", (42, 67))
         # Line 11
-        line_11_dict = dict()
-        self._add_train_and_type_in_sn_range(line_11_dict, "11A01", (1, 66))
-        self._add_train_and_type_in_sn_range(line_11_dict, "11A02", (67, 72))
-        self._add_train_and_type_in_sn_range(line_11_dict, "11A03", (73, 82))
-        train_vs_type_table[11] = line_11_dict
+        self._add_train_and_type_in_sn_range(11, "11A01", (1, 66))
+        self._add_train_and_type_in_sn_range(11, "11A02", (67, 72))
+        self._add_train_and_type_in_sn_range(11, "11A03", (73, 82))
         # Line 12
-        line_12_dict = dict()
-        self._add_train_and_type_in_sn_range(line_12_dict, "12A01", (1, 41))
-        self._add_train_and_type_in_sn_range(line_12_dict, "12A02", (42, 56))
-        train_vs_type_table[12] = line_12_dict
+        self._add_train_and_type_in_sn_range(12, "12A01", (1, 41))
+        self._add_train_and_type_in_sn_range(12, "12A02", (42, 56))
         # Line 13
-        line_13_dict = dict()
-        self._add_train_and_type_in_sn_range(line_13_dict, "13A01", (1, 24))
-        self._add_train_and_type_in_sn_range(line_13_dict, "13A02", (25, 62))
-        train_vs_type_table[13] = line_13_dict
+        self._add_train_and_type_in_sn_range(13, "13A01", (1, 24))
+        self._add_train_and_type_in_sn_range(13, "13A02", (25, 62))
         # Line 16
-        line_16_dict = dict()
-        self._add_train_and_type_in_sn_range(line_16_dict, "16A01", (1, 46))
-        train_vs_type_table[16] = line_16_dict
+        self._add_train_and_type_in_sn_range(16, "16A01", (1, 46))
         # Line 17
-        line_17_dict = dict()
-        self._add_train_and_type_in_sn_range(line_17_dict, "17A01", (1, 5))
-        self._add_train_and_type_in_sn_range(line_17_dict, "17A01", (6, 28))
-        train_vs_type_table[17] = line_17_dict
-        return train_vs_type_table
+        self._add_train_and_type_in_sn_range(17, "17A01", (1, 5))
+        self._add_train_and_type_in_sn_range(17, "17A01", (6, 28))
+
+        train_vs_type_df = pd.DataFrame.from_dict(data={"train": self.train_line_type_list[0],
+                                                        "line": self.train_line_type_list[1],
+                                                        "type": self.train_line_type_list[2]})
+        train_vs_type_df.index = train_vs_type_df["train"]
+        return train_vs_type_df
 
 
 get_public_data = singleton(ShmPublicData)
@@ -126,9 +120,14 @@ class ShmPublicDataApp(object):
     def __init__(self):
         self.public_data: ShmPublicData = get_public_data()
 
-    def get_type_of_train(self, line, seq):
+    def get_type_of_train(self, train_sn):
         query_table = self.public_data.get_train_vs_type_table()
-        return query_table[line][seq]
+        return query_table.loc[train_sn, "type"]
+
+    def get_train_type_list(self):
+        train_table = self.public_data.get_train_vs_type_table()
+        train_type_list = train_table.groupby(by="type")["train"].count()
+        return train_type_list
 
     @staticmethod
     def get_train_sn(line: int, seq: int):
