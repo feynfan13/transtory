@@ -147,8 +147,27 @@ class ShmTrainStats(object):
                 fout.write("\n")
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
 
+    def generate_unmet_train_str(self):
+        train_set = set()
+        for train_tp in self.session.query(Train.sn).all():
+            train = train_tp[0]
+            train_set.add(train)
+        train_df = self.data_app.get_train_df()
+        line_list = self.data_app.get_line_list()
+        output_str = ""
+        for line in line_list:
+            output_str += "Line {:02d}: ".format(line)
+            train_of_line = train_df[train_df["line"] == line]
+            for _, sr_train in train_of_line.iterrows():
+                if sr_train["train"] not in train_set:
+                    _, train_seq = self.data_app.get_line_and_seq_from_train_sn(sr_train["train"])
+                    output_str += "{:d}, ".format(train_seq)
+            output_str += "\n"
+        return output_str
+
     def save_all_stats(self):
         self.validate_train_type()
         self.save_train_list_csv()
         self.save_train_type_list_csv()
         # self.save_line_list_csv()
+        print(self.generate_unmet_train_str())

@@ -129,6 +129,14 @@ class ShmPublicDataApp(object):
         train_type_list = train_table.groupby(by="type")["train"].count()
         return train_type_list
 
+    def get_train_df(self):
+        return self.public_data.train_vs_type
+
+    def get_line_list(self):
+        train_table = self.public_data.get_train_vs_type_table()
+        line_list = train_table["line"].unique()
+        return line_list
+
     @staticmethod
     def get_train_sn(line: int, seq: int):
         """Get train sn from line and number in line
