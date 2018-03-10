@@ -110,6 +110,11 @@ class DateTimeHelper(object):
         hours, minutes = divmod(atime, 60)
         return "{:02d}:{:02d}".format(hours, minutes)
 
+    @staticmethod
+    def get_time_from_str(time_str):
+        hour, minute = time_str.split(":")
+        return time(int(hour), int(minute))
+
     def get_time_str(self, atime: time):
         return atime.strftime(self.time_str_format)
 

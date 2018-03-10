@@ -34,11 +34,11 @@ class CrhElementStats(object):
         """
         for val in val_list:
             if val is None:
-                fout.write("||\t")
+                fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|\t".format(val))
+                fout.write("|{:d}|,".format(val))
             elif isinstance(val, str):
-                fout.write("|{:s}|\t".format(val))
+                fout.write("{:s},".format(val))
             else:
                 raise Exception("Unsupported data type in csv writer.")
 
@@ -83,8 +83,9 @@ class CrhElementStats(object):
     def save_train_list_csv(self):
         logger.info("Begin saving all trains.")
         start_time = time.clock()
-        with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in self.train_fields]
+        with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write("{:s},".format(x)) for x in self.train_fields]
             fout.write("\n")
             for result in self._yield_train_list_entries():
                 self._write_lists_to_csv(fout, result)
@@ -124,8 +125,9 @@ class CrhElementStats(object):
     def save_line_list_csv(self):
         logger.info("Begin saving all lines.")
         start_time = time.clock()
-        with open(self._get_stats_full_path("lines.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in self.line_fields]
+        with open(self._get_stats_full_path("lines.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write("{:s},".format(x)) for x in self.line_fields]
             fout.write("\n")
             for result in self._yield_line_list_entries():
                 self._write_lists_to_csv(fout, result)

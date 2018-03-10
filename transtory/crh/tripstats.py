@@ -30,11 +30,11 @@ class CrhTripStats(object):
         """
         for val in val_list:
             if val is None:
-                fout.write("||\t")
+                fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|\t".format(val))
+                fout.write("|{:d}|,".format(val))
             elif isinstance(val, str):
-                fout.write("|{:s}|\t".format(val))
+                fout.write("|{:s}|,".format(val))
             else:
                 raise Exception("Unsupported data type in csv writer.")
 
@@ -108,8 +108,9 @@ class CrhTripStats(object):
     def save_route_list_csv(self):
         logger.info("Begin saving all routes.")
         start_time = time.clock()
-        with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in self.route_fields]
+        with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write("{:s},".format(x)) for x in self.route_fields]
             fout.write("\n")
             for result in self._yield_route_list_entries():
                 self._write_lists_to_csv(fout, result)

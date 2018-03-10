@@ -51,8 +51,9 @@ class FlightPlaneStats(object):
     def save_plane_list_csv(self):
         logger.info("Begin saving all planes.")
         start_time = time.clock()
-        with open(self._get_stats_full_path("planes.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in self.plane_fields]
+        with open(self._get_stats_full_path("planes.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write("{:s},".format(x)) for x in self.plane_fields]
             fout.write("\n")
             for result in self._yield_plane_list_entries():
                 self._write_lists_to_csv(fout, result)

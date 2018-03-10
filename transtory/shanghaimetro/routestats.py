@@ -27,11 +27,11 @@ class ShmTripStats(object):
         """
         for val in val_list:
             if val is None:
-                fout.write("||\t")
+                fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|\t".format(val))
+                fout.write("|{:d}|,".format(val))
             elif isinstance(val, str):
-                fout.write("|{:s}|\t".format(val))
+                fout.write("|{:s}|,".format(val))
             else:
                 raise Exception("Unsupported data type in csv writer.")
 
@@ -52,8 +52,9 @@ class ShmTripStats(object):
         logger.info("Begin saving all routes.")
         start_time = time.clock()
         columns, query = self._def_route_list_query()
-        with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf16") as fout:
-            [fout.write("|{:s}|\t".format(x)) for x in columns]
+        with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write("{:s},".format(x)) for x in columns]
             fout.write("\n")
             from_time_index, to_time_index = columns.index("from_time"), columns.index("to_time")
             for route in query.all():

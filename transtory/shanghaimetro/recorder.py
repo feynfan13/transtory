@@ -11,8 +11,9 @@ from .dbops import InputRouteEntry
 
 class XlsxLogEntry(object):
     def __init__(self, sr_trip):
+        dt_helper: DateTimeHelper = get_datetime_helper()
         self.task = self._strip_if_not_none(sr_trip["Task"])
-        self.date = sr_trip["Date"].to_pydatetime()
+        self.date = dt_helper.get_date_from_str(self._strip_if_not_none(sr_trip["Date"]))
         self.line = int(sr_trip["Line"])
         train_sn = self._strip_if_not_none(sr_trip["Train SN"])
         # To accomodate both the old 4-digit format and new 5-digit format
@@ -22,12 +23,10 @@ class XlsxLogEntry(object):
         self.train_sn = train_sn
         assert(not pd.isnull(sr_trip["Departure Station"]))
         self.departure_station = self._strip_if_not_none(sr_trip["Departure Station"])
-        assert(isinstance(sr_trip["Departure Time"], time))
-        self.departure_time = sr_trip["Departure Time"]
+        self.departure_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip["Departure Time"]))
         assert(not pd.isnull(sr_trip["Arrival Station"]))
         self.arrival_station = self._strip_if_not_none(sr_trip["Arrival Station"])
-        assert (isinstance(sr_trip["Arrival Time"], time))
-        self.arrival_time = sr_trip["Arrival Time"]
+        self.arrival_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip["Arrival Time"]))
         self.trip_note = self._strip_if_not_none(sr_trip["Trip Note"])
 
     def make_route_entry(self):
@@ -45,7 +44,7 @@ class XlsxLogEntry(object):
 
     @staticmethod
     def _strip_if_not_none(val: str):
-        return None if pd.isnull(val) else val.strip()
+        return None if pd.isnull(val) else val.strip().strip("|")
 
     @staticmethod
     def _value_if_not_none(val):

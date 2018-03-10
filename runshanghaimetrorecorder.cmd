@@ -1,2 +1,2 @@
-python .\runshanghaimetro.py --recorder
+python .\runshanghaimetro.py --record
 cmd /k
