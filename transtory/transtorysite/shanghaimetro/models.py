@@ -1,5 +1,10 @@
 from django.db import models
 
+from transtory.common import dt_wrapper
+
+
+shanghaimetro_city = "Shanghai"
+
 
 class Task(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
@@ -12,7 +17,7 @@ class Task(models.Model):
 
 class TrainType(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
-    name = models.TextField(blank=True, null=True)
+    name = models.TextField(blank=True, null=True, verbose_name="Train Type")
     maker = models.TextField(blank=True, null=True)
     display_name = models.TextField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
@@ -47,7 +52,7 @@ class Station(models.Model):
 
 class Train(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
-    sn = models.TextField(blank=True, null=True)
+    sn = models.TextField(blank=True, null=True, verbose_name="Train SN")
     # line_id = models.IntegerField(blank=True, null=True)
     line = models.ForeignKey(Line, models.DO_NOTHING, blank=True, null=True)
     # train_type_id = models.IntegerField(blank=True, null=True)
@@ -71,6 +76,10 @@ class Arrival(models.Model):
         managed = False
         db_table = 'arrivals'
 
+    @property
+    def local_time(self):
+        return dt_wrapper.get_local_datetime_str_from_utc_datetime_str(self.time, shanghaimetro_city)
+
 
 class Departure(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
@@ -84,6 +93,10 @@ class Departure(models.Model):
     class Meta:
         managed = False
         db_table = 'departures'
+
+    @property
+    def local_time(self):
+        return dt_wrapper.get_local_datetime_str_from_utc_datetime_str(self.time, shanghaimetro_city)
 
 
 class Route(models.Model):

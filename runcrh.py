@@ -26,7 +26,6 @@ if args.testmode:
     switch_to_test_mode()
 
 if args.record:
-    pass
     recorder = CrhRecorder()
     recorder.record_trips_from_json()
     save_all_stats()

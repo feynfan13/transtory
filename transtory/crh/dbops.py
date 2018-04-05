@@ -92,7 +92,7 @@ class CrhDbOps(DatabaseOpsBase):
         station_orm = Station()
         station_orm.chn_name = chn_name
         self.session.add(station_orm)
-        logger.info("Added station ", station_orm)
+        logger.info("Added station ", station_orm.chn_name)
         return station_orm
 
     def get_or_add_station(self, chn_name):

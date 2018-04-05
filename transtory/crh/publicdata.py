@@ -125,6 +125,14 @@ class CrhPublicData(object):
                 ET.SubElement(level2, "level3", name="CRH5A CJ1头型")
             elif name == "CRH5G":
                 ET.SubElement(level2, "level3", name="CRH5G")
+            elif name == "CRH6A":
+                ET.SubElement(level2, "level3", name="CRH6A ATO")
+                ET.SubElement(level2, "level3", name="CRH6A")
+                ET.SubElement(level2, "level3", name="CRH6A 三门版")
+                ET.SubElement(level2, "level3", name="CRH6A-A")
+            elif name == "CRH6F":
+                ET.SubElement(level2, "level3", name="CRH6F")
+                ET.SubElement(level2, "level3", name="CRH6F-A")
             elif name == "CRH380A":
                 ET.SubElement(level2, "level3", name="CRH380A")
                 ET.SubElement(level2, "level3", name="CRH380A 统型")
@@ -147,8 +155,10 @@ class CrhPublicData(object):
                 ET.SubElement(level2, "level3", name="CRH380D")
                 ET.SubElement(level2, "level3", name="CRH380D 统型")
             elif name == "CR400AF":
+                ET.SubElement(level2, "level3", name="CR400AF 样车")
                 ET.SubElement(level2, "level3", name="CR400AF")
             elif name == "CR400BF":
+                ET.SubElement(level2, "level3", name="CR400BF 样车")
                 ET.SubElement(level2, "level3", name="CR400BF")
 
         xml_tree = ET.ElementTree(root)
@@ -174,7 +184,7 @@ class CrhPublicData(object):
             elif name == "CRH1A 250":
                 sn_list = get_num_set_from_multiple_ranges([(1081, 1168)])
             elif name == "CRH1A-A":
-                sn_list = get_num_set_from_multiple_ranges([(1169, 1191), (1234, 1237)])
+                sn_list = get_num_set_from_multiple_ranges([(1169, 1228), (1234, 1260)])
             elif name == "CRH1B":
                 sn_list = get_num_set_from_multiple_ranges([(1041, 1045), (1047, 1060)])
             elif name == "CRH1B 1E头型":
@@ -214,6 +224,18 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(5201, 5205)])
             elif name == "CRH5G":
                 sn_list = get_num_set_from_multiple_ranges([(5141, 5200), (5206, 5215)])
+            elif name == "CRH6A ATO":
+                sn_list = get_num_set_from_multiple_ranges([(401, 405), (407, 408)])
+            elif name == "CRH6A":
+                sn_list = get_num_set_from_multiple_ranges([(406, 406), (414, 417), (422, 429), (601, 622)])
+            elif name == "CRH6A 三门版":
+                sn_list = get_num_set_from_multiple_ranges([(420, 421), (436, 439), (623, 623)])
+            elif name == "CRH6A-A":
+                sn_list = get_num_set_from_multiple_ranges([(2, 2)])
+            elif name == "CRH6F":
+                sn_list = get_num_set_from_multiple_ranges([(409, 413), (418, 419), (430, 435)])
+            elif name == "CRH6F-A":
+                sn_list = get_num_set_from_multiple_ranges([(5141, 5200), (5206, 5215)])
             elif name == "CRH380A":
                 sn_list = get_num_set_from_multiple_ranges([(2501, 2537), (2539, 2540)])
             elif name == "CRH380A 统型":
@@ -244,8 +266,16 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(1501, 1510)])
             elif name == "CRH380D 统型":
                 sn_list = get_num_set_from_multiple_ranges([(1511, 1585)])
+            elif name == 'CR400AF 样车':
+                sn_list = get_num_set_from_multiple_ranges([(207, 208)])
+            elif name == 'CR400AF':
+                sn_list = get_num_set_from_multiple_ranges([(2001, 2017), (2021, 2064)])
+            elif name == 'CR400BF 样车':
+                sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
+            elif name == 'CR400BF':
+                sn_list = get_num_set_from_multiple_ranges([(3001, 3023)])
             else:
-                sn_list = []
+                raise ValueError('Invalid train type name.')
             type_train_map[name] = sn_list
         self.type_vs_train = type_train_map
         return type_train_map

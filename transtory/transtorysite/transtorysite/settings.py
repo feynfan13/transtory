@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'crh.apps.CrhConfig',
     'flight.apps.FlightConfig',
     'django_tables2',
+    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
