@@ -17,12 +17,16 @@ class CrhTripStats(object):
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
         self.route_fields = ["task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note",
-                             "seat_type", "seat", "from_gate", "from_platform", "to_platform", "to_gate",
+                             'ticket', "seat_type", "seat", "from_gate", "from_platform", "to_platform", "to_gate",
                              "from_time_plan", "to_time_plan", "from_note", "to_note", "train_origin", "train_final",
                              "price", "ticket_short_sn", "ticket_long_sn", "ticket_sold_by", "ticket_sold_type"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
+
+    @staticmethod
+    def _empty_str_for_none(astr):
+        return '??' if astr is None else astr
 
     @staticmethod
     def _write_lists_to_csv(fout, val_list):
@@ -75,8 +79,17 @@ class CrhTripStats(object):
                 raise Exception("More than 2 train service entry for one route.")
             results.append(trainset_str)
             results.append(route.note)
-            results.append(trip.seat_type)
-            results.append(trip.seat_number)
+            # Ticket part I
+            ticket_seg = trip.tickets[0].start.station.chn_name
+            seat_type, seat_number = '', ''
+            for ticket in trip.tickets:
+                ticket_seg += ('-'+ticket.end.station.chn_name)
+                seat_type += (self._empty_str_for_none(ticket.seat_type) + '; ')
+                seat_number += (self._empty_str_for_none(ticket.seat_number) + '; ')
+            results.append(ticket_seg)
+            results.append(seat_type[0:-2])
+            results.append(seat_number[0:-2])
+            # Departure & arrival
             results.append(route.departure.gate)
             results.append(route.departure.platform)
             results.append(route.arrival.platform)
@@ -88,21 +101,22 @@ class CrhTripStats(object):
             if trip.line is None:
                 results.append(None)
                 results.append(None)
-                results.append(None)
             else:
                 results.append(trip.line.start.station.chn_name)
                 results.append(trip.line.final.station.chn_name)
-                results.append(trip.price)
-            if trip.ticket is None:
-                results.append(None)
-                results.append(None)
-                results.append(None)
-                results.append(None)
-            else:
-                results.append(trip.ticket.short_sn)
-                results.append(trip.ticket.long_sn)
-                results.append(trip.ticket.sold_by)
-                results.append(trip.ticket.sold_type)
+            # Ticket part II
+            short_sn, long_sn, sold_by, sold_type, price = '', '', '', '', ''
+            for ticket in trip.tickets:
+                price += (self._empty_str_for_none(ticket.price) + '+')
+                short_sn += (self._empty_str_for_none(ticket.short_sn) + '; ')
+                long_sn += (self._empty_str_for_none(ticket.long_sn) + '; ')
+                sold_by += (self._empty_str_for_none(ticket.sold_by) + '; ')
+                sold_type += (self._empty_str_for_none(ticket.sold_type) + '; ')
+            results.append(price[0:-1])
+            results.append(short_sn[0:-2])
+            results.append(long_sn[0:-2])
+            results.append(sold_by[0:-2])
+            results.append(sold_type[0:-2])
             yield results
 
     def save_route_list_csv(self):

@@ -6,7 +6,8 @@ from .configs import logger
 from .configs import CrhSysConfigs, get_configs
 
 from .publicdata import CrhPublicDataApp, get_public_data_app
-from .dbdefs import CrhDbModel, Task, Trip, Route, Departure, Arrival, Ticket
+from .dbdefs import CrhDbModel, Task, Trip, Route, Departure, Arrival
+from .dbdefs import Ticket, TicketStart, TicketEnd
 from .dbdefs import Line, LineStart, LineFinal, Station
 from .dbdefs import Train, TrainType, TrainService
 
@@ -19,17 +20,29 @@ class InputTripEntry(object):
         self.train_num_final = None
         self.ticket_short_sn = None
         self.ticket_long_sn = None
-        self.price = None
+        self.note = None
+        self.tickets = list()
+        self.routes = list()
+
+
+class InputTicketEntry(object):
+    def __init__(self):
+        self.ticket_type = None
+        self.ticket_short_sn = None
+        self.ticket_long_sn = None
         self.ticket_sold_by = None
         self.ticket_sold_type = None
+        self.price = None
         self.seat_type = None
         self.seat_num = None
+        self.start = None
+        self.end = None
         self.note = None
-        self.routes = list()
 
 
 class InputRouteEntry(object):
     def __int__(self):
+        self.tickets = list()
         self.seat_train = None
         self.join_train = None
         self.join_type = None
@@ -92,7 +105,7 @@ class CrhDbOps(DatabaseOpsBase):
         station_orm = Station()
         station_orm.chn_name = chn_name
         self.session.add(station_orm)
-        logger.info("Added station ", station_orm.chn_name)
+        logger.info("Added station {:s}".format(chn_name))
         return station_orm
 
     def get_or_add_station(self, chn_name):
@@ -198,32 +211,44 @@ class CrhDbOps(DatabaseOpsBase):
         self.session.add(route_orm)
         return route_orm
 
-    @staticmethod
-    def _is_valid_ticket(trip_entry: InputTripEntry):
-        is_invalid = True
-        is_invalid = is_invalid and (trip_entry.ticket_short_sn is None)
-        is_invalid = is_invalid and (trip_entry.ticket_long_sn is None)
-        is_invalid = is_invalid and (trip_entry.ticket_sold_type is None)
-        is_invalid = is_invalid and (trip_entry.ticket_sold_by is None)
-        return not is_invalid
+    # @staticmethod
+    # def _is_valid_ticket(trip_entry: InputTripEntry):
+    #     is_invalid = True
+    #     is_invalid = is_invalid and (trip_entry.ticket_short_sn is None)
+    #     is_invalid = is_invalid and (trip_entry.ticket_long_sn is None)
+    #     is_invalid = is_invalid and (trip_entry.ticket_sold_type is None)
+    #     is_invalid = is_invalid and (trip_entry.ticket_sold_by is None)
+    #     return not is_invalid
+
+    def _add_ticket(self, ticket_entry: InputTicketEntry, trip_orm: Trip):
+        ticket_orm = Ticket()
+        ticket_orm.ticket_type = ticket_entry.ticket_type
+        ticket_orm.short_sn = ticket_entry.ticket_short_sn
+        ticket_orm.long_sn = ticket_entry.ticket_long_sn
+        ticket_orm.sold_by = ticket_entry.ticket_sold_by
+        ticket_orm.sold_type = ticket_entry.ticket_sold_type
+        ticket_orm.price = ticket_entry.price
+        ticket_orm.seat_type = ticket_entry.seat_type
+        ticket_orm.seat_number = ticket_entry.seat_num
+        start_orm = TicketStart()
+        start_orm.station = self.get_or_add_station(ticket_entry.start)
+        ticket_orm.start = start_orm
+        end_orm = TicketEnd()
+        end_orm.station = self.get_or_add_station(ticket_entry.end)
+        ticket_orm.end = end_orm
+        ticket_orm.note = ticket_entry.note
+        ticket_orm.trip = trip_orm
+        self.session.add(ticket_orm)
+        return ticket_orm
 
     def _add_trip(self, trip_entry: InputTripEntry):
         trip_orm = Trip()
         trip_orm.task = self.get_or_add_task(trip_entry.task)
         trip_orm.line = self.get_or_add_line(trip_entry.train_num, trip_entry.train_num_start,
                                              trip_entry.train_num_final)
-        trip_orm.seat_type = trip_entry.seat_type
-        trip_orm.seat_number = trip_entry.seat_num
-        trip_orm.price = trip_entry.price
         trip_orm.note = trip_entry.note
-        if self._is_valid_ticket(trip_entry):
-            ticket_orm = Ticket()
-            ticket_orm.short_sn = trip_entry.ticket_short_sn
-            ticket_orm.long_sn = trip_entry.ticket_long_sn
-            ticket_orm.sold_type = trip_entry.ticket_sold_type
-            ticket_orm.sold_by = trip_entry.ticket_sold_by
-            ticket_orm.trip = trip_orm
-            self.session.add(ticket_orm)
+        for ticket_entry in trip_entry.tickets:
+            self._add_ticket(ticket_entry, trip_orm)
         for route_entry in trip_entry.routes:
             self._add_route(route_entry, trip_orm)
         return trip_orm

@@ -80,6 +80,26 @@ class Task(CrhDbModel):
     content = Column(Text)
 
 
+class TicketStart(CrhDbModel):
+    """TicketStart table: Action
+    Start station on a ticket
+    """
+    __tablename__ = 'ticket_starts'
+    id = Column(Integer, primary_key=True)
+    station_id = Column(Integer, ForeignKey('stations.id'))
+    station = relationship('Station', backref='as_ticket_starts')
+
+
+class TicketEnd(CrhDbModel):
+    """TicketEnd table: Action
+    End station on a ticket
+    """
+    __tablename__ = 'ticket_ends'
+    id = Column(Integer, primary_key=True)
+    station_id = Column(Integer, ForeignKey('stations.id'))
+    station = relationship('Station', backref='as_ticket_ends')
+
+
 class Ticket(CrhDbModel):
     """Ticket table: Object
     Ticket means the paper you got from 12306.
@@ -87,11 +107,21 @@ class Ticket(CrhDbModel):
     """
     __tablename__ = "tickets"
     id = Column(Integer, primary_key=True)
+    ticket_type = Column()
     short_sn = Column(Text)
     long_sn = Column(Text)
     sold_by = Column(Text)
     sold_type = Column(Text)
-    trip = relationship("Trip", uselist=False, backref="ticket")
+    price = Column(Text)
+    seat_type = Column(Text)
+    seat_number = Column(Text)
+    note = Column(Text)
+    ticket_start_id = Column(Integer, ForeignKey('ticket_starts.id'))
+    ticket_end_id = Column(Integer, ForeignKey('ticket_ends.id'))
+    trip_id = Column(Integer, ForeignKey('trips.id'))
+    start = relationship('TicketStart', backref='ticket')
+    end = relationship('TicketEnd', backref='ticket')
+    trip = relationship('Trip', uselist=False, backref='tickets')
 
 
 class Trip(CrhDbModel):
@@ -104,10 +134,10 @@ class Trip(CrhDbModel):
     line_id = Column(Integer, ForeignKey("lines.id"))
     task = relationship("Task", backref="trips")
     line = relationship("Line", backref="trips")
-    seat_type = Column(Text)
-    seat_number = Column(Text)
-    price = Column(Text)
-    ticket_id = Column(Integer, ForeignKey("tickets.id"))
+    # seat_type = Column(Text)
+    # seat_number = Column(Text)
+    # price = Column(Text)
+    # ticket_id = Column(Integer, ForeignKey("tickets.id"))
     note = Column(Text)
 
 

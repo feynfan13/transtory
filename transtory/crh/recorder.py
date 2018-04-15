@@ -9,7 +9,7 @@ from transtory.common import DateTimeHelper, FileSystemHelper
 from .configs import get_configs, CrhSysConfigs
 from .configs import get_datetime_helper
 from .dbops import get_db_ops, CrhDbOps
-from .dbops import InputTripEntry, InputRouteEntry
+from .dbops import InputTripEntry, InputRouteEntry, InputTicketEntry
 
 
 class CrhRecorder(object):
@@ -51,22 +51,34 @@ class CrhRecorder(object):
 
     def _make_input_trip_entry(self, log_struct):
         trip_entry = InputTripEntry()
+        assert (log_struct['Version'] == 1)
         trip_entry.task = log_struct["Task"]
         trip_entry.train_num = log_struct["Train Number"]
         trip_entry.train_num_start = log_struct["Origin"]
         trip_entry.train_num_final = log_struct["Terminal"]
-        trip_entry.ticket_short_sn = self._assign_none_fields(log_struct["Ticket Number"])
-        trip_entry.ticket_long_sn = self._assign_none_fields(log_struct["Ticket SN"])
-        trip_entry.ticket_sold_by = self._assign_none_fields(log_struct["Ticket Sold By"])
-        trip_entry.ticket_sold_type = self._assign_none_fields(log_struct["Ticket Sold Type"])
-        trip_entry.price = log_struct["Ticket Price"]
-        trip_entry.seat_type = log_struct["Seat Type"]
-        trip_entry.seat_num = log_struct["Seat Number"]
         trip_entry.note = log_struct["Note"]
+        trip_entry.tickets = list()
+        for ticket in log_struct['Tickets']:
+            trip_entry.tickets.append(self._make_input_ticket_entry(ticket))
         trip_entry.routes = list()
-        for route in log_struct["Segments"]:
+        for route in log_struct['Segments']:
             trip_entry.routes.append(self._make_input_route_entry(route))
         return trip_entry
+
+    def _make_input_ticket_entry(self, log_struct):
+        ticket_entry = InputTicketEntry()
+        ticket_entry.ticket_type = log_struct['Ticket type']
+        ticket_entry.ticket_short_sn = log_struct['Ticket Number']
+        ticket_entry.ticket_long_sn = log_struct['Ticket SN']
+        ticket_entry.ticket_sold_by = log_struct['Ticket Sold By']
+        ticket_entry.ticket_sold_type = log_struct['Ticket Sold Type']
+        ticket_entry.price = log_struct['Ticket Price']
+        ticket_entry.seat_type = log_struct['Seat Type']
+        ticket_entry.seat_num = log_struct['Seat Number']
+        ticket_entry.start = log_struct['Ticket start']
+        ticket_entry.end = log_struct['Ticket end']
+        ticket_entry.note = log_struct['Note']
+        return ticket_entry
 
     def _make_input_route_entry(self, log_struct):
         route_entry = InputRouteEntry()
@@ -95,7 +107,7 @@ class CrhRecorder(object):
 
     def record_trips_from_json(self):
         fname_pattern = os.sep.join([self.configs.log_folder, "*.json"])
-        log_files = [fname for fname in glob.glob(fname_pattern) if "template.json" not in fname]
+        log_files = [fname for fname in glob.glob(fname_pattern) if "template" not in fname]
         log_archive = self.configs.log_archive_folder
         for log_file in log_files:
             with open(log_file, encoding="utf8") as fin:
