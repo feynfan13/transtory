@@ -1,6 +1,8 @@
 from .configs import switch_to_test_mode
 from .configs import logger
 
+from .publicdata import ShmPublicDataApp
+
 from .dbdefs import Route, Departure, Arrival
 from .dbdefs import Train
 

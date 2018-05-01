@@ -54,14 +54,13 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range(3, "03A01", (1, 28))
         self._add_train_and_type_in_sn_range(3, "03A02&04A02", (29, 36))
         #   Train 37-49 is borrowed from Line 04 and patched to 03xxx
-        #   Change these trains to 04xxx when they are returned back
-        #   and consider adding notes to train records when they are added
-        self._add_train_and_type_in_sn_range(3, "03A02&04A02", (37, 49))
+        #   We use 04xxx when registering the respective trips
         # Line 04
         self._add_train_and_type_in_sn_range(4, "04A01", (1, 2))  # Siemens
         self._add_train_and_type_in_sn_range(4, "04A01", (3, 28))  # 南车株洲
         self._add_train_and_type_in_sn_range(4, "03A02&04A02", (29, 29))  # 中车长春
         self._add_train_and_type_in_sn_range(4, "03A02&04A02", (30, 36))  # Alstom上海
+        self._add_train_and_type_in_sn_range(4, "03A02&04A02", (37, 49))  # Alstom上海
         self._add_train_and_type_in_sn_range(4, "03A02&04A02", (50, 55))  # Alstom上海
         # Line 05
         self._add_train_and_type_in_sn_range(5, "05C01", (1, 13))
@@ -106,9 +105,9 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range(17, "17A01", (1, 5))
         self._add_train_and_type_in_sn_range(17, "17A01", (6, 28))
 
-        train_vs_type_df = pd.DataFrame.from_dict(data={"train": self.train_line_type_list[0],
-                                                        "line": self.train_line_type_list[1],
-                                                        "type": self.train_line_type_list[2]})
+        train_vs_type_df = pd.DataFrame.from_dict(data={'train': self.train_line_type_list[0],
+                                                        'line': self.train_line_type_list[1],
+                                                        'type': self.train_line_type_list[2]})
         train_vs_type_df.index = train_vs_type_df["train"]
         return train_vs_type_df
 
@@ -117,8 +116,16 @@ get_public_data = singleton(ShmPublicData)
 
 
 class ShmPublicDataApp(object):
+    instance = None
+
     def __init__(self):
         self.public_data: ShmPublicData = get_public_data()
+
+    @classmethod
+    def get_instance(cls):
+        if cls.instance is None:
+            cls.instance = ShmPublicDataApp()
+        return cls.instance
 
     def get_type_of_train(self, train_sn):
         query_table = self.public_data.get_train_vs_type_table()
@@ -136,6 +143,10 @@ class ShmPublicDataApp(object):
         train_table = self.public_data.get_train_vs_type_table()
         line_list = train_table["line"].unique()
         return line_list
+
+    def get_trains_of_line(self, line_str):
+        train_df = self.public_data.get_train_vs_type_table()
+        return train_df[train_df['line'] == int(line_str)]
 
     @staticmethod
     def get_train_sn(line: int, seq: int):
