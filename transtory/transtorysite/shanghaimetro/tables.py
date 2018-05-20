@@ -25,6 +25,13 @@ class TrainTable(tables.Table):
     def render_row_number(self):
         return '%d' % (next(self.counter) + 1)
 
+    def render_sn(self, record, value, column):
+        if record['num_services'] == 0:
+            column.attrs = {'td': {'bgcolor': 'coral'}}
+        else:
+            column.attrs = {'td': {}}
+        return value
+
     def render_first_service(self, value):
         if value is None:
             return 'NA'
