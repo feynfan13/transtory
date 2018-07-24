@@ -25,6 +25,7 @@ class InputRouteEntry(object):
     def __init__(self):
         self.segment_seq = None
         self.segment_type = None
+        self.status = None
         self.flight = None
         self.cabin = None
         self.seat = None
@@ -72,7 +73,7 @@ class FlightDbOps(DatabaseOpsBase):
         self.data_app: FlightPublicDataApp = get_public_data_app()
         self.dt_helper: DateTimeHelper = get_datetime_helper()
         super(FlightDbOps, self).__init__(self.configs.db_path)
-        logger.info("Created CrhDbOps instance.")
+        logger.info("Created FlightDbOps instance.")
 
     def create_db_structure(self):
         """Create or validate database structure
@@ -222,6 +223,13 @@ class FlightDbOps(DatabaseOpsBase):
         self.session.add(leg_orm)
         return leg_orm
 
+    def get_route(self, route_entry: InputRouteEntry, trip_orm: Trip):
+        query = self.session.query(Route).filter(Route.trip_id == trip_orm.id, Route.seq == route_entry.segment_seq)
+        if query.count() == 0:
+            return None
+        else:
+            return query.one()
+
     def add_route(self, route_entry: InputRouteEntry, trip_orm: Trip):
         route_orm = Route()
         route_orm.seq = route_entry.segment_seq
@@ -237,18 +245,47 @@ class FlightDbOps(DatabaseOpsBase):
         self.session.add(route_orm)
         for leg in route_entry.legs:
             self.add_leg(leg, route_orm)
+        return route_orm
 
-    def add_trip(self, trip_entry: InputTripEntry, is_commit):
+    def get_or_add_route(self, route_entry: InputRouteEntry, trip_orm: Trip):
+        route_orm = self.get_route(route_entry, trip_orm)
+        if route_orm is None:
+            route_orm = self.add_route(route_entry, trip_orm)
+        return route_orm
+
+    def get_trip(self, trip_entry: InputTripEntry):
+        """Note: legacy trips may not have confirmation number; future trips should have it
+        """
+        query = self.session.query(Trip).filter_by(confirmation_number=trip_entry.confirmation_num)
+        if query.count() == 0:
+            return None
+        else:
+            return query.one()
+
+    def add_trip(self, trip_entry: InputTripEntry):
         trip_orm = Trip()
         trip_orm.confirmation_number = trip_entry.confirmation_num
         trip_orm.ticket_number = trip_entry.e_ticket_num
         trip_orm.price = trip_entry.price
         self.session.add(trip_orm)
-        for segments in trip_entry.segments:
-            self.add_route(segments, trip_orm)
+        return trip_orm
+
+    def get_or_add_trip(self, trip_entry: InputTripEntry, is_commit):
+        trip_orm = self.get_trip(trip_entry)
+        if trip_orm is None:
+            trip_orm = self.add_trip(trip_entry)
+        done_segments, total_segments = 0, 0
+        trip_done = True
+        for segment in trip_entry.segments:
+            if segment.status == 'Done':
+                self.get_or_add_route(segment, trip_orm)
+                done_segments += 1
+            total_segments += 1
+        if done_segments != total_segments:
+            trip_done = False
         if is_commit:
             self.session.commit()
-        return True
+        return trip_orm, trip_done
 
 
 get_db_ops = singleton(FlightDbOps)

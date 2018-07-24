@@ -27,13 +27,12 @@ class Plane(FlightDbModel):
         complexity is to be taken care of when it actually happens for the database
     """
     # TODO: handle the situation of the same plane with different tail numbers at different time points
+    #   This case should be handled when it happens
     __tablename__ = "planes"
     id = Column(Integer, primary_key=True)
     tail_number = Column(Text)
     msn = Column(Text)
     airline_id = Column(Integer, ForeignKey("airlines.id"))
-    # TODO: move the plane type to a separate table
-    type = Column(Text)
     model_id = Column(Integer, ForeignKey("plane_models.id"))
     nickname = Column(Text)
     airline = relationship("Airline", backref="planes")

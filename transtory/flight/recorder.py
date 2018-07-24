@@ -19,7 +19,8 @@ class FlightRecorder(object):
         self.dt_helper: DateTimeHelper = get_datetime_helper()
         self.fs_helper = FileSystemHelper()
 
-    def _change_input_time_str(self, time_str):
+    @staticmethod
+    def _change_input_time_str(time_str):
         return time_str[0:10] + " " + time_str[11:13] + ":" + time_str[13:15]
 
     def _make_input_leg_entry(self, log_struct):
@@ -54,6 +55,7 @@ class FlightRecorder(object):
         segment_entry = InputRouteEntry()
         segment_entry.segment_seq = log_struct["Segment Number"]
         segment_entry.segment_type = log_struct["Segment Type"]
+        segment_entry.status = log_struct["Status"]
         segment_entry.flight = log_struct["Flight Number"]
         segment_entry.cabin = log_struct["Cabin"]
         segment_entry.seat = log_struct["Seat"]
@@ -87,12 +89,12 @@ class FlightRecorder(object):
             with open(log_file, encoding="utf8") as fin:
                 log_struct = json.loads(jsmin.jsmin(fin.read()))
                 trip_entry = self._make_input_trip_entry(log_struct)
-                file_processed = self.db_ops.add_trip(trip_entry, is_commit)
-            if file_processed:
+                trip_orm, trip_done = self.db_ops.get_or_add_trip(trip_entry, is_commit)
+            if trip_done and is_commit:  # Move file if all segments are processed
                 fname = self.fs_helper.get_file_name(log_file)
                 dst_fpath = os.sep.join([log_archive, fname])
                 shutil.move(log_file, dst_fpath)
 
-    def update_trips_from_xmls(self):
-        # TODO: add update functionality for shanghaimetro recorder
+    def update_trips_from_json(self):
+        # TODO: add update functionality for flight recorder
         pass
