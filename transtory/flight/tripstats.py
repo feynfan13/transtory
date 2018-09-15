@@ -47,10 +47,14 @@ class FlightTripStats(object):
             departure, arrival = leg.departure, leg.arrival
             airport0, airport1 = departure.airport, arrival.airport
             pushback, gate_arrival = departure.pushback_time, arrival.gate_arrival_time
-            assert(pushback is not None and len(pushback) != 0)
-            assert(gate_arrival is not None and len(gate_arrival) != 0)
-            pushback = self.dbops.get_local_time_from_db_time(pushback, airport0.city)
-            gate_arrival = self.dbops.get_local_time_from_db_time(gate_arrival, airport1.city)
+            if pushback is not None and len(pushback) != 0:
+                pushback = self.dbops.get_local_time_from_db_time(pushback, airport0.city)
+            else:
+                pushback = ''
+            if gate_arrival is not None and len(gate_arrival) != 0:
+                gate_arrival = self.dbops.get_local_time_from_db_time(gate_arrival, airport1.city)
+            else:
+                gate_arrival = ''
             results.append(airport0.iata)
             results.append(pushback)
             results.append(airport1.iata)

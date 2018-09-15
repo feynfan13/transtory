@@ -214,7 +214,12 @@ class FlightDbOps(DatabaseOpsBase):
                          "gate_arrival_time": "gate_arrival_time_FA",
                          "planned_gate_arrival_time": "gate_arrival_time_planned_FA"}
         for orm_field, input_field in arrival_times.items():
-            db_time = self.get_db_time_from_local_time(getattr(leg_entry, input_field), airport_city)
+            local_time = getattr(leg_entry, input_field)
+            if len(local_time) != 0:
+                print(input_field, local_time)
+                db_time = self.get_db_time_from_local_time(local_time, airport_city)
+            else:
+                db_time = ''
             setattr(arrival_orm, orm_field, db_time)
         self.session.add(departure_orm)
         self.session.add(arrival_orm)

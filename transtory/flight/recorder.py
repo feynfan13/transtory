@@ -21,7 +21,10 @@ class FlightRecorder(object):
 
     @staticmethod
     def _change_input_time_str(time_str):
-        return time_str[0:10] + " " + time_str[11:13] + ":" + time_str[13:15]
+        if time_str != 'NA':
+            return time_str[0:10] + " " + time_str[11:13] + ":" + time_str[13:15]
+        else:
+            return ''
 
     def _make_input_leg_entry(self, log_struct):
         leg_entry = InputLegEntry()

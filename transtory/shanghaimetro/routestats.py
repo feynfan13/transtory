@@ -44,7 +44,7 @@ class ShmTripStats(object):
         stmt_av = query_av.join(Route.arrival).join(Arrival.station).subquery()
         query = self.session.query(Task.task, stmt_dp.c.line, Train.sn, stmt_dp.c.start,
                                    stmt_dp.c.start_time, stmt_av.c.end, stmt_av.c.end_time, Route.note)
-        query = query.join(Task.routes).join(Route.train).join(stmt_dp, Route.id == stmt_dp.c.id)
+        query = query.join(Task.routes).join(Route.train, isouter=True).join(stmt_dp, Route.id == stmt_dp.c.id)
         query = query.join(stmt_av, Route.id == stmt_av.c.id)
         return columns, query
 

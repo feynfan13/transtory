@@ -139,14 +139,17 @@ class ShmDbOps(DatabaseOpsBase):
         task_orm = self._get_task(entry.task)  # For task
         if task_orm is None:
             task_orm = self._add_task(entry.task)
-        train_orm = self._get_train(entry.train_sn)  # For train
-        if train_orm is None:
-            train_entry = TrainEntry()
-            train_entry.sn = entry.train_sn
-            # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_entry.sn)
-            train_entry.type = self.data_app.get_type_of_train(train_entry.sn)
-            train_entry.line = entry.line
-            train_orm = self._add_train(train_entry)
+        if 'xx' in entry.train_sn:
+            train_orm = None
+        else:
+            train_orm = self._get_train(entry.train_sn)  # For train
+            if train_orm is None:
+                train_entry = TrainEntry()
+                train_entry.sn = entry.train_sn
+                # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_entry.sn)
+                train_entry.type = self.data_app.get_type_of_train(train_entry.sn)
+                train_entry.line = entry.line
+                train_orm = self._add_train(train_entry)
         departure_orm = Departure()  # For departure
         departure_orm.station = self._get_station(entry.line, entry.departure_station)
         departure_orm.time = entry.departure_time
