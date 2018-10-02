@@ -36,9 +36,9 @@ class CrhElementStats(object):
             if val is None:
                 fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|,".format(val))
+                fout.write("{:d},".format(val))
             elif isinstance(val, str):
-                fout.write("{:s},".format(val))
+                fout.write("|{:s}|,".format(val))
             else:
                 raise Exception("Unsupported data type in csv writer.")
 
@@ -69,6 +69,8 @@ class CrhElementStats(object):
         for seat_trains, join_trains in zip(query_seat.all(), query_join.all()):
             train, seat_count, model = seat_trains
             join_count = join_trains[1]
+            seat_count = 0 if seat_count is None else seat_count
+            join_count = 0 if join_count is None else join_count
             results = list()
             results.append(model.name)
             results.append(train.sn)
@@ -85,7 +87,7 @@ class CrhElementStats(object):
         start_time = time.clock()
         with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
-            [fout.write("{:s},".format(x)) for x in self.train_fields]
+            [fout.write('{:s},'.format(x)) for x in self.train_fields]
             fout.write("\n")
             for result in self._yield_train_list_entries():
                 self._write_lists_to_csv(fout, result)
@@ -95,7 +97,7 @@ class CrhElementStats(object):
     @staticmethod
     def _get_line_list_sorter(result):
         train_number = result[0]
-        seq = min([int(x) for x in re.findall(r"\d+", train_number)])
+        seq = min([int(x) for x in re.findall(r'\d+', train_number)])
         seg_code = train_number[0]
         if seg_code == "D":
             seg_base = 00000

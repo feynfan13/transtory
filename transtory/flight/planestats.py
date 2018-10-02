@@ -26,24 +26,15 @@ class FlightPlaneStats(object):
     def _write_lists_to_csv(fout, val_list):
         """Goal of the function is to handle the None values properly
         """
-        for val, mode in val_list:
-            if mode:
-                astr = '|'
-            else:
-                astr = ''
+        for val in val_list:
             if val is None:
-                pass
+                fout.write("||,")
             elif isinstance(val, int):
-                astr += '{:d}'.format(val)
+                fout.write("{:d},".format(val))
             elif isinstance(val, str):
-                astr += '{:s}'.format(val)
+                fout.write("|{:s}|,".format(val))
             else:
-                raise Exception("Unsupported data type in csv writer.")
-            if mode:
-                astr += '|,'
-            else:
-                astr += ','
-            fout.write(astr)
+                raise Exception("Unsupported data type in csv writer: ", type(val))
 
     def _yield_plane_list_entries(self):
         query = self.session.query(func.count(Route.id), Plane, Airline, PlaneModel).join(Route.plane)
@@ -51,10 +42,10 @@ class FlightPlaneStats(object):
         query = query.order_by(PlaneModel.name, Airline.name, Plane.tail_number)
         for count, plane, airline, model in query.all():
             results = list()
-            results.append((model.name, True))  # True for protection mode
-            results.append((airline.name, True))
-            results.append((plane.tail_number, True))
-            results.append((count, False))
+            results.append(model.name)  # True for protection mode
+            results.append(airline.name)
+            results.append(plane.tail_number)
+            results.append(count)
             yield results
 
     def save_plane_list_csv(self):
@@ -66,7 +57,7 @@ class FlightPlaneStats(object):
             fout.write('\n')
             for result in self._yield_plane_list_entries():
                 self._write_lists_to_csv(fout, result)
-                fout.write("\n")
+                fout.write('\n')
         logger.info('Finished saving all routes (time used is {:f}s)'.format(time.clock() - start_time))
 
     def save_all_stats(self):

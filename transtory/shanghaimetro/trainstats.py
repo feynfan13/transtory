@@ -19,8 +19,8 @@ class ShmTrainStats(object):
         self.dbops: ShmDbOps = get_shm_db_ops()
         self.session = self.dbops.session
         self.data_app: ShmPublicDataApp = get_public_data_app()
-        self.train_fields = ["train", "model", "count", "manufacturer"]
-        self.train_type_fields = ["type", "taken_count", "total_count", "ratio"]
+        self.train_fields = ['train', 'model', 'count', 'manufacturer']
+        self.train_type_fields = ['type', 'taken', 'miss', 'total', 'ratio']
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -33,7 +33,7 @@ class ShmTrainStats(object):
             if val is None:
                 fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|,".format(val))
+                fout.write("{:d},".format(val))
             elif isinstance(val, str):
                 fout.write("|{:s}|,".format(val))
             else:
@@ -103,8 +103,9 @@ class ShmTrainStats(object):
             results = list()
             results.append(name)
             results.append(count)
+            results.append(total - count)
             results.append(total)
-            results.append("{:d}%".format(int(count*100.0/total)))
+            results.append('{:d}%'.format(int(count*100.0/total)))
             all_type_total += total
             all_type_taken += count
             yield results

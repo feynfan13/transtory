@@ -29,7 +29,7 @@ class ShmTripStats(object):
             if val is None:
                 fout.write("||,")
             elif isinstance(val, int):
-                fout.write("|{:d}|,".format(val))
+                fout.write("{:d},".format(val))
             elif isinstance(val, str):
                 fout.write("|{:s}|,".format(val))
             else:
