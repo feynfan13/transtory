@@ -121,11 +121,12 @@ class FlightDbOps(DatabaseOpsBase):
         query = self.session.query(PlaneModel).filter_by(name=plane_model)
         return query.one()
 
-    def add_plane(self, tail_num, plane_model):
+    def add_plane(self, tail_num, plane_model, airline_id):
         plane_orm = Plane()
         plane_model_orm = self.get_plane_model(plane_model)
         plane_orm.tail_number = tail_num
         plane_orm.model = plane_model_orm
+        plane_orm.airline_id = airline_id
         self.session.add(plane_orm)
         return plane_orm
 
@@ -135,10 +136,10 @@ class FlightDbOps(DatabaseOpsBase):
             return None
         return query.one()
 
-    def get_or_add_plane(self, tail_num, plane_model):
+    def get_or_add_plane(self, tail_num, plane_model, airline_id):
         plane_orm = self.get_plane(tail_num)
         if plane_orm is None:
-            plane_orm = self.add_plane(tail_num, plane_model)
+            plane_orm = self.add_plane(tail_num, plane_model, airline_id)
         return plane_orm
 
     def get_airport(self, airport_iata):
@@ -244,7 +245,8 @@ class FlightDbOps(DatabaseOpsBase):
         route_orm.seat = route_entry.seat
         route_orm.fare_code = route_entry.fare_code
         route_orm.boarding_group = route_entry.boarding_group
-        route_orm.plane = self.get_or_add_plane(route_entry.plane, route_entry.plane_model)
+        route_orm.plane = self.get_or_add_plane(route_entry.plane, route_entry.plane_model,
+                                                route_orm.flight.airline_id)
         route_orm.distance_FA = route_entry.miles_from_FA
         route_orm.trip = trip_orm
         self.session.add(route_orm)

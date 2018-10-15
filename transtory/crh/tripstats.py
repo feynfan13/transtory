@@ -16,7 +16,7 @@ class CrhTripStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.route_fields = ["task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note",
+        self.route_fields = ['seq', "task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note",
                              'ticket', "seat_type", "seat", "from_gate", "from_platform", "to_platform", "to_gate",
                              "from_time_plan", "to_time_plan", "from_note", "to_note", "train_origin", "train_final",
                              "price", "ticket_short_sn", "ticket_long_sn", "ticket_sold_by", "ticket_sold_type"]
@@ -126,7 +126,8 @@ class CrhTripStats(object):
             fout.write('\ufeff')
             [fout.write("{:s},".format(x)) for x in self.route_fields]
             fout.write("\n")
-            for result in self._yield_route_list_entries():
+            for idx, result in enumerate(self._yield_route_list_entries()):
+                fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock()-start_time))

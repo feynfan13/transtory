@@ -21,9 +21,9 @@ class CrhElementStats(object):
         # Dependency: if train_fileds is changed, do changes to
         #   -- _get_train_list_sorter()
         #   -- _yield_train_list_entries()
-        self.train_fields = ["model", "train", "seat_count", "join_count"]
+        self.train_fields = ['seq', "model", "train", "seat_count", "join_count"]
         # Dependency: similar to train_fields
-        self.line_fields = ["train_number", "from", "to"]
+        self.line_fields = ['seq', 'train_number', 'from', 'to']
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -89,7 +89,8 @@ class CrhElementStats(object):
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.train_fields]
             fout.write("\n")
-            for result in self._yield_train_list_entries():
+            for idx, result in enumerate(self._yield_train_list_entries()):
+                fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
         logger.info("Finished saving all trains (time used is {:f}s)".format(time.clock() - start_time))
@@ -131,7 +132,8 @@ class CrhElementStats(object):
             fout.write('\ufeff')
             [fout.write("{:s},".format(x)) for x in self.line_fields]
             fout.write("\n")
-            for result in self._yield_line_list_entries():
+            for idx, result in enumerate(self._yield_line_list_entries()):
+                fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
         logger.info("Finished saving all lines (time used is {:f}s)".format(time.clock() - start_time))

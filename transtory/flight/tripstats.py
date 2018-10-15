@@ -17,7 +17,7 @@ class FlightTripStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: FlightDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.route_fields = ['reservation', 'flight', 'from', 'pushback', 'takeoff',
+        self.route_fields = ['seq', 'reservation', 'flight', 'from', 'pushback', 'takeoff',
                              'to', 'landing', 'gate_arrival', 'plane', 'type']
 
     def _get_stats_full_path(self, fname):
@@ -84,7 +84,8 @@ class FlightTripStats(object):
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.route_fields]
             fout.write("\n")
-            for result in self._yield_route_list_entries():
+            for idx, result in enumerate(self._yield_route_list_entries()):
+                fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write('\n')
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock()-start_time))
