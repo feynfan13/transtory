@@ -60,6 +60,7 @@ class FlightRecorder(object):
         segment_entry.segment_type = log_struct["Segment Type"]
         segment_entry.status = log_struct["Status"]
         segment_entry.flight = log_struct["Flight Number"]
+        segment_entry.e_ticket_num = log_struct["eTicket Number"]
         segment_entry.cabin = log_struct["Cabin"]
         segment_entry.seat = log_struct["Seat"]
         segment_entry.fare_code = log_struct["Fare Code"]
@@ -76,7 +77,6 @@ class FlightRecorder(object):
     def _make_input_trip_entry(self, log_struct):
         trip_entry = InputTripEntry()
         trip_entry.confirmation_num = log_struct["Confirmation Number"]
-        trip_entry.e_ticket_num = log_struct["eTicket Number"]
         trip_entry.price = log_struct["Price"]
         segments = []
         for segment_struct in log_struct["Segments"]:

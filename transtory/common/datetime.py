@@ -5,8 +5,10 @@ from .infrastructure import singleton
 
 class CityTimeZoneMap(object):
     city_to_time_zone = {
-        "Shanghai": timezone("Asia/Shanghai"),
-        "Tai'an": timezone("Asia/Shanghai"),
+        'Shanghai': timezone('Asia/Shanghai'),
+        "Tai'an": timezone('Asia/Shanghai'),
+        'Hangzhou': timezone('Asia/Shanghai'),
+        'Nanjing': timezone('Asia/Shanghai'),
         "Los Angeles": timezone("America/Los_Angeles"),
         "San José": timezone("America/Los_Angeles"),
         "San Francisco": timezone("America/Los_Angeles"),

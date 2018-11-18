@@ -16,7 +16,6 @@ from .dbdefs import Flight, Airline, Airport, Plane, PlaneModel
 class InputTripEntry(object):
     def __init__(self):
         self.confirmation_num = None
-        self.e_ticket_num = None
         self.price = None
         self.segments = []
 
@@ -27,6 +26,7 @@ class InputRouteEntry(object):
         self.segment_type = None
         self.status = None
         self.flight = None
+        self.e_ticket_num = None
         self.cabin = None
         self.seat = None
         self.fare_code = None
@@ -217,7 +217,6 @@ class FlightDbOps(DatabaseOpsBase):
         for orm_field, input_field in arrival_times.items():
             local_time = getattr(leg_entry, input_field)
             if len(local_time) != 0:
-                print(input_field, local_time)
                 db_time = self.get_db_time_from_local_time(local_time, airport_city)
             else:
                 db_time = ''
@@ -241,6 +240,7 @@ class FlightDbOps(DatabaseOpsBase):
         route_orm.seq = route_entry.segment_seq
         route_orm.type = route_entry.segment_type
         route_orm.flight = self.get_or_add_flight(route_entry.flight)
+        trip_orm.ticket_number = route_entry.e_ticket_num
         route_orm.cabin = route_entry.cabin
         route_orm.seat = route_entry.seat
         route_orm.fare_code = route_entry.fare_code
@@ -272,7 +272,6 @@ class FlightDbOps(DatabaseOpsBase):
     def add_trip(self, trip_entry: InputTripEntry):
         trip_orm = Trip()
         trip_orm.confirmation_number = trip_entry.confirmation_num
-        trip_orm.ticket_number = trip_entry.e_ticket_num
         trip_orm.price = trip_entry.price
         self.session.add(trip_orm)
         return trip_orm

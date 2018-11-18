@@ -87,8 +87,10 @@ class MobikePublicData(object):
 
     @staticmethod
     def get_city_eng_name(chn_name):
-        city_name_map = {"上海": "Shanghai",
-                         "泰安": "Tai'an"}
+        city_name_map = {'上海': 'Shanghai',
+                         '泰安': "Tai'an",
+                         '杭州': 'Hangzhou',
+                         '南京': 'Nanjing'}
         return city_name_map[chn_name]
 
 

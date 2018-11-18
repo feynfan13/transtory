@@ -54,15 +54,16 @@ class ShmTripStats(object):
         columns, query = self._def_route_list_query()
         with open(self._get_stats_full_path("routes.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
-            [fout.write("{:s},".format(x)) for x in columns]
-            fout.write("\n")
-            from_time_index, to_time_index = columns.index("from_time"), columns.index("to_time")
-            for route in query.all():
+            [fout.write('{:s},'.format(x)) for x in columns]
+            fout.write('\n')
+            from_time_index, to_time_index = columns.index('from_time'), columns.index('to_time')
+            for idx, route in enumerate(query.all()):
+                fout.write('{:d},'.format(idx + 1))
                 result = [val for val in route]
                 result[from_time_index] = self.dbops.get_local_time_from_db_time([result[from_time_index]])[0]
                 result[to_time_index] = self.dbops.get_local_time_from_db_time([result[to_time_index]])[0]
                 self._write_lists_to_csv(fout, result)
-                fout.write("\n")
+                fout.write('\n')
         logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock()-start_time))
 
     def save_route_list_html(self):

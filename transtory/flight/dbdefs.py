@@ -103,7 +103,6 @@ class Trip(FlightDbModel):
     __tablename__ = "trips"
     id = Column(Integer, primary_key=True)
     confirmation_number = Column(Text)
-    ticket_number = Column(Text)
     price = Column(Text)
 
 
@@ -117,6 +116,7 @@ class Route(FlightDbModel):
     type = Column(Integer)
     plane_id = Column(Integer, ForeignKey("planes.id"))
     flight_id = Column(Integer, ForeignKey("flights.id"))
+    ticket_number = Column(Text)
     cabin = Column(Text)
     seat = Column(Text)
     fare_code = Column(Text)

@@ -86,6 +86,7 @@ class CrhPublicData(object):
                 ET.SubElement(level1, "level2", name="CR400AF")
             elif name == "CR400BF":
                 ET.SubElement(level1, "level2", name="CR400BF")
+                ET.SubElement(level1, 'level2', name='CR400BF-A')
         # Level 3
         for level2 in root.iter("level2"):
             name = level2.attrib["name"]
@@ -160,6 +161,8 @@ class CrhPublicData(object):
             elif name == "CR400BF":
                 ET.SubElement(level2, "level3", name="CR400BF 样车")
                 ET.SubElement(level2, "level3", name="CR400BF")
+            elif name == 'CR400BF-A':
+                ET.SubElement(level2, 'level3', name='CR400BF-A')
 
         xml_tree = ET.ElementTree(root)
         self.train_type_tree = xml_tree
@@ -273,7 +276,9 @@ class CrhPublicData(object):
             elif name == 'CR400BF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
             elif name == 'CR400BF':
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3023)])
+                sn_list = get_num_set_from_multiple_ranges([(3001, 3024), (5001, 5047)])
+            elif name == 'CR400BF-A':
+                sn_list = get_num_set_from_multiple_ranges([(3025, 3035), (5048, 5067)])
             else:
                 raise ValueError('Invalid train type name.')
             type_train_map[name] = sn_list
@@ -308,11 +313,11 @@ class CrhPublicDataApp(object):
         l2_name, seq = self._get_type_and_seq_from_train_sn(train_sn)
         xml_tree = self.public_data.get_train_type_tree()
         type_vs_train = self.public_data.get_train_type_and_train_map()
-        type_str = ""
-        for level2 in xml_tree.getroot().iter("level2"):
-            if level2.attrib["name"] == l2_name:
-                for level3 in level2.iter("level3"):
-                    l3_name = level3.attrib["name"]
+        type_str = ''
+        for level2 in xml_tree.getroot().iter('level2'):
+            if level2.attrib['name'] == l2_name:
+                for level3 in level2.iter('level3'):
+                    l3_name = level3.attrib['name']
                     if seq in type_vs_train[l3_name]:
                         type_str = l3_name
                         break
