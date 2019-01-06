@@ -161,9 +161,9 @@ class ShmTrainStats(object):
             train_set.add(train)
         train_df = self.data_app.get_train_df()
         line_list = self.data_app.get_line_list()
-        output_str = ""
+        output_str = ''
         for line in line_list:
-            output_str += "Line {:02d}: ".format(line)
+            output_str += "Line {:s}: ".format(line)
             train_of_line = train_df[train_df["line"] == line]
             for _, sr_train in train_of_line.iterrows():
                 if sr_train["train"] not in train_set:

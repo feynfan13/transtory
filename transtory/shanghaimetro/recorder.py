@@ -12,22 +12,30 @@ from .dbops import InputRouteEntry
 class XlsxLogEntry(object):
     def __init__(self, sr_trip):
         dt_helper: DateTimeHelper = get_datetime_helper()
-        self.task = self._strip_if_not_none(sr_trip["Task"])
-        self.date = dt_helper.get_date_from_str(self._strip_if_not_none(sr_trip["Date"]))
-        self.line = int(sr_trip["Line"])
-        train_sn = self._strip_if_not_none(sr_trip["Train SN"])
+        self.task = self._strip_if_not_none(sr_trip['Task'])
+        self.date = dt_helper.get_date_from_str(self._strip_if_not_none(sr_trip['Date']))
+        # To accomodate both digit (previous) and text (after Pujiang line) line codename
+        line = sr_trip['Line']
+        if isinstance(line, int):
+            self.line = '{:02d}'.format(line)
+        else:
+            self.line = self._strip_if_not_none(line)
+        train_sn = self._strip_if_not_none(sr_trip['Train SN'])
         # To accomodate both the old 4-digit format and new 5-digit format
-        if len(train_sn) == 4:
-            train_sn = "{:02d}{:03d}".format(int(train_sn[:2]), int(train_sn[2:]))
-        assert(len(train_sn) == 5)
+        if train_sn[0].isalpha():
+            assert(len(train_sn) == 6)
+        else:
+            if len(train_sn) == 4:
+                train_sn = '{:02d}{:03d}'.format(int(train_sn[:2]), int(train_sn[2:]))
+            assert (len(train_sn) == 5)
         self.train_sn = train_sn
-        assert(not pd.isnull(sr_trip["Departure Station"]))
-        self.departure_station = self._strip_if_not_none(sr_trip["Departure Station"])
-        self.departure_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip["Departure Time"]))
-        assert(not pd.isnull(sr_trip["Arrival Station"]))
-        self.arrival_station = self._strip_if_not_none(sr_trip["Arrival Station"])
-        self.arrival_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip["Arrival Time"]))
-        self.trip_note = self._strip_if_not_none(sr_trip["Trip Note"])
+        assert(not pd.isnull(sr_trip['Departure Station']))
+        self.departure_station = self._strip_if_not_none(sr_trip['Departure Station'])
+        self.departure_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip['Departure Time']))
+        assert(not pd.isnull(sr_trip['Arrival Station']))
+        self.arrival_station = self._strip_if_not_none(sr_trip['Arrival Station'])
+        self.arrival_time = dt_helper.get_time_from_str(self._strip_if_not_none(sr_trip['Arrival Time']))
+        self.trip_note = self._strip_if_not_none(sr_trip['Trip Note'])
 
     def make_route_entry(self):
         entry = InputRouteEntry()

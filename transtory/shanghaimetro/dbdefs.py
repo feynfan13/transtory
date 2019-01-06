@@ -15,9 +15,10 @@ ShmDbModel = declarative_base()
 class Line(ShmDbModel):
     """Shanghai Metro lines
     """
-    __tablename__ = "lines"
+    __tablename__ = 'lines'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
+    codename = Column(Text)
 
     def __repr__(self):
         # TODO

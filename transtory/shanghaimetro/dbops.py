@@ -49,7 +49,7 @@ class RouteEntry(object):
         dt_helper: DateTimeHelper = get_datetime_helper()
         configs: ShmSysConfigs = get_configs()
         self.task = entry.task
-        self.line = "Line {:02d}".format(entry.line)
+        self.line = entry.line
         self.train_sn = entry.train_sn
         self.departure_station = entry.departure_station
         adatetime = dt_helper.get_datetime_from_date_time(entry.date, entry.departure_time)
@@ -111,11 +111,11 @@ class ShmDbOps(DatabaseOpsBase):
 
     def _get_station(self, line_name, chn_name):
         query = self.session.query(Station, Line).join(Station.line)
-        query = query.filter(Station.chn_name == chn_name).filter(Line.name == line_name)
+        query = query.filter(Station.chn_name == chn_name).filter(Line.codename == line_name)
         return query.one()[0]
 
     def _get_line(self, line):
-        return self.session.query(Line).filter_by(name=line).one()
+        return self.session.query(Line).filter_by(codename=line).one()
 
     def _get_train(self, train_sn):
         query = self.session.query(Train).filter_by(sn=train_sn)

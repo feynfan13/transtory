@@ -33,10 +33,10 @@ class ShmTripStats(object):
             elif isinstance(val, str):
                 fout.write("|{:s}|,".format(val))
             else:
-                raise Exception("Unsupported data type in csv writer.")
+                raise Exception('Unsupported data type in csv writer.')
 
     def _def_route_list_query(self):
-        columns = ["task", "line", "train", "from", "from_time", "to", "to_time", "note"]
+        columns = ['seq', 'task', 'line', 'train', 'from', 'from_time', 'to', 'to_time', 'note']
         query_dp = self.session.query(Route.id, Station.chn_name.label("start"),
                                       Departure.time.label("start_time"), Line.name.label("line"))
         stmt_dp = query_dp.join(Route.departure).join(Departure.station).join(Station.line).subquery()
@@ -58,8 +58,8 @@ class ShmTripStats(object):
             fout.write('\n')
             from_time_index, to_time_index = columns.index('from_time'), columns.index('to_time')
             for idx, route in enumerate(query.all()):
-                fout.write('{:d},'.format(idx + 1))
-                result = [val for val in route]
+                result = [idx + 1]
+                result += [val for val in route]
                 result[from_time_index] = self.dbops.get_local_time_from_db_time([result[from_time_index]])[0]
                 result[to_time_index] = self.dbops.get_local_time_from_db_time([result[to_time_index]])[0]
                 self._write_lists_to_csv(fout, result)

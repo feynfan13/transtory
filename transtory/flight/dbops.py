@@ -162,7 +162,9 @@ class FlightDbOps(DatabaseOpsBase):
         return airport_orm
 
     def get_flight(self, flight_num):
-        query = self.session.query(Flight).filter_by(number=flight_num)
+        airline, num = flight_num[0:2], flight_num[2:]
+        query = self.session.query(Flight).filter_by(airline.iata=airline, number=num)
+        print('[TEST]: flight_num {:s}, airline {:s}, num {:s}'.format(flight_num, airline, num), query.one())
         if query.count() == 0:
             return None
         return query.one()
