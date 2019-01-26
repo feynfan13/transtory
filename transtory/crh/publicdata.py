@@ -276,9 +276,9 @@ class CrhPublicData(object):
             elif name == 'CR400BF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
             elif name == 'CR400BF':
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3024), (5001, 5047)])
+                sn_list = get_num_set_from_multiple_ranges([(3001, 3023), (5001, 5047)])
             elif name == 'CR400BF-A':
-                sn_list = get_num_set_from_multiple_ranges([(3025, 3035), (5048, 5067)])
+                sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
             else:
                 raise ValueError('Invalid train type name.')
             type_train_map[name] = sn_list
@@ -322,6 +322,9 @@ class CrhPublicDataApp(object):
                         type_str = l3_name
                         break
                 break
+        if len(type_str) == 0:
+            err_msg = 'Train {:s} is not in public data list.'.format(train_sn)
+            raise Exception(err_msg)
         return type_str
 
     def save_public_data(self):

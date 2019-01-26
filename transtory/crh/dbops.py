@@ -149,6 +149,10 @@ class CrhDbOps(DatabaseOpsBase):
 
     def _get_train_type(self, train_type):
         query = self.session.query(TrainType).filter_by(name=train_type)
+        if query.count() == 0:
+            err_msg = 'Cannot find train type {:s}'.format(train_type)
+            logger.error(err_msg)
+            raise Exception(err_msg)
         return query.one()
 
     def _get_train(self, train_sn):
