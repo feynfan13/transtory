@@ -19,7 +19,7 @@ class ShmTrainStats(object):
         self.dbops: ShmDbOps = get_shm_db_ops()
         self.session = self.dbops.session
         self.data_app: ShmPublicDataApp = get_public_data_app()
-        self.train_fields = ['seq', 'train', 'model', 'count', 'manufacturer']
+        self.train_fields = ['seq', 'train', 'status', 'model', 'count', 'manufacturer']
         self.train_type_fields = ['seq', 'type', 'taken', 'miss', 'total', 'ratio']
 
     def _get_stats_full_path(self, fname):
@@ -72,6 +72,7 @@ class ShmTrainStats(object):
         for count, train, train_type in query.all():
             results = list()
             results.append(train.sn)
+            results.append(train.status)
             results.append(train_type.name)
             results.append(count)
             results.append(train_type.maker)

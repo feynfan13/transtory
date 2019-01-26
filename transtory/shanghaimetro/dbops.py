@@ -125,6 +125,7 @@ class ShmDbOps(DatabaseOpsBase):
         train_orm = Train()
         train_orm.id = train_entry.id
         train_orm.sn = train_entry.sn
+        train_orm.status = 0  # Newly added trians should be active
         train_orm.line = self._get_line(train_entry.line)
         train_orm.train_type = self._get_train_type(train_entry.type)
         logger.info("Added train {:s}".format(train_entry.sn))

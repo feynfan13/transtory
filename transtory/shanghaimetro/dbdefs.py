@@ -53,6 +53,10 @@ class Train(ShmDbModel):
     # Trains may not operate on its line, such as shared trains for line 3/4
     line_id = Column(Integer, ForeignKey("lines.id"))
     train_type_id = Column(Integer, ForeignKey("train_types.id"))
+    # 0 for active; 1 for updated (such as adding carriages); 2 for retired
+    # New train instances are added for updated trains. For example, for 8-carriage 02074,
+    #   the original 4-carriage is kept as 02074-01
+    status = Column(Integer)
     line = relationship("Line", backref='trains')
     train_type = relationship("TrainType", backref="trains")
 

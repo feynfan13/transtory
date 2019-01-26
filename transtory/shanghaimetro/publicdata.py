@@ -131,6 +131,9 @@ class ShmPublicDataApp(object):
 
     def get_type_of_train(self, train_sn):
         query_table = self.public_data.get_train_vs_type_table()
+        # Include the case of updated trains
+        if '-' in train_sn:
+            train_sn = train_sn.split('-')[0]
         return query_table.loc[train_sn, 'type']
 
     def get_train_type_list(self):
