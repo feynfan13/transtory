@@ -37,7 +37,7 @@ class ShmTrainStats(object):
             elif isinstance(val, str):
                 fout.write("|{:s}|,".format(val))
             else:
-                raise Exception("Unsupported data type in csv writer.")
+                raise Exception('Unsupported data type in csv writer.')
 
     def _def_train_list_query(self):
         columns = ["line", "sn", "type"]
@@ -47,18 +47,18 @@ class ShmTrainStats(object):
 
     def validate_train_type(self):
         validate_pass = True
-        logger.info("Begin validating train types.")
+        logger.info('Begin validating train types.')
         start_time = time.clock()
         columns, query = self._def_train_list_query()
         for train in query.all():
             train_sn, type_from_db = train[1], train[2]
             # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)
             type_from_app = self.data_app.get_type_of_train(train_sn)
-            logger.info("Train {:s}: {:s} passed".format(train_sn, type_from_db))
+            logger.info('Train {:s}: {:s} passed'.format(train_sn, type_from_db))
             if type_from_app != train[2]:
                 validate_pass = False
-                logger.warning("Train type from shanghai metro public data app and database do NOT match!")
-                logger.warning("\tfor train {:s}: app {:s}, database {:s}".format(train_sn, type_from_app,
+                logger.warning('Train type from shanghai metro public data app and database do NOT match!')
+                logger.warning('    for train {:s}: app {:s}, database {:s}'.format(train_sn, type_from_app,
                                                                                   type_from_db))
         if validate_pass:
             logger.info("All trains have matching type with public data app match.")
@@ -112,10 +112,11 @@ class ShmTrainStats(object):
             all_type_taken += count
             yield results
         results = list()
-        results.append("Sum")
+        results.append('Sum')
         results.append(all_type_taken)
+        results.append(all_type_total - all_type_taken)
         results.append(all_type_total)
-        results.append("{:d}%".format(int(all_type_taken*100.0/all_type_total)))
+        results.append('{:d}%'.format(int(all_type_taken*100.0/all_type_total)))
         yield results
 
     def save_train_type_list_csv(self):
@@ -164,13 +165,14 @@ class ShmTrainStats(object):
         line_list = self.data_app.get_line_list()
         output_str = ''
         for line in line_list:
-            output_str += "Line {:s}: ".format(line)
-            train_of_line = train_df[train_df["line"] == line]
+            output_str += 'Line {:s}: '.format(line)
+            train_of_line = train_df[train_df['line'] == line]
             for _, sr_train in train_of_line.iterrows():
-                if sr_train["train"] not in train_set:
-                    _, train_seq = self.data_app.get_line_and_seq_from_train_sn(sr_train["train"])
-                    output_str += "{:d}, ".format(train_seq)
-            output_str += "\n"
+                train_sn = sr_train['train']
+                if ('-' not in train_sn) and (train_sn not in train_set):
+                    _, train_seq = self.data_app.get_line_and_seq_from_train_sn(sr_train['train'])
+                    output_str += '{:d}, '.format(train_seq)
+            output_str += '\n'
         return output_str
 
     def save_all_stats(self):
