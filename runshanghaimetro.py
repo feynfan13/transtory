@@ -1,13 +1,14 @@
 import sys
 import argparse
-from transtory.shanghaimetro import switch_to_test_mode, logger
-from transtory.shanghaimetro import ShmRecorder, ShmTripStats, ShmTrainStats
+from transtory.shanghaimetro import *
 
 
 def save_all_stats():
     stator = ShmTripStats()
     stator.save_all_stats()
     stator = ShmTrainStats()
+    stator.save_all_stats()
+    stator = ShmStationStats()
     stator.save_all_stats()
 
 

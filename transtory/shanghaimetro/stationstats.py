@@ -5,11 +5,9 @@ from sqlalchemy import func
 from .configs import logger
 from .publicdata import ShmPublicDataApp, get_public_data_app
 
-from .dbdefs import Route, Departure, Arrival
-from .dbdefs import Train, TrainType, Line
+from .dbdefs import Route, Departure, Arrival, Station
 from .dbops import ShmDbOps, get_shm_db_ops
-from .dbops import ShmSysConfigs, get_configs
-from .dbops import DateTimeHelper, get_datetime_helper
+from .dbops import get_configs
 
 
 class ShmStationStats(object):
@@ -19,7 +17,7 @@ class ShmStationStats(object):
         self.dbops: ShmDbOps = get_shm_db_ops()
         self.session = self.dbops.session
         self.data_app: ShmPublicDataApp = get_public_data_app()
-        self.station_fields = ['name', 'line', 'departure', 'arrival']
+        self.station_fields = ['seq', 'sn', 'name', 'departures', 'arrivals']
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -39,21 +37,22 @@ class ShmStationStats(object):
                 raise Exception('Unsupported data type in csv writer.')
 
     def _yield_station_list_entries(self):
-        query = self.session.query(func.count(Route.id), Train, TrainType).join(Route.train).join(Train.train_type)
-        query = query.group_by(Train.id).order_by(Train.sn)
-        for count, train, train_type in query.all():
+        query_dep = self.session.query(Station, func.count(Departure.id)).select_from(Station)
+        query_dep = query_dep.outerjoin(Departure).group_by(Station.id).order_by(Station.sn)
+        query_arr = self.session.query(Station, func.count(Arrival.id)).select_from(Station)
+        query_arr = query_arr.outerjoin(Arrival).group_by(Station.id).order_by(Station.sn)
+        for (station, dep_num), (_, arr_num) in zip(query_dep.all(), query_arr.all()):
             results = list()
-            results.append(train.sn)
-            results.append(train.status)
-            results.append(train_type.name)
-            results.append(count)
-            results.append(train_type.maker)
+            results.append(station.sn)
+            results.append(station.chn_name)
+            results.append(dep_num)
+            results.append(arr_num)
             yield results
 
     def save_station_list_csv(self):
-        logger.info('Begin saving all planes.')
+        logger.info('Begin saving all stations.')
         start_time = time.clock()
-        with open(self._get_stats_full_path('trains.csv'), 'w', encoding='utf8') as fout:
+        with open(self._get_stats_full_path('stations.csv'), 'w', encoding='utf8') as fout:
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.station_fields]
             fout.write('\n')

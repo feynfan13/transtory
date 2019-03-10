@@ -157,14 +157,12 @@ class FlightDbOps(DatabaseOpsBase):
     def get_or_add_airport(self, airport_iata):
         airport_orm = self.get_airport(airport_iata)
         if airport_orm is None:
-            raise ValueError("Airport {:s} does not exist in database, causing missing city info.".format(airport_iata))
             airport_orm = self.add_airport(airport_iata)
         return airport_orm
 
     def get_flight(self, flight_num):
         airline, num = flight_num[0:2], flight_num[2:]
-        query = self.session.query(Flight).filter_by(airline.iata=airline, number=num)
-        print('[TEST]: flight_num {:s}, airline {:s}, num {:s}'.format(flight_num, airline, num), query.one())
+        query = self.session.query(Flight).join(Flight.airline).filter(Airline.iata==airline, Flight.number==num)
         if query.count() == 0:
             return None
         return query.one()

@@ -9,15 +9,16 @@ class CityTimeZoneMap(object):
         "Tai'an": timezone('Asia/Shanghai'),
         'Hangzhou': timezone('Asia/Shanghai'),
         'Nanjing': timezone('Asia/Shanghai'),
-        "Los Angeles": timezone("America/Los_Angeles"),
-        "San José": timezone("America/Los_Angeles"),
-        "San Francisco": timezone("America/Los_Angeles"),
-        "Denver": timezone("America/Denver"),
-        "London": timezone("Europe/London"),
-        "Helsinki": timezone("Europe/Helsinki"),
-        "Tallahassee": timezone("America/New_York"),
-        "Atlanta": timezone("America/New_York"),
-        "Orlando": timezone("America/New_York")
+        'Los Angeles': timezone('America/Los_Angeles'),
+        'San José': timezone('America/Los_Angeles'),
+        'San Francisco': timezone('America/Los_Angeles'),
+        'Denver': timezone('America/Denver'),
+        'London': timezone('Europe/London'),
+        'Helsinki': timezone('Europe/Helsinki'),
+        'Tallahassee': timezone('America/New_York'),
+        'Atlanta': timezone('America/New_York'),
+        'Orlando': timezone('America/New_York'),
+        'Seoul': timezone('Asia/Seoul')
     }
 
     def get_time_zone_of_city(self, city):

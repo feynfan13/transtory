@@ -10,3 +10,4 @@ from .dbops import ShmDbOps
 from .recorder import ShmRecorder
 from .routestats import ShmTripStats
 from .trainstats import ShmTrainStats
+from .stationstats import ShmStationStats
