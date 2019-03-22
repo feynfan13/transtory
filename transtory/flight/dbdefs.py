@@ -82,7 +82,6 @@ class FlightStart(FlightDbModel):
     """
     __tablename__ = "flight_starts"
     id = Column(Integer, primary_key=True)
-    flight_id_retired = Column(Integer)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     airport = relationship("Airport", backref="as_starts")
 
@@ -92,7 +91,6 @@ class FlightFinal(FlightDbModel):
     """
     __tablename__ = "flight_finals"
     id = Column(Integer, primary_key=True)
-    flight_id_retired = Column(Integer)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     airport = relationship("Airport", backref="as_finals")
 
@@ -121,6 +119,7 @@ class Route(FlightDbModel):
     seat = Column(Text)
     fare_code = Column(Text)
     boarding_group = Column(Text)
+    boarding_pass_seq = Column(Text)
     distance_FA = Column(Text)
     # departure_id = Column(Integer, ForeignKey("departures.id"))
     # arrival_id = Column(Integer, ForeignKey("arrivals.id"))
@@ -147,7 +146,6 @@ class Departure(FlightDbModel):
     """
     __tablename__ = "departures"
     id = Column(Integer, primary_key=True)
-    route_id_retired = Column(Integer)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     terminal = Column(Text)
     concourse = Column(Text)
@@ -167,8 +165,6 @@ class Arrival(FlightDbModel):
     """
     __tablename__ = "arrivals"
     id = Column(Integer, primary_key=True)
-    route_id_retired = Column(Integer)
-    type = Column(Text)
     airport_id = Column(Integer, ForeignKey("airports.id"))
     runway = Column(Text)
     landing_time = Column(Text)

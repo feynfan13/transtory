@@ -56,18 +56,21 @@ class FlightRecorder(object):
 
     def _make_input_segment_entry(self, log_struct):
         segment_entry = InputRouteEntry()
-        segment_entry.segment_seq = log_struct["Segment Number"]
-        segment_entry.segment_type = log_struct["Segment Type"]
-        segment_entry.status = log_struct["Status"]
-        segment_entry.flight = log_struct["Flight Number"]
-        segment_entry.e_ticket_num = log_struct["eTicket Number"]
-        segment_entry.cabin = log_struct["Cabin"]
-        segment_entry.seat = log_struct["Seat"]
-        segment_entry.fare_code = log_struct["Fare Code"]
-        segment_entry.boarding_group = log_struct["Boarding Group"]
-        segment_entry.plane = log_struct["Plane"]
-        segment_entry.plane_model = log_struct["Plane Type"]
-        segment_entry.miles_from_FA = log_struct["FA Miles Flown"]
+        segment_entry.segment_seq = log_struct['Segment Number']
+        segment_entry.segment_type = log_struct['Segment Type']
+        segment_entry.status = log_struct['Status']
+        segment_entry.flight = log_struct['Flight Number']
+        segment_entry.flight_start = log_struct['Flight Start']
+        segment_entry.flight_end = log_struct['Flight End']
+        segment_entry.e_ticket_num = log_struct['eTicket Number']
+        segment_entry.cabin = log_struct['Cabin']
+        segment_entry.seat = log_struct['Seat']
+        segment_entry.fare_code = log_struct['Fare Code']
+        segment_entry.boarding_group = log_struct['Boarding Group']
+        segment_entry.boarding_pass_seq = log_struct['Boarding Pass Seq']
+        segment_entry.plane = log_struct['Plane']
+        segment_entry.plane_model = log_struct['Plane Type']
+        segment_entry.miles_from_FA = log_struct['FA Miles Flown']
         legs = []
         for leg_struct in log_struct["Legs"]:
             legs.append(self._make_input_leg_entry(leg_struct))
@@ -76,20 +79,20 @@ class FlightRecorder(object):
 
     def _make_input_trip_entry(self, log_struct):
         trip_entry = InputTripEntry()
-        trip_entry.confirmation_num = log_struct["Confirmation Number"]
-        trip_entry.price = log_struct["Price"]
+        trip_entry.confirmation_num = log_struct['Confirmation Number']
+        trip_entry.price = log_struct['Price']
         segments = []
-        for segment_struct in log_struct["Segments"]:
+        for segment_struct in log_struct['Segments']:
             segments.append(self._make_input_segment_entry(segment_struct))
         trip_entry.segments = segments
         return trip_entry
 
     def record_trips_from_json(self, is_commit=True):
-        fname_pattern = os.sep.join([self.configs.log_folder, "*.json"])
-        log_files = [fname for fname in glob.glob(fname_pattern) if "template" not in fname]
+        fname_pattern = os.sep.join([self.configs.log_folder, '*.json'])
+        log_files = [fname for fname in glob.glob(fname_pattern) if 'template' not in fname]
         log_archive = self.configs.log_archive_folder
         for log_file in log_files:
-            with open(log_file, encoding="utf8") as fin:
+            with open(log_file, encoding='utf8') as fin:
                 log_struct = json.loads(jsmin.jsmin(fin.read()))
                 trip_entry = self._make_input_trip_entry(log_struct)
                 trip_orm, trip_done = self.db_ops.get_or_add_trip(trip_entry, is_commit)

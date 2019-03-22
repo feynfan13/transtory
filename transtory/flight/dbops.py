@@ -9,7 +9,7 @@ from .configs import FlightSysConfigs, get_configs
 
 from .publicdata import FlightPublicDataApp, get_public_data_app
 
-from .dbdefs import FlightDbModel, Trip, Route, Leg, Departure, Arrival
+from .dbdefs import *
 from .dbdefs import Flight, Airline, Airport, Plane, PlaneModel
 
 
@@ -26,11 +26,14 @@ class InputRouteEntry(object):
         self.segment_type = None
         self.status = None
         self.flight = None
+        self.flight_start = None
+        self.flight_end = None
         self.e_ticket_num = None
         self.cabin = None
         self.seat = None
         self.fare_code = None
         self.boarding_group = None
+        self.boarding_pass_seq = None
         self.plane = None
         self.plane_model = None
         self.miles_from_FA = None
@@ -167,19 +170,29 @@ class FlightDbOps(DatabaseOpsBase):
             return None
         return query.one()
 
-    def add_flight(self, flight):
+    def add_flight(self, flight, start: str, end: str):
         flight_orm = Flight()
         airline_iata, flight_num = self.get_airline_and_num_from_flight(flight)
         flight_orm.number = flight_num
         airline_orm = self.get_airline(airline_iata)
         flight_orm.airline = airline_orm
+        airport_start_orm = self.get_airport(start)
+        airport_end_orm = self.get_airport(end)
+        flight_start_orm = FlightStart()
+        flight_start_orm.airport = airport_start_orm
+        flight_end_orm = FlightFinal()
+        flight_end_orm.airport = airport_end_orm
+        self.session.add(flight_start_orm)
+        self.session.add(flight_end_orm)
+        flight_orm.start = flight_start_orm
+        flight_orm.end = flight_end_orm
         self.session.add(flight_orm)
         return flight_orm
 
-    def get_or_add_flight(self, flight_num):
+    def get_or_add_flight(self, flight_num, start: str, end: str):
         flight_orm = self.get_flight(flight_num)
         if flight_orm is None:
-            flight_orm = self.add_flight(flight_num)
+            flight_orm = self.add_flight(flight_num, start, end)
         return flight_orm
 
     def add_leg(self, leg_entry: InputLegEntry, route_orm: Route):
@@ -239,12 +252,13 @@ class FlightDbOps(DatabaseOpsBase):
         route_orm = Route()
         route_orm.seq = route_entry.segment_seq
         route_orm.type = route_entry.segment_type
-        route_orm.flight = self.get_or_add_flight(route_entry.flight)
-        trip_orm.ticket_number = route_entry.e_ticket_num
+        route_orm.flight = self.get_or_add_flight(route_entry.flight, route_entry.flight_start, route_entry.flight_end)
+        route_orm.ticket_number = route_entry.e_ticket_num
         route_orm.cabin = route_entry.cabin
         route_orm.seat = route_entry.seat
         route_orm.fare_code = route_entry.fare_code
         route_orm.boarding_group = route_entry.boarding_group
+        route_orm.boarding_pass_seq = route_entry.boarding_pass_seq
         route_orm.plane = self.get_or_add_plane(route_entry.plane, route_entry.plane_model,
                                                 route_orm.flight.airline_id)
         route_orm.distance_FA = route_entry.miles_from_FA
