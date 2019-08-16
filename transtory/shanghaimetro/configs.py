@@ -15,6 +15,7 @@ class ShmSysConfigs(helpers.ModuleSysConfigs):
         self.trip_xlsx_name = None
         self.trip_xlsx_path = None
         self.stats_folder = None
+        self.publicdata_folder = None
         self.city = None
         self.test_mode = None
         self.date_zero = None
@@ -28,6 +29,7 @@ class ShmSysConfigs(helpers.ModuleSysConfigs):
         self.trip_xlsx_name = "ShanghaiMetroLog.xlsx"
         self.trip_xlsx_path = os.sep.join([self.data_folder, "log", self.module_name, self.trip_xlsx_name])
         self.stats_folder = os.sep.join([self.result_folder, self.module_name])
+        self.publicdata_folder = os.sep.join([self.data_folder, 'publicdata', self.module_name])
         self.city = "Shanghai"
         self.date_zero = "2013-07-01"
         self.test_mode = False

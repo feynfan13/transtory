@@ -1,6 +1,8 @@
+import os
 import pandas as pd
 
 from transtory.common import singleton
+from .configs import get_configs, ShmSysConfigs
 
 
 class ShmPublicData(object):
@@ -9,6 +11,8 @@ class ShmPublicData(object):
         -- Stations
         -- Trains
     """
+    train_json_name = 'trains.json'
+
     def __init__(self):
         self.train_vs_type = None
 
@@ -30,6 +34,10 @@ class ShmPublicData(object):
         if self.train_vs_type is None:
             self.train_vs_type = self._make_train_vs_type_table()
         return self.train_vs_type
+
+    def _load_train_table_from_json(self):
+        configs: ShmSysConfigs = get_configs()
+        json_path = os.sep.join([configs.publicdata_folder, self.train_json_name])
 
     def _make_train_vs_type_table(self):
         self.train_line_type_list = [[], [], []]
@@ -86,6 +94,7 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('08', "08C01", (1, 28))
         self._add_train_and_type_in_sn_range('08', "08C02", (29, 45))
         self._add_train_and_type_in_sn_range('08', "08C03", (46, 66))
+        self._add_train_and_type_in_sn_range('08', "08C03", (67, 90))
         # Line 09
         self._add_train_and_type_in_sn_range('09', "09A01", (1, 10))
         self._add_train_and_type_in_sn_range('09', "09A02", (11, 51))
