@@ -1,0 +1,5 @@
+{
+    "data_folder": "[Path to data folder, where the subfolders for databases and input logs are put]",
+    "temp_folder": "[Path to temp folder to store loggings etc.]",
+    "result_folder": "[Path to result folder to store generated reports]"
+}

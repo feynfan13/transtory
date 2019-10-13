@@ -39,9 +39,11 @@ class ShmTrainStats(object):
             else:
                 raise Exception('Unsupported data type in csv writer.')
 
-    def _def_train_list_query(self):
+    def _def_validate_train_list_query(self):
+        """We need to exclude converted train sets (train status 2) from validation
+        """
         columns = ["line", "sn", "type"]
-        query = self.session.query(Line.name, Train.sn, TrainType.name)
+        query = self.session.query(Line.name, Train.sn, TrainType.name).filter(Train.status != 2)
         query = query.join(Line.trains).join(Train.train_type).order_by(Train.sn)
         return columns, query
 
@@ -49,7 +51,7 @@ class ShmTrainStats(object):
         validate_pass = True
         logger.info('Begin validating train types.')
         start_time = time.clock()
-        columns, query = self._def_train_list_query()
+        columns, query = self._def_validate_train_list_query()
         for train in query.all():
             train_sn, type_from_db = train[1], train[2]
             # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)

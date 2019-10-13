@@ -1,0 +1,36 @@
+# ignore the PyCharm project
+.idea
+
+# ignore private data
+/log__/*
+/report/*
+/database__/*
+
+# test data is published when the "virtual world" is built up
+/test/*
+
+# ignore private configs
+/configs.json
+
+# ignore build and run temps
+/temp/*
+**/__pycache__/*
+**/.ipynb_checkpoints/*
+
+# ignore PyCharm project files
+/.idea/*
+
+# ignore deprecated codes
+**/deprecated/*
+
+# ignore IPython notebooks
+*.ipynb
+
+# ignore the ui project
+/transtory/ui
+runtranstoryui.cmd
+runtranstoryui.py
+
+# ignore the Django project
+# /transtory/transtorysite
+# runtranstorysite.cmd

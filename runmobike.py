@@ -5,7 +5,7 @@ from transtory.mobike import switch_to_test_mode, logger
 from transtory.mobike import MobikeRecorder, MobikeBikeStats
 
 
-parser = argparse.ArgumentParser(description="Shanghai metro database command.")
+parser = argparse.ArgumentParser(description="Mobike database command.")
 parser.add_argument("--testmode", action="store_const", const=True, default=False)
 parser.add_argument("--record", action="store_const", const=True, default=False)
 parser.add_argument("--update", action="store_const", const=True, default=False)
