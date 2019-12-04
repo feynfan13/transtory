@@ -90,6 +90,7 @@ class ShmPublicData(object):
         # Line 07
         self._add_train_and_type_in_sn_range('07', "07A01", (1, 42))
         self._add_train_and_type_in_sn_range('07', "07A02", (43, 72))
+        self._add_train_and_type_in_sn_range('07', "07A03", (73, 79))
         # Line 08
         self._add_train_and_type_in_sn_range('08', "08C01", (1, 28))
         self._add_train_and_type_in_sn_range('08', "08C02", (29, 45))
@@ -114,11 +115,16 @@ class ShmPublicData(object):
         # Line 13
         self._add_train_and_type_in_sn_range('13', "13A01", (1, 24))
         self._add_train_and_type_in_sn_range('13', "13A02", (25, 62))
+        # Line 14
+        self._add_train_and_type_in_sn_range('14', "14A01", (1, 49))
         # Line 16
         self._add_train_and_type_in_sn_range('16', "16A01", (1, 46))
+        self._add_train_and_type_in_sn_range('16', "16A02", (47, 61))
         # Line 17
         self._add_train_and_type_in_sn_range('17', "17A01", (1, 5))
         self._add_train_and_type_in_sn_range('17', "17A01", (6, 28))
+        # Line 18
+        self._add_train_and_type_in_sn_range('18', "18A01", (1, 50))
         # Line T01
         self._add_train_and_type_in_sn_range('T01', 'APM300', (1, 11))
 
