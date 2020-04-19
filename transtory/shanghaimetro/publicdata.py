@@ -87,6 +87,7 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('06', "06C03", (37, 43))
         self._add_train_and_type_in_sn_range('06', "06C03", (45, 53))
         self._add_train_and_type_in_sn_range('06', "06C03", (55, 56))
+        self._add_train_and_type_in_sn_range('06', "06C04", (57, 82))
         # Line 07
         self._add_train_and_type_in_sn_range('07', "07A01", (1, 42))
         self._add_train_and_type_in_sn_range('07', "07A02", (43, 72))
@@ -117,6 +118,8 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('13', "13A02", (25, 62))
         # Line 14
         self._add_train_and_type_in_sn_range('14', "14A01", (1, 49))
+        # Line 15
+        self._add_train_and_type_in_sn_range('15', "15A01", (1, 54))
         # Line 16
         self._add_train_and_type_in_sn_range('16', "16A01", (1, 46))
         self._add_train_and_type_in_sn_range('16', "16A02", (47, 61))
