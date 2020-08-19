@@ -96,7 +96,7 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('08', "08C01", (1, 28))
         self._add_train_and_type_in_sn_range('08', "08C02", (29, 45))
         self._add_train_and_type_in_sn_range('08', "08C03", (46, 66))
-        self._add_train_and_type_in_sn_range('08', "08C03", (67, 90))
+        self._add_train_and_type_in_sn_range('08', "08C04", (67, 90))
         # Line 09
         self._add_train_and_type_in_sn_range('09', "09A01", (1, 10))
         self._add_train_and_type_in_sn_range('09', "09A02", (11, 51))
