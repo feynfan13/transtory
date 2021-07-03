@@ -84,7 +84,7 @@ class CrhElementStats(object):
 
     def save_train_list_csv(self):
         logger.info("Begin saving all trains.")
-        start_time = time.clock()
+        start_time = time.perf_counter()
         with open(self._get_stats_full_path("trains.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.train_fields]
@@ -93,7 +93,7 @@ class CrhElementStats(object):
                 fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
-        logger.info("Finished saving all trains (time used is {:f}s)".format(time.clock() - start_time))
+        logger.info("Finished saving all trains (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     @staticmethod
     def _get_line_list_sorter(result):
@@ -127,7 +127,7 @@ class CrhElementStats(object):
 
     def save_line_list_csv(self):
         logger.info("Begin saving all lines.")
-        start_time = time.clock()
+        start_time = time.perf_counter()
         with open(self._get_stats_full_path("lines.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
             [fout.write("{:s},".format(x)) for x in self.line_fields]
@@ -136,7 +136,7 @@ class CrhElementStats(object):
                 fout.write('{:d},'.format(idx+1))
                 self._write_lists_to_csv(fout, result)
                 fout.write("\n")
-        logger.info("Finished saving all lines (time used is {:f}s)".format(time.clock() - start_time))
+        logger.info("Finished saving all lines (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     def save_all_stats(self):
         self.save_train_list_csv()

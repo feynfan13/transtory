@@ -276,7 +276,8 @@ class CrhPublicData(object):
             elif name == 'CR400BF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
             elif name == 'CR400BF':
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3023), (5001, 5047)])
+                sn_list = get_num_set_from_multiple_ranges([(3001, 3023), (3034, 3049), (3059, 3091), (3106, 3114),
+                                                            (5001, 5047), (5068, 5081), (5106, 5112)])
             elif name == 'CR400BF-A':
                 sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
             else:

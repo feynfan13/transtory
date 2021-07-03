@@ -50,7 +50,7 @@ class ShmTrainStats(object):
     def validate_train_type(self):
         validate_pass = True
         logger.info('Begin validating train types.')
-        start_time = time.clock()
+        start_time = time.perf_counter()
         columns, query = self._def_validate_train_list_query()
         for train in query.all():
             train_sn, type_from_db = train[1], train[2]
@@ -66,7 +66,7 @@ class ShmTrainStats(object):
             logger.info("All trains have matching type with public data app match.")
         else:
             logger.warning("Validation of train type failed.")
-        logger.info("Finished validating train types (time used is {:f}s)".format(time.clock() - start_time))
+        logger.info("Finished validating train types (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     def _yield_train_list_entries(self):
         query = self.session.query(func.count(Route.id), Train, TrainType).join(Route.train).join(Train.train_type)
@@ -82,7 +82,7 @@ class ShmTrainStats(object):
 
     def save_train_list_csv(self):
         logger.info('Begin saving all planes.')
-        start_time = time.clock()
+        start_time = time.perf_counter()
         with open(self._get_stats_full_path('trains.csv'), 'w', encoding='utf8') as fout:
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.train_fields]
@@ -91,7 +91,7 @@ class ShmTrainStats(object):
                 fout.write('{:d},'.format(idx + 1))
                 self._write_lists_to_csv(fout, result)
                 fout.write('\n')
-        logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
+        logger.info("Finished saving all routes (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     def _yield_train_type_list_entries(self):
         all_train_types = self.data_app.get_train_type_list()
@@ -123,7 +123,7 @@ class ShmTrainStats(object):
 
     def save_train_type_list_csv(self):
         logger.info('Begin saving all planes.')
-        start_time = time.clock()
+        start_time = time.perf_counter()
         with open(self._get_stats_full_path("train_type.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
             [fout.write('{:s},'.format(x)) for x in self.train_type_fields]
@@ -132,7 +132,7 @@ class ShmTrainStats(object):
                 fout.write('{:d},'.format(idx + 1))
                 self._write_lists_to_csv(fout, result)
                 fout.write('\n')
-        logger.info('Finished saving all routes (time used is {:f}s)'.format(time.clock() - start_time))
+        logger.info('Finished saving all routes (time used is {:f}s)'.format(time.perf_counter() - start_time))
 
     def _yield_line_list_entries(self):
         query = self.session.query(func.count(Route.id), Train, TrainType).join(Route.train).join(Train.train_type)
@@ -147,7 +147,7 @@ class ShmTrainStats(object):
 
     def save_line_list_csv(self):
         logger.info('Begin saving all planes.')
-        start_time = time.clock()
+        start_time = time.perf_counter()
         with open(self._get_stats_full_path('trains.csv'), 'w', encoding='utf8') as fout:
             fout.write('\ufeff')
             [fout.write('|{:s}|,'.format(x)) for x in self.train_fields]
@@ -156,7 +156,7 @@ class ShmTrainStats(object):
                 fout.write('{:d},'.format(idx + 1))
                 self._write_lists_to_csv(fout, result)
                 fout.write('\n')
-        logger.info("Finished saving all routes (time used is {:f}s)".format(time.clock() - start_time))
+        logger.info("Finished saving all routes (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     def generate_unmet_train_str(self):
         train_set = set()
