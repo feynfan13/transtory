@@ -43,7 +43,7 @@ class CrhTripStats(object):
                 raise Exception("Unsupported data type in csv writer.")
 
     def _yield_route_list_entries(self):
-        query = self.session.query(Task, Trip, Route).join(Task.trips).join(Trip.routes).join()
+        query = self.session.query(Task, Trip, Route).join(Task.trips).join(Trip.routes)
         for task, trip, route in query.all():
             results = list()
             results.append(task.content)

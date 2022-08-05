@@ -106,6 +106,8 @@ class CrhElementStats(object):
             seg_base = 10000
         elif seg_code == "C":
             seg_base = 20000
+        elif seg_code == "S":
+            seg_base = 30000
         else:
             raise ValueError("Invalid train number ({:s}) in CRH module".format(train_number))
         return seg_base + seq

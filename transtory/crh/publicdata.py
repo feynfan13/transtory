@@ -84,6 +84,7 @@ class CrhPublicData(object):
                 ET.SubElement(level1, "level2", name="CRH380D")
             elif name == "CR400AF":
                 ET.SubElement(level1, "level2", name="CR400AF")
+                ET.SubElement(level1, "level2", name="CR400AF-A")
             elif name == "CR400BF":
                 ET.SubElement(level1, "level2", name="CR400BF")
                 ET.SubElement(level1, 'level2', name='CR400BF-A')
@@ -158,6 +159,8 @@ class CrhPublicData(object):
             elif name == "CR400AF":
                 ET.SubElement(level2, "level3", name="CR400AF 样车")
                 ET.SubElement(level2, "level3", name="CR400AF")
+            elif name == 'CR400AF-A':
+                ET.SubElement(level2, 'level3', name='CR400AF-A')
             elif name == "CR400BF":
                 ET.SubElement(level2, "level3", name="CR400BF 样车")
                 ET.SubElement(level2, "level3", name="CR400BF")
@@ -236,7 +239,7 @@ class CrhPublicData(object):
             elif name == "CRH6A-A":
                 sn_list = get_num_set_from_multiple_ranges([(2, 2)])
             elif name == "CRH6F":
-                sn_list = get_num_set_from_multiple_ranges([(409, 413), (418, 419), (430, 435)])
+                sn_list = get_num_set_from_multiple_ranges([(409, 413), (418, 419), (430, 435), (474, 477)])
             elif name == "CRH6F-A":
                 sn_list = get_num_set_from_multiple_ranges([(5141, 5200), (5206, 5215)])
             elif name == "CRH380A":
@@ -272,7 +275,11 @@ class CrhPublicData(object):
             elif name == 'CR400AF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(207, 208)])
             elif name == 'CR400AF':
-                sn_list = get_num_set_from_multiple_ranges([(2001, 2017), (2021, 2064)])
+                sn_list = get_num_set_from_multiple_ranges([(1006, 1025), (1039, 1040), (2001, 2034), (2035, 2064),
+                                                            (2085, 2094), (2124, 2165), (2170, 2182), (2222, 2248)])
+            elif name == 'CR400AF-A':
+                sn_list = get_num_set_from_multiple_ranges([(1001, 1005), (1026, 1038), (2065, 2084), (2095, 2115),
+                                                            (2188, 2205), (2211, 2212)])
             elif name == 'CR400BF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
             elif name == 'CR400BF':
