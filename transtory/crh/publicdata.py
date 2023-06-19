@@ -31,6 +31,7 @@ class CrhPublicData(object):
         ET.SubElement(root, "level0", name="CRH")
         ET.SubElement(root, "level0", name="CRH380")
         ET.SubElement(root, "level0", name="CR400")
+        ET.SubElement(root, "level0", name="CR300")
         # Level 1
         for level0 in root.iter("level0"):
             name = level0.attrib["name"]
@@ -48,6 +49,9 @@ class CrhPublicData(object):
             elif name == "CR400":
                 ET.SubElement(level0, "level1", name="CR400AF")
                 ET.SubElement(level0, "level1", name="CR400BF")
+            elif name == "CR300":
+                ET.SubElement(level0, "level1", name="CR300AF")
+                ET.SubElement(level0, "level1", name="CR300BF")
         # Level 2
         for level1 in root.iter("level1"):
             name = level1.attrib["name"]
@@ -88,6 +92,10 @@ class CrhPublicData(object):
             elif name == "CR400BF":
                 ET.SubElement(level1, "level2", name="CR400BF")
                 ET.SubElement(level1, 'level2', name='CR400BF-A')
+            elif name == "CR300AF":
+                ET.SubElement(level1, "level2", name="CR300AF")
+            elif name == "CR300BF":
+                ET.SubElement(level1, "level2", name="CR300BF")
         # Level 3
         for level2 in root.iter("level2"):
             name = level2.attrib["name"]
@@ -166,6 +174,10 @@ class CrhPublicData(object):
                 ET.SubElement(level2, "level3", name="CR400BF")
             elif name == 'CR400BF-A':
                 ET.SubElement(level2, 'level3', name='CR400BF-A')
+            elif name == 'CR300AF':
+                ET.SubElement(level2, 'level3', name='CR300AF')
+            elif name == 'CR300BF':
+                ET.SubElement(level2, 'level3', name='CR300BF')
 
         xml_tree = ET.ElementTree(root)
         self.train_type_tree = xml_tree
@@ -287,6 +299,10 @@ class CrhPublicData(object):
                                                             (5001, 5047), (5068, 5081), (5106, 5112)])
             elif name == 'CR400BF-A':
                 sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
+            elif name == 'CR300AF':
+                sn_list = get_num_set_from_multiple_ranges([(6001, 6004), (2001, 2047), (1001, 1014)])
+            elif name == 'CR300BF':
+                sn_list = get_num_set_from_multiple_ranges([(3001, 3024), (5001, 5042)])
             else:
                 raise ValueError('Invalid train type name.')
             type_train_map[name] = sn_list
