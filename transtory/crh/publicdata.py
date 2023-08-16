@@ -273,7 +273,8 @@ class CrhPublicData(object):
             elif name == "CRH380BL 第二阶段":
                 sn_list = get_num_set_from_multiple_ranges([(3543, 3570), (5541, 5545)])
             elif name == "CRH380BL 第三阶段":
-                sn_list = get_num_set_from_multiple_ranges([(3732, 3737), (5823, 5828)])
+                sn_list = get_num_set_from_multiple_ranges([(3732, 3737), (3775, 3788),
+                                                            (5823, 5828), (5889, 5898)])
             elif name == "CRH380BG":
                 sn_list = get_num_set_from_multiple_ranges([(5546, 5600), (5626, 5636)])
             elif name == "CRH380BG 统型":
