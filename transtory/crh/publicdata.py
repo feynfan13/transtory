@@ -89,6 +89,7 @@ class CrhPublicData(object):
             elif name == "CR400AF":
                 ET.SubElement(level1, "level2", name="CR400AF")
                 ET.SubElement(level1, "level2", name="CR400AF-A")
+                ET.SubElement(level1, "level2", name="CR400AF-Z")
             elif name == "CR400BF":
                 ET.SubElement(level1, "level2", name="CR400BF")
                 ET.SubElement(level1, 'level2', name='CR400BF-A')
@@ -170,6 +171,11 @@ class CrhPublicData(object):
                 ET.SubElement(level2, "level3", name="CR400AF")
             elif name == 'CR400AF-A':
                 ET.SubElement(level2, 'level3', name='CR400AF-A')
+            elif name == 'CR400AF-Z':
+                ET.SubElement(level2, 'level3', name='CR400AF-Z 样车')
+                ET.SubElement(level2, 'level3', name='CR400AF-Z 第一阶段')
+                ET.SubElement(level2, 'level3', name='CR400AF-Z 第二阶段')
+                ET.SubElement(level2, 'level3', name='CR400AF-Z 第三阶段')
             elif name == "CR400BF":
                 ET.SubElement(level2, "level3", name="CR400BF 样车")
                 ET.SubElement(level2, "level3", name="CR400BF")
@@ -296,6 +302,14 @@ class CrhPublicData(object):
             elif name == 'CR400AF-A':
                 sn_list = get_num_set_from_multiple_ranges([(1001, 1005), (1026, 1038), (2065, 2084), (2095, 2115),
                                                             (2188, 2205), (2211, 2212)])
+            elif name == 'CR400AF-Z 样车':
+                sn_list = get_num_set_from_multiple_ranges([(2253, 2253)])
+            elif name == 'CR400AF-Z 第一阶段':
+                sn_list = get_num_set_from_multiple_ranges([(2251, 2252)])
+            elif name == 'CR400AF-Z 第二阶段':
+                sn_list = get_num_set_from_multiple_ranges([(211, 223)])
+            elif name == 'CR400AF-Z 第三阶段':
+                sn_list = get_num_set_from_multiple_ranges([(2257, 2271), (2271, 2285), (2286, 2310), (1041, 1043)])
             elif name == 'CR400BF 样车':
                 sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
             elif name == 'CR400BF':
