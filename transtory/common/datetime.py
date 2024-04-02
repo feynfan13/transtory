@@ -19,7 +19,9 @@ class CityTimeZoneMap(object):
         'Atlanta': timezone('America/New_York'),
         'Orlando': timezone('America/New_York'),
         'Seoul': timezone('Asia/Seoul'),
-        'Taipei': timezone('Asia/Taipei')
+        'Taipei': timezone('Asia/Taipei'),
+        'Shenzhen': timezone('Asia/Shanghai'),
+        "Xi'an": timezone('Asia/Shanghai')
     }
 
     def get_time_zone_of_city(self, city):
