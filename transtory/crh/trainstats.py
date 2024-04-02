@@ -48,8 +48,16 @@ class CrhElementStats(object):
         train_seq = train_sn[-4:]
         if train_sn.startswith("CRH"):
             train_seg = "0"
-        elif train_sn.startswith("CR"):
+            train_seq = train_sn[-4:]
+        elif train_sn.startswith("CR200"):
             train_seg = "1"
+            train_seq = train_sn[10:14]
+        elif train_sn.startswith("CR300"):
+            train_seg = "2"
+            train_seq = train_sn[-4:]
+        elif train_sn.startswith("CR400"):
+            train_seg = "3"
+            train_seq = train_sn[-4:]
         else:
             raise ValueError("Invalid train sn ({:s}) in CRH module.".format(train_sn))
         return int(train_seg + train_seq)
