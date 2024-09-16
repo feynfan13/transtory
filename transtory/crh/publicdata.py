@@ -198,7 +198,7 @@ class CrhPublicData(object):
     def get_train_type_and_train_map(self):
         if self.type_vs_train is not None:
             return self.type_vs_train
-        xml_tree = self.get_train_type_tree if self.train_type_tree is None else self.train_type_tree
+        xml_tree = self.get_train_type_tree()
 
         def get_num_set_from_multiple_ranges(ranges):
             num_set = set()
@@ -375,6 +375,13 @@ class CrhPublicDataApp(object):
             err_msg = 'Train {:s} is not in public data list.'.format(train_sn)
             raise Exception(err_msg)
         return type_str
+
+    def get_train_count_from_type(self, train_type):
+        type_vs_train = self.public_data.get_train_type_and_train_map()
+        if train_type in type_vs_train:
+            return len(type_vs_train[train_type])
+        else:
+            return 0
 
     def save_public_data(self):
         self.save_train_type_tree()

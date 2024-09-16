@@ -6,6 +6,7 @@ from sqlalchemy import func
 from .configs import CrhSysConfigs, get_configs
 from .configs import logger
 
+from .publicdata import CrhPublicDataApp, get_public_data_app
 from .dbdefs import Train, TrainType, TrainService
 from .dbdefs import Station, Line, LineStart
 
@@ -18,6 +19,7 @@ class CrhElementStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
+        self.train_type_fields = ['seq', "model", "record", "total"]
         # Dependency: if train_fileds is changed, do changes to
         #   -- _get_train_list_sorter()
         #   -- _yield_train_list_entries()
@@ -41,6 +43,33 @@ class CrhElementStats(object):
                 fout.write("|{:s}|,".format(val))
             else:
                 raise Exception("Unsupported data type in csv writer.")
+
+    def _yield_train_type_list_entries(self):
+        # Seat trains
+        query = self.session.query(Train.type_id, func.count('*').label("count"))
+        stmt = query.group_by(Train.type_id).subquery()
+        query = self.session.query(TrainType, stmt.c.count).outerjoin(stmt, TrainType.id==stmt.c.type_id)
+        query = query.order_by(TrainType.code)
+        for model, count in query.all():
+            one_row = list()
+            one_row.append(model.name)
+            one_row.append(0 if count is None else count)
+            total_count = get_public_data_app().get_train_count_from_type(model.name)
+            one_row.append(total_count)
+            yield one_row
+
+    def save_train_type_list_csv(self):
+        logger.info("Begin saving all train types.")
+        start_time = time.perf_counter()
+        with open(self._get_stats_full_path("train_types.csv"), "w", encoding="utf8") as fout:
+            fout.write('\ufeff')
+            [fout.write('{:s},'.format(x)) for x in self.train_type_fields]
+            fout.write("\n")
+            for idx, result in enumerate(self._yield_train_type_list_entries()):
+                fout.write('{:d},'.format(idx+1))
+                self._write_lists_to_csv(fout, result)
+                fout.write("\n")
+        logger.info("Finished saving all train types (time used is {:f}s)".format(time.perf_counter() - start_time))
 
     @staticmethod
     def _get_train_list_sorter(result):
@@ -150,4 +179,5 @@ class CrhElementStats(object):
 
     def save_all_stats(self):
         self.save_train_list_csv()
+        self.save_train_type_list_csv()
         self.save_line_list_csv()
