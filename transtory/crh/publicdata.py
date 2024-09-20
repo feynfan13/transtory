@@ -94,6 +94,7 @@ class CrhPublicData(object):
                 ET.SubElement(level1, "level2", name="CR400BF")
                 ET.SubElement(level1, 'level2', name='CR400BF-A')
                 ET.SubElement(level1, 'level2', name='CR400BF-B')
+                ET.SubElement(level1, 'level2', name='CR400BF-Z')
                 ET.SubElement(level1, 'level2', name='CR400BF-S')
             elif name == "CR300AF":
                 ET.SubElement(level1, "level2", name="CR300AF")
@@ -184,6 +185,11 @@ class CrhPublicData(object):
                 ET.SubElement(level2, 'level3', name='CR400BF-A')
             elif name == 'CR400BF-B':
                 ET.SubElement(level2, 'level3', name='CR400BF-B')
+            elif name == 'CR400BF-Z':
+                ET.SubElement(level2, 'level3', name='CR400BF-Z 第一阶段')
+                ET.SubElement(level2, 'level3', name='CR400BF-Z 第二阶段')
+                ET.SubElement(level2, 'level3', name='CR400BF-Z 第三阶段')
+                ET.SubElement(level2, 'level3', name='CR400BF-Z 第四阶段')
             elif name == 'CR400BF-S':
                 ET.SubElement(level2, 'level3', name='CR400BF-S')
             elif name == 'CR300AF':
@@ -322,6 +328,15 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
             elif name == 'CR400BF-B':
                 sn_list = get_num_set_from_multiple_ranges([(5098, 5105), (5151, 5155)])
+            elif name == 'CR400BF-Z 第一阶段':
+                sn_list = get_num_set_from_multiple_ranges([(5210, 5213)])
+            elif name == 'CR400BF-Z 第二阶段':
+                sn_list = get_num_set_from_multiple_ranges([(511, 514)])
+            elif name == 'CR400BF-Z 第三阶段':
+                sn_list = get_num_set_from_multiple_ranges([(521, 523), (5220, 5227), (5228, 5251), (311, 312),
+                                                            (3117, 3124), (3125, 3145)])
+            elif name == 'CR400BF-Z 第四阶段':
+                sn_list = get_num_set_from_multiple_ranges([(5263, 5275), (3146, 3156)])
             elif name == 'CR400BF-S':
                 sn_list = get_num_set_from_multiple_ranges([(3157, 3193), (5281, 5306)])
             elif name == 'CR300AF':
@@ -329,7 +344,7 @@ class CrhPublicData(object):
             elif name == 'CR300BF':
                 sn_list = get_num_set_from_multiple_ranges([(3001, 3024), (5001, 5042)])
             else:
-                raise ValueError('Invalid train type name.')
+                raise ValueError('Invalid train type name: {:s}'.format(name))
             type_train_map[name] = sn_list
         self.type_vs_train = type_train_map
         return type_train_map
