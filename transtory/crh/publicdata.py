@@ -94,6 +94,7 @@ class CrhPublicData(object):
                 ET.SubElement(level1, "level2", name="CR400BF")
                 ET.SubElement(level1, 'level2', name='CR400BF-A')
                 ET.SubElement(level1, 'level2', name='CR400BF-B')
+                ET.SubElement(level1, 'level2', name='CR400BF-S')
             elif name == "CR300AF":
                 ET.SubElement(level1, "level2", name="CR300AF")
             elif name == "CR300BF":
@@ -183,6 +184,8 @@ class CrhPublicData(object):
                 ET.SubElement(level2, 'level3', name='CR400BF-A')
             elif name == 'CR400BF-B':
                 ET.SubElement(level2, 'level3', name='CR400BF-B')
+            elif name == 'CR400BF-S':
+                ET.SubElement(level2, 'level3', name='CR400BF-S')
             elif name == 'CR300AF':
                 ET.SubElement(level2, 'level3', name='CR300AF')
             elif name == 'CR300BF':
@@ -319,6 +322,8 @@ class CrhPublicData(object):
                 sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
             elif name == 'CR400BF-B':
                 sn_list = get_num_set_from_multiple_ranges([(5098, 5105), (5151, 5155)])
+            elif name == 'CR400BF-S':
+                sn_list = get_num_set_from_multiple_ranges([(3157, 3193), (5281, 5306)])
             elif name == 'CR300AF':
                 sn_list = get_num_set_from_multiple_ranges([(6001, 6004), (2001, 2047), (1001, 1014)])
             elif name == 'CR300BF':
