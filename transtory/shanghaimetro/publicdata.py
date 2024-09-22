@@ -17,16 +17,17 @@ class ShmPublicData(object):
         self.train_vs_type = None
 
     @staticmethod
-    def _get_train_sn_from_line_and_seq(line, seq, gen=None):
+    def _get_train_sn_from_line_and_seq(line, seq, digits=3, gen=None):
         if gen is None:
-            return '{:s}{:03d}'.format(line, seq)
+            sn = '{num:0{width}}'.format(num=seq, width=digits)
+            return '{:s}{:s}'.format(line, sn)
         else:
             return '{:s}{:03d}-{:02d}'.format(line, seq, gen)
 
-    def _add_train_and_type_in_sn_range(self, line, train_type: str, sn_range, gen=None):
+    def _add_train_and_type_in_sn_range(self, line, train_type: str, sn_range, digits=3, gen=None):
         seq_list = range(sn_range[0], sn_range[1] + 1)
         for seq in seq_list:
-            self.train_line_type_list[0].append(self._get_train_sn_from_line_and_seq(line, seq, gen))
+            self.train_line_type_list[0].append(self._get_train_sn_from_line_and_seq(line, seq, digits, gen))
             self.train_line_type_list[1].append(line)
             self.train_line_type_list[2].append(train_type)
 
@@ -59,7 +60,7 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('02', '02A01', (1, 16))
         self._add_train_and_type_in_sn_range('02', '02A02', (33, 53))
         self._add_train_and_type_in_sn_range('02', '02A03', (54, 69))
-        self._add_train_and_type_in_sn_range('02', '02A04-01', (70, 85), 1)
+        self._add_train_and_type_in_sn_range('02', '02A04-01', (70, 85), gen=1)
         self._add_train_and_type_in_sn_range('02', '02A04', (70, 85))
         self._add_train_and_type_in_sn_range('02', '02A05', (86, 116))
         # Line 03
@@ -130,6 +131,8 @@ class ShmPublicData(object):
         self._add_train_and_type_in_sn_range('18', "18A01", (1, 50))
         # Line T01
         self._add_train_and_type_in_sn_range('T01', 'APM300', (1, 11))
+        # Line JY01
+        self._add_train_and_type_in_sn_range('JY01', 'JY01A01', (1, 7), digits=2)
 
         train_vs_type_df = pd.DataFrame.from_dict(data={'train': self.train_line_type_list[0],
                                                         'line': self.train_line_type_list[1],
