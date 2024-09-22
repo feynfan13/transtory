@@ -1,0 +1,362 @@
+<public_data>
+  <train_type>
+    <level0 name="CRH">
+      <level1 name="CRH1">
+        <level2 name="CRH1A">
+          <level3 name="CRH1A 200">
+            <sn_range>1001 1041</sn_range>
+          </level3>
+          <level3 name="CRH1A 250">
+            <sn_range>1081 1168</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH1A-A">
+          <level3 name="CRH1A-A">
+            <sn_range>1169 1228</sn_range>
+            <sn_range>1234 1260</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH1B">
+          <level3 name="CRH1B">
+            <sn_range>1041 1045</sn_range>
+            <sn_range>1047 1060</sn_range>
+          </level3>
+          <level3 name="CRH1B 1E头型">
+            <sn_range>1076 1080</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH1E">
+          <level3 name="CRH1E V1">
+            <sn_range>1061 1072</sn_range>
+          </level3>
+          <level3 name="CRH1E V2">
+            <sn_range>1073 1075</sn_range>
+          </level3>
+          <level3 name="CRH1E 1A-A头型_横向卧铺">
+            <sn_range>1229 1233</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH2">
+        <level2 name="CRH2A">
+          <level3 name="CRH2A">
+            <sn_range>2001 2009</sn_range>
+            <sn_range>2011 2060</sn_range>
+            <sn_range>2151 2211</sn_range>
+          </level3>
+          <level3 name="CRH2A 统型">
+            <sn_range>2212 2416</sn_range>
+            <sn_range>2427 2459</sn_range>
+            <sn_range>2473 2499</sn_range>
+            <sn_range>4001 4071</sn_range>
+            <sn_range>4082 4095</sn_range>
+          </level3>
+          <level3 name="CRH2A 2G头型">
+            <sn_range>2460 2460</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH2B">
+          <level3 name="CRH2B">
+            <sn_range>2111 2120</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH2C">
+          <level3 name="CRH2C 第一阶段">
+            <sn_range>2062 2067</sn_range>
+            <sn_range>2069 2090</sn_range>
+          </level3>
+          <level3 name="CRH2C 第二阶段">
+            <sn_range>2091 2110</sn_range>
+            <sn_range>2141 2149</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH2E">
+          <level3 name="CRH2E">
+            <sn_range>2121 2138</sn_range>
+            <sn_range>2140 2140</sn_range>
+          </level3>
+          <level3 name="CRH2E 2G头型">
+            <sn_range>2461 2472</sn_range>
+          </level3>
+        </level2><level2 name="CRH2G">
+          <level3 name="CRH2G">
+            <sn_range>2417 2426</sn_range>
+            <sn_range>4072 4081</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH3">
+        <level2 name="CRH3A">
+          <level3 name="CRH3A">
+            <sn_range>5218 5218</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH3C">
+          <level3 name="CRH3C">
+            <sn_range>3001 3080</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH5">
+        <level2 name="CRH5A">
+          <level3 name="CRH5A">
+            <sn_range>5001 5013</sn_range>
+            <sn_range>5044 5055</sn_range>
+          </level3>
+          <level3 name="CRH5A 第二代">
+            <sn_range>5056 5140</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH5E">
+          <level3 name="CRH5E">
+            <sn_range>5201 5205</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH5G">
+          <level3 name="CRH5G">
+            <sn_range>5141 5200</sn_range>
+            <sn_range>5206 5215</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH6">
+        <level2 name="CRH6A">
+          <level3 name="CRH6A ATO">
+            <sn_range>0401 0405</sn_range>
+            <sn_range>0407 0408</sn_range>
+          </level3>
+          <level3 name="CRH6A">
+            <sn_range>0406 0406</sn_range>
+            <sn_range>0414 0417</sn_range>
+            <sn_range>0422 0429</sn_range>
+            <sn_range>0601 0622</sn_range>
+          </level3>
+          <level3 name="CRH6A 三门版">
+            <sn_range>0420 0421</sn_range>
+            <sn_range>0436 0439</sn_range>
+            <sn_range>0623 0623</sn_range>
+          </level3>
+          <level3 name="CRH6A-A">
+            <sn_range>0002 0002</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH6F">
+          <level3 name="CRH6F">
+            <sn_range>0409 0413</sn_range>
+            <sn_range>0418 0419</sn_range>
+            <sn_range>0430 0435</sn_range>
+            <sn_range>0474 0477</sn_range>
+          </level3>
+          <level3 name="CRH6F-A">
+            <sn_range>5141 5200</sn_range>
+            <sn_range>5206 5215</sn_range>
+          </level3>
+        </level2>
+      </level1>
+    </level0>
+    <level0 name="CRH380">
+      <level1 name="CRH380A">
+        <level2 name="CRH380A">
+          <level3 name="CRH380A">
+            <sn_range>2501 2537</sn_range>
+            <sn_range>2539 2540</sn_range>
+          </level3>
+          <level3 name="CRH380A 统型">
+            <sn_range>2641 2807</sn_range>
+            <sn_range>2809 2817</sn_range>
+            <sn_range>2819 2827</sn_range>
+            <sn_range>2829 2912</sn_range>
+            <sn_range>2921 2925</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH380AL">
+          <level3 name="CRH380AL 第一阶段">
+            <sn_range>2541 2570</sn_range>
+          </level3>
+          <level3 name="CRH380AL 第二阶段">
+            <sn_range>2571 2640</sn_range>
+          </level3>
+          <level3 name="CRH380AL E35">
+            <sn_range>2913 2920</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH380B">
+        <level2 name="CRH380B">
+          <level3 name="CRH380B 统型">
+            <sn_range>3571 3731</sn_range>
+            <sn_range>3738 3774</sn_range>
+            <sn_range>5637 5683</sn_range>
+            <sn_range>5730 5761</sn_range>
+            <sn_range>5787 5802</sn_range>
+            <sn_range>5829 5888</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH380BG">
+          <level3 name="CRH380BG">
+            <sn_range>5546 5600</sn_range>
+            <sn_range>5626 5636</sn_range>
+          </level3>
+          <level3 name="CRH380BG 统型">
+            <sn_range>5684 5729</sn_range>
+            <sn_range>5762 5786</sn_range>
+            <sn_range>5803 5822</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CRH380BL">
+          <level3 name="CRH380BL 第一阶段">
+            <sn_range>3501 3542</sn_range>
+            <sn_range>5501 5540</sn_range>
+          </level3>
+          <level3 name="CRH380BL 第二阶段">
+            <sn_range>3543 3570</sn_range>
+            <sn_range>5541 5545</sn_range>
+          </level3>
+          <level3 name="CRH380BL 第三阶段">
+            <sn_range>3732 3737</sn_range>
+            <sn_range>3775 3788</sn_range>
+            <sn_range>5823 5828</sn_range>
+            <sn_range>5889 5898</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH380C">
+        <level2 name="CRH380CL">
+          <level3 name="CRH380CL">
+            <sn_range>5601 5625</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CRH380D">
+        <level2 name="CRH380D">
+          <level3 name="CRH380D">
+            <sn_range>1501 1510</sn_range>
+          </level3>
+          <level3 name="CRH380D 统型">
+            <sn_range>1511 1585</sn_range>
+          </level3>
+        </level2>
+      </level1>
+    </level0>
+    <level0 name="CR400">
+      <level1 name="CR400AF">
+        <level2 name="CR400AF">
+          <level3 name="CR400AF 样车">
+          (207, 208)
+          </level3>
+          <level3 name="CR400AF">
+            <sn_range>1006 1025</sn_range>
+            <sn_range>1039 1040</sn_range>
+            <sn_range>2001 2034</sn_range>
+            <sn_range>2035 2064</sn_range>
+            <sn_range>2085 2094</sn_range>
+            <sn_range>2124 2165</sn_range>
+            <sn_range>2170 2182</sn_range>
+            <sn_range>2222 2248</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400AF-A">
+          <level3 name="CR400AF-A">
+            <sn_range>1001 1005</sn_range>
+            <sn_range>1026 1038</sn_range>
+            <sn_range>2065 2084</sn_range>
+            <sn_range>2095 2115</sn_range>
+            <sn_range>2188 2205</sn_range>
+            <sn_range>2211 2212</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400AF-Z">
+          <level3 name="CR400AF-Z 样车">
+            <sn_range>2253 2253</sn_range>
+          </level3>
+          <level3 name="CR400AF-Z 第一阶段">
+            <sn_range>2251 2252</sn_range>
+          </level3>
+          <level3 name="CR400AF-Z 第二阶段">
+            <sn_range>0211 0223</sn_range>
+          </level3>
+          <level3 name="CR400AF-Z 第三阶段">
+            <sn_range>2257 2271</sn_range>
+            <sn_range>2271 2285</sn_range>
+            <sn_range>2286 2310</sn_range>
+            <sn_range>1041 1043</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CR400BF">
+        <level2 name="CR400BF">
+          <level3 name="CR400BF 样车">
+            <sn_range>0503 0503</sn_range>
+            <sn_range>0507 0507</sn_range>
+          </level3>
+          <level3 name="CR400BF">
+            <sn_range>3001 3023</sn_range>
+            <sn_range>3034 3049</sn_range>
+            <sn_range>3059 3091</sn_range>
+            <sn_range>3106 3114</sn_range>
+            <sn_range>5001 5047</sn_range>
+            <sn_range>5068 5081</sn_range>
+            <sn_range>5106 5112</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-A">
+          <level3 name="CR400BF-A">
+            <sn_range>3024 3056</sn_range>
+            <sn_range>5048 5096</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-B">
+          <level3 name="CR400BF-B">
+            <sn_range>5098 5105</sn_range>
+            <sn_range>5151 5155</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-Z">
+          <level3 name="CR400BF-Z 第一阶段">
+            <sn_range>5210 5213</sn_range>
+          </level3>
+          <level3 name="CR400BF-Z 第二阶段">
+            <sn_range>0511 0514</sn_range>
+          </level3>
+          <level3 name="CR400BF-Z 第三阶段">
+            <sn_range>0521 0523</sn_range>
+            <sn_range>5220 5227</sn_range>
+            <sn_range>5228 5251</sn_range>
+            <sn_range>0311 0312</sn_range>
+            <sn_range>3117 3124</sn_range>
+            <sn_range>3125 3145</sn_range>
+          </level3>
+          <level3 name="CR400BF-Z 第四阶段">
+            <sn_range>5263 5275</sn_range>
+            <sn_range>3146 3156</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-S">
+          <level3 name="CR400BF-S">
+            <sn_range>3157 3193</sn_range>
+            <sn_range>5281 5306</sn_range>
+          </level3>
+        </level2>
+      </level1>
+    </level0>
+    <level0 name="CR300">
+      <level1 name="CR300AF">
+        <level2 name="CR300AF">
+          <level3 name="CR300AF">
+            <sn_range>6001 6004</sn_range>
+            <sn_range>2001 2047</sn_range>
+            <sn_range>1001 1014</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CR300BF">
+        <level2 name="CR300BF">
+          <level3 name="CR300BF">
+            <sn_range>3001 3024</sn_range>
+            <sn_range>5001 5042</sn_range>
+          </level3>
+        </level2>
+      </level1>
+    </level0>
+  </train_type>
+</public_data>

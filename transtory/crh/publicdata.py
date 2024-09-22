@@ -12,342 +12,33 @@ class CrhPublicData(object):
         -- Train type query table
     """
     def __init__(self):
-        self.train_type_tree = None
-        self.type_vs_train = None
+        public_data_xml = os.path.sep.join([os.path.dirname(__file__), 'publicdata.xml'])
+        public_data_root = ET.parse(public_data_xml).getroot()
+        self.train_type_tree = public_data_root.find('train_type')
+        self.type_vs_train = dict()
+        for train_type in self.train_type_tree.iter('level3'):
+            name = train_type.attrib['name']
+            sn_set = set()
+            for sn_range_record in train_type.iter('sn_range'):
+                sn_range = sn_range_record.text.split()
+                sn_start, sn_end = int(sn_range[0]), int(sn_range[1])
+                for sn in range(sn_start, sn_end + 1):
+                    sn_set.add(sn)
+            self.type_vs_train[name] = sn_set
 
     def get_train_type_tree(self):
         """Get the train type hierarchy in xml ElementTree style.
-        Currently a 4-level tree is used to organize the train types, which are
+        Currently, a 4-level tree is used to organize the train types, which are
             * level 0: for eras/grades, including CRH, CRH380, CR400
             * level 1: for models/manufacturers. For example, for CRH, there are CRH1, CRH2, CRH3, CRH5, CRH6, etc.
             * level 2: for variants. For example, for CRH2, there are CRH2A, CRH2B, CRH2E, CRH2G, etc.
             * level 3: for design improvements. For example, for CRH2E, there are 初代 and 2G头型
         The hierarchy system is not official and are prone to changes.
         """
-        if self.train_type_tree is not None:
-            return self.train_type_tree
-        root = ET.Element("train_type")
-        # Level 0
-        ET.SubElement(root, "level0", name="CRH")
-        ET.SubElement(root, "level0", name="CRH380")
-        ET.SubElement(root, "level0", name="CR400")
-        ET.SubElement(root, "level0", name="CR300")
-        # Level 1
-        for level0 in root.iter("level0"):
-            name = level0.attrib["name"]
-            if name == "CRH":
-                ET.SubElement(level0, "level1", name="CRH1")
-                ET.SubElement(level0, "level1", name="CRH2")
-                ET.SubElement(level0, "level1", name="CRH3")
-                ET.SubElement(level0, "level1", name="CRH5")
-                ET.SubElement(level0, "level1", name="CRH6")
-            elif name == "CRH380":
-                ET.SubElement(level0, "level1", name="CRH380A")
-                ET.SubElement(level0, "level1", name="CRH380B")
-                ET.SubElement(level0, "level1", name="CRH380C")
-                ET.SubElement(level0, "level1", name="CRH380D")
-            elif name == "CR400":
-                ET.SubElement(level0, "level1", name="CR400AF")
-                ET.SubElement(level0, "level1", name="CR400BF")
-            elif name == "CR300":
-                ET.SubElement(level0, "level1", name="CR300AF")
-                ET.SubElement(level0, "level1", name="CR300BF")
-        # Level 2
-        for level1 in root.iter("level1"):
-            name = level1.attrib["name"]
-            if name == "CRH1":
-                ET.SubElement(level1, "level2", name="CRH1A")
-                ET.SubElement(level1, "level2", name="CRH1A-A")
-                ET.SubElement(level1, "level2", name="CRH1B")
-                ET.SubElement(level1, "level2", name="CRH1E")
-            elif name == "CRH2":
-                ET.SubElement(level1, "level2", name="CRH2A")
-                ET.SubElement(level1, "level2", name="CRH2B")
-                ET.SubElement(level1, "level2", name="CRH2C")
-                ET.SubElement(level1, "level2", name="CRH2E")
-                ET.SubElement(level1, "level2", name="CRH2G")
-            elif name == "CRH3":
-                ET.SubElement(level1, "level2", name="CRH3A")
-                ET.SubElement(level1, "level2", name="CRH3C")
-            elif name == "CRH5":
-                ET.SubElement(level1, "level2", name="CRH5A")
-                ET.SubElement(level1, "level2", name="CRH5G")
-            elif name == "CRH6":
-                ET.SubElement(level1, "level2", name="CRH6A")
-                ET.SubElement(level1, "level2", name="CRH6F")
-            elif name == "CRH380A":
-                ET.SubElement(level1, "level2", name="CRH380A")
-                ET.SubElement(level1, "level2", name="CRH380AL")
-            elif name == "CRH380B":
-                ET.SubElement(level1, "level2", name="CRH380B")
-                ET.SubElement(level1, "level2", name="CRH380BG")
-                ET.SubElement(level1, "level2", name="CRH380BL")
-            elif name == "CRH380C":
-                ET.SubElement(level1, "level2", name="CRH380CL")
-            elif name == "CRH380D":
-                ET.SubElement(level1, "level2", name="CRH380D")
-            elif name == "CR400AF":
-                ET.SubElement(level1, "level2", name="CR400AF")
-                ET.SubElement(level1, "level2", name="CR400AF-A")
-                ET.SubElement(level1, "level2", name="CR400AF-Z")
-            elif name == "CR400BF":
-                ET.SubElement(level1, "level2", name="CR400BF")
-                ET.SubElement(level1, 'level2', name='CR400BF-A')
-                ET.SubElement(level1, 'level2', name='CR400BF-B')
-                ET.SubElement(level1, 'level2', name='CR400BF-Z')
-                ET.SubElement(level1, 'level2', name='CR400BF-S')
-            elif name == "CR300AF":
-                ET.SubElement(level1, "level2", name="CR300AF")
-            elif name == "CR300BF":
-                ET.SubElement(level1, "level2", name="CR300BF")
-        # Level 3
-        for level2 in root.iter("level2"):
-            name = level2.attrib["name"]
-            if name == "CRH1A":
-                ET.SubElement(level2, "level3", name="CRH1A 200")
-                ET.SubElement(level2, "level3", name="CRH1A 250")
-            elif name == "CRH1A-A":
-                ET.SubElement(level2, "level3", name="CRH1A-A")
-            elif name == "CRH1B":
-                ET.SubElement(level2, "level3", name="CRH1B")
-                ET.SubElement(level2, "level3", name="CRH1B 1E头型")
-            elif name == "CRH1E":
-                ET.SubElement(level2, "level3", name="CRH1E")
-                ET.SubElement(level2, "level3", name="CRH1E 1A-A头型_横向卧铺")
-            elif name == "CRH2A":
-                ET.SubElement(level2, "level3", name="CRH2A")
-                ET.SubElement(level2, "level3", name="CRH2A 统型")
-                ET.SubElement(level2, "level3", name="CRH2A 2G头型")
-            elif name == "CRH2B":
-                ET.SubElement(level2, "level3", name="CRH2B")
-            elif name == "CRH2C":
-                ET.SubElement(level2, "level3", name="CRH2C 第一阶段")
-                ET.SubElement(level2, "level3", name="CRH2C 第二阶段")
-            elif name == "CRH2E":
-                ET.SubElement(level2, "level3", name="CRH2E")
-                ET.SubElement(level2, "level3", name="CRH2E 2G头型")
-            elif name == "CRH2G":
-                ET.SubElement(level2, "level3", name="CRH2G")
-            elif name == "CRH3A":
-                ET.SubElement(level2, "level3", name="CRH3A")
-            elif name == "CRH3C":
-                ET.SubElement(level2, "level3", name="CRH3C")
-            elif name == "CRH5A":
-                ET.SubElement(level2, "level3", name="CRH5A")
-                ET.SubElement(level2, "level3", name="CRH5A 第二代")
-            elif name == "CRH5E":
-                ET.SubElement(level2, "level3", name="CRH5A CJ1头型")
-            elif name == "CRH5G":
-                ET.SubElement(level2, "level3", name="CRH5G")
-            elif name == "CRH6A":
-                ET.SubElement(level2, "level3", name="CRH6A ATO")
-                ET.SubElement(level2, "level3", name="CRH6A")
-                ET.SubElement(level2, "level3", name="CRH6A 三门版")
-                ET.SubElement(level2, "level3", name="CRH6A-A")
-            elif name == "CRH6F":
-                ET.SubElement(level2, "level3", name="CRH6F")
-                ET.SubElement(level2, "level3", name="CRH6F-A")
-            elif name == "CRH380A":
-                ET.SubElement(level2, "level3", name="CRH380A")
-                ET.SubElement(level2, "level3", name="CRH380A 统型")
-            elif name == "CRH380AL":
-                ET.SubElement(level2, "level3", name="CRH380AL 第一阶段")
-                ET.SubElement(level2, "level3", name="CRH380AL 第二阶段")
-                ET.SubElement(level2, "level3", name="CRH380AL E35")
-            elif name == "CRH380BL":
-                ET.SubElement(level2, "level3", name="CRH380BL 第一阶段")
-                ET.SubElement(level2, "level3", name="CRH380BL 第二阶段")
-                ET.SubElement(level2, "level3", name="CRH380BL 第三阶段")
-            elif name == "CRH380BG":
-                ET.SubElement(level2, "level3", name="CRH380BG")
-                ET.SubElement(level2, "level3", name="CRH380BG 统型")
-            elif name == "CRH380B":
-                ET.SubElement(level2, "level3", name="CRH380B 统型")
-            elif name == "CRH380CL":
-                ET.SubElement(level2, "level3", name="CRH380CL")
-            elif name == "CRH380D":
-                ET.SubElement(level2, "level3", name="CRH380D")
-                ET.SubElement(level2, "level3", name="CRH380D 统型")
-            elif name == "CR400AF":
-                ET.SubElement(level2, "level3", name="CR400AF 样车")
-                ET.SubElement(level2, "level3", name="CR400AF")
-            elif name == 'CR400AF-A':
-                ET.SubElement(level2, 'level3', name='CR400AF-A')
-            elif name == 'CR400AF-Z':
-                ET.SubElement(level2, 'level3', name='CR400AF-Z 样车')
-                ET.SubElement(level2, 'level3', name='CR400AF-Z 第一阶段')
-                ET.SubElement(level2, 'level3', name='CR400AF-Z 第二阶段')
-                ET.SubElement(level2, 'level3', name='CR400AF-Z 第三阶段')
-            elif name == "CR400BF":
-                ET.SubElement(level2, "level3", name="CR400BF 样车")
-                ET.SubElement(level2, "level3", name="CR400BF")
-            elif name == 'CR400BF-A':
-                ET.SubElement(level2, 'level3', name='CR400BF-A')
-            elif name == 'CR400BF-B':
-                ET.SubElement(level2, 'level3', name='CR400BF-B')
-            elif name == 'CR400BF-Z':
-                ET.SubElement(level2, 'level3', name='CR400BF-Z 第一阶段')
-                ET.SubElement(level2, 'level3', name='CR400BF-Z 第二阶段')
-                ET.SubElement(level2, 'level3', name='CR400BF-Z 第三阶段')
-                ET.SubElement(level2, 'level3', name='CR400BF-Z 第四阶段')
-            elif name == 'CR400BF-S':
-                ET.SubElement(level2, 'level3', name='CR400BF-S')
-            elif name == 'CR300AF':
-                ET.SubElement(level2, 'level3', name='CR300AF')
-            elif name == 'CR300BF':
-                ET.SubElement(level2, 'level3', name='CR300BF')
-
-        xml_tree = ET.ElementTree(root)
-        self.train_type_tree = xml_tree
-        return xml_tree
+        return self.train_type_tree
 
     def get_train_type_and_train_map(self):
-        if self.type_vs_train is not None:
-            return self.type_vs_train
-        xml_tree = self.get_train_type_tree()
-
-        def get_num_set_from_multiple_ranges(ranges):
-            num_set = set()
-            for current in ranges:
-                [num_set.add(x) for x in range(current[0], current[1]+1)]
-            return num_set
-
-        type_train_map = dict()
-        for train_type in xml_tree.getroot().iter("level3"):
-            name = train_type.attrib["name"]
-            if name == "CRH1A 200":
-                sn_list = get_num_set_from_multiple_ranges([(1001, 1041)])
-            elif name == "CRH1A 250":
-                sn_list = get_num_set_from_multiple_ranges([(1081, 1168)])
-            elif name == "CRH1A-A":
-                sn_list = get_num_set_from_multiple_ranges([(1169, 1228), (1234, 1260)])
-            elif name == "CRH1B":
-                sn_list = get_num_set_from_multiple_ranges([(1041, 1045), (1047, 1060)])
-            elif name == "CRH1B 1E头型":
-                sn_list = get_num_set_from_multiple_ranges([(1076, 1080)])
-            elif name == "CRH1E":
-                sn_list = get_num_set_from_multiple_ranges([(1061, 1072), (1073, 1075)])
-            elif name == "CRH1E 1A-A头型_横向卧铺":
-                sn_list = get_num_set_from_multiple_ranges([(1229, 1233)])
-            elif name == "CRH2A":
-                sn_list = get_num_set_from_multiple_ranges([(2001, 2009), (2011, 2060), (2151, 2211)])
-            elif name == "CRH2A 统型":
-                sn_list = get_num_set_from_multiple_ranges([(2212, 2416), (2427, 2459), (2473, 2499),
-                                                            (4001, 4071), (4082, 4095)])
-            elif name == "CRH2A 2G头型":
-                sn_list = get_num_set_from_multiple_ranges([(2460, 2460)])
-            elif name == "CRH2B":
-                sn_list = get_num_set_from_multiple_ranges([(2111, 2120)])
-            elif name == "CRH2C 第一阶段":
-                sn_list = get_num_set_from_multiple_ranges([(2062, 2067), (2069, 2090)])
-            elif name == "CRH2C 第二阶段":
-                sn_list = get_num_set_from_multiple_ranges([(2091, 2110), (2141, 2149)])
-            elif name == "CRH2E":
-                sn_list = get_num_set_from_multiple_ranges([(2121, 2138), (2140, 2140)])
-            elif name == "CRH2E 2G头型":
-                sn_list = get_num_set_from_multiple_ranges([(2461, 2472)])
-            elif name == "CRH2G":
-                sn_list = get_num_set_from_multiple_ranges([(2417, 2426), (4072, 4081)])
-            elif name == "CRH3A":
-                sn_list = get_num_set_from_multiple_ranges([(5218, 5218)])
-            elif name == "CRH3C":
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3080)])
-            elif name == "CRH5A":
-                sn_list = get_num_set_from_multiple_ranges([(5001, 5013), (5044, 5055)])
-            elif name == "CRH5A 第二代":
-                sn_list = get_num_set_from_multiple_ranges([(5056, 5140)])
-            elif name == "CRH5E":
-                sn_list = get_num_set_from_multiple_ranges([(5201, 5205)])
-            elif name == "CRH5G":
-                sn_list = get_num_set_from_multiple_ranges([(5141, 5200), (5206, 5215)])
-            elif name == "CRH6A ATO":
-                sn_list = get_num_set_from_multiple_ranges([(401, 405), (407, 408)])
-            elif name == "CRH6A":
-                sn_list = get_num_set_from_multiple_ranges([(406, 406), (414, 417), (422, 429), (601, 622)])
-            elif name == "CRH6A 三门版":
-                sn_list = get_num_set_from_multiple_ranges([(420, 421), (436, 439), (623, 623)])
-            elif name == "CRH6A-A":
-                sn_list = get_num_set_from_multiple_ranges([(2, 2)])
-            elif name == "CRH6F":
-                sn_list = get_num_set_from_multiple_ranges([(409, 413), (418, 419), (430, 435), (474, 477)])
-            elif name == "CRH6F-A":
-                sn_list = get_num_set_from_multiple_ranges([(5141, 5200), (5206, 5215)])
-            elif name == "CRH380A":
-                sn_list = get_num_set_from_multiple_ranges([(2501, 2537), (2539, 2540)])
-            elif name == "CRH380A 统型":
-                sn_list = get_num_set_from_multiple_ranges([(2641, 2807), (2809, 2817), (2819, 2827),
-                                                            (2829, 2912), (2921, 2925)])
-            elif name == "CRH380AL 第一阶段":
-                sn_list = get_num_set_from_multiple_ranges([(2541, 2570)])
-            elif name == "CRH380AL 第二阶段":
-                sn_list = get_num_set_from_multiple_ranges([(2571, 2640)])
-            elif name == "CRH380AL E35":
-                sn_list = get_num_set_from_multiple_ranges([(2913, 2920)])
-            elif name == "CRH380BL 第一阶段":
-                sn_list = get_num_set_from_multiple_ranges([(3501, 3542), (5501, 5540)])
-            elif name == "CRH380BL 第二阶段":
-                sn_list = get_num_set_from_multiple_ranges([(3543, 3570), (5541, 5545)])
-            elif name == "CRH380BL 第三阶段":
-                sn_list = get_num_set_from_multiple_ranges([(3732, 3737), (3775, 3788),
-                                                            (5823, 5828), (5889, 5898)])
-            elif name == "CRH380BG":
-                sn_list = get_num_set_from_multiple_ranges([(5546, 5600), (5626, 5636)])
-            elif name == "CRH380BG 统型":
-                sn_list = get_num_set_from_multiple_ranges([(5684, 5729), (5762, 5786), (5803, 5822)])
-            elif name == "CRH380B 统型":
-                sn_list = get_num_set_from_multiple_ranges([(3571, 3731), (3738, 3774), (5637, 5683),
-                                                            (5730, 5761), (5787, 5802), (5829, 5888)])
-            elif name == "CRH380CL":
-                sn_list = get_num_set_from_multiple_ranges([(5601, 5625)])
-            elif name == "CRH380D":
-                sn_list = get_num_set_from_multiple_ranges([(1501, 1510)])
-            elif name == "CRH380D 统型":
-                sn_list = get_num_set_from_multiple_ranges([(1511, 1585)])
-            elif name == 'CR400AF 样车':
-                sn_list = get_num_set_from_multiple_ranges([(207, 208)])
-            elif name == 'CR400AF':
-                sn_list = get_num_set_from_multiple_ranges([(1006, 1025), (1039, 1040), (2001, 2034), (2035, 2064),
-                                                            (2085, 2094), (2124, 2165), (2170, 2182), (2222, 2248)])
-            elif name == 'CR400AF-A':
-                sn_list = get_num_set_from_multiple_ranges([(1001, 1005), (1026, 1038), (2065, 2084), (2095, 2115),
-                                                            (2188, 2205), (2211, 2212)])
-            elif name == 'CR400AF-Z 样车':
-                sn_list = get_num_set_from_multiple_ranges([(2253, 2253)])
-            elif name == 'CR400AF-Z 第一阶段':
-                sn_list = get_num_set_from_multiple_ranges([(2251, 2252)])
-            elif name == 'CR400AF-Z 第二阶段':
-                sn_list = get_num_set_from_multiple_ranges([(211, 223)])
-            elif name == 'CR400AF-Z 第三阶段':
-                sn_list = get_num_set_from_multiple_ranges([(2257, 2271), (2271, 2285), (2286, 2310), (1041, 1043)])
-            elif name == 'CR400BF 样车':
-                sn_list = get_num_set_from_multiple_ranges([(503, 503), (507, 507)])
-            elif name == 'CR400BF':
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3023), (3034, 3049), (3059, 3091), (3106, 3114),
-                                                            (5001, 5047), (5068, 5081), (5106, 5112)])
-            elif name == 'CR400BF-A':
-                sn_list = get_num_set_from_multiple_ranges([(3024, 3056), (5048, 5096)])
-            elif name == 'CR400BF-B':
-                sn_list = get_num_set_from_multiple_ranges([(5098, 5105), (5151, 5155)])
-            elif name == 'CR400BF-Z 第一阶段':
-                sn_list = get_num_set_from_multiple_ranges([(5210, 5213)])
-            elif name == 'CR400BF-Z 第二阶段':
-                sn_list = get_num_set_from_multiple_ranges([(511, 514)])
-            elif name == 'CR400BF-Z 第三阶段':
-                sn_list = get_num_set_from_multiple_ranges([(521, 523), (5220, 5227), (5228, 5251), (311, 312),
-                                                            (3117, 3124), (3125, 3145)])
-            elif name == 'CR400BF-Z 第四阶段':
-                sn_list = get_num_set_from_multiple_ranges([(5263, 5275), (3146, 3156)])
-            elif name == 'CR400BF-S':
-                sn_list = get_num_set_from_multiple_ranges([(3157, 3193), (5281, 5306)])
-            elif name == 'CR300AF':
-                sn_list = get_num_set_from_multiple_ranges([(6001, 6004), (2001, 2047), (1001, 1014)])
-            elif name == 'CR300BF':
-                sn_list = get_num_set_from_multiple_ranges([(3001, 3024), (5001, 5042)])
-            else:
-                raise ValueError('Invalid train type name: {:s}'.format(name))
-            type_train_map[name] = sn_list
-        self.type_vs_train = type_train_map
-        return type_train_map
+        return self.type_vs_train
 
 
 get_public_data = singleton(CrhPublicData)
@@ -378,7 +69,7 @@ class CrhPublicDataApp(object):
         xml_tree = self.public_data.get_train_type_tree()
         type_vs_train = self.public_data.get_train_type_and_train_map()
         type_str = ''
-        for level2 in xml_tree.getroot().iter('level2'):
+        for level2 in xml_tree.iter('level2'):
             if level2.attrib['name'] == l2_name:
                 for level3 in level2.iter('level3'):
                     l3_name = level3.attrib['name']
@@ -400,9 +91,6 @@ class CrhPublicDataApp(object):
 
     def save_public_data(self):
         self.save_train_type_tree()
-        # print(self.get_train_type("CRH2B-2118"))
-        # print(self.get_train_type("CRH380BL-5535"))
-        # print(self.get_train_type("CRH1A-A-1190"))
 
 
 get_public_data_app = singleton(CrhPublicDataApp)
