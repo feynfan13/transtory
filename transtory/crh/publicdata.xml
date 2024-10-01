@@ -358,5 +358,102 @@
         </level2>
       </level1>
     </level0>
+    <level0 name="CR200J 第一代">
+      <level1 name="CR200Jx-A">
+        <level2 name="CR200J1-A">
+          <level3 name="CR200J1-A">
+            <sn_range>2002 2047</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J1-A 长编组">
+          <level3 name="CR200J1-A 长编组_18款">
+            <sn_range>6002 6009</sn_range>
+          </level3>
+          <level3 name="CR200J1-A 长编组_19款">
+            <sn_range>6010 6021</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J2-A">
+          <level3 name="CR200J2-A">
+            <sn_range>3002 3004</sn_range>
+            <sn_range>4002 4003</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J3-A">
+          <level3 name="CR200J3-A">
+            <sn_range>1002 1048</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J3-A 长编组">
+          <level3 name="CR200J3-A 长编组_18款">
+            <sn_range>5002 5009</sn_range>
+          </level3>
+          <level3 name="CR200J3-A 长编组_19款">
+            <sn_range>5010 5019</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CR200J 第二代">
+        <level2 name="CR200J1-B">
+          <level3 name="CR200J1-B">
+            <sn_range>2048 2074</sn_range>
+            <sn_range>2075 2084</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J2-B">
+          <level3 name="CR200J2-B">
+            <sn_range operator="JT">001 002</sn_range>
+            <sn_range>3005 3007</sn_range>
+            <sn_range>4006 4008</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J3-B">
+          <level3 name="CR200J3-B">
+            <sn_range>1049 1086</sn_range>
+            <sn_range>1093 1110</sn_range>
+          </level3>
+          <level3 name="CR200J3-B 跨国版">
+            <sn_range>4004 4005</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200JS-G">
+          <level3 name="CR200JS-G">
+            <sn_range>2901 2903</sn_range>
+          </level3>
+        </level2>
+      </level1>
+      <level1 name="CR200J 第三代">
+        <level2 name="CR200J1-C">
+          <level3 name="CR200J1-C">
+            <sn_range>2085 2108</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J1-C 长编组">
+          <level3 name="CR200J1-C 长编组">
+            <sn_range>6022 6045</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J3-C">
+          <level3 name="CR200J3-C">
+            <sn_range>1087 1092</sn_range>
+            <sn_range>1111 1132</sn_range>
+            <sn_range>1133 1136</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J3-C 长编组">
+          <level3 name="CR200J3-C 长编组">
+            <sn_range>0501 0505</sn_range>
+            <sn_range>5020 5040</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR200J1-D">
+          <level3 name="CR200J1-D">
+            <sn_range>2801 2809</sn_range>
+            <sn_range>2810 2813</sn_range>
+            <sn_range>2814 2827</sn_range>
+          </level3>
+        </level2>
+      </level1>
+    </level0>
   </train_type>
 </public_data>
