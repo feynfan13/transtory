@@ -167,6 +167,7 @@
             <sn_range>2819 2827</sn_range>
             <sn_range>2829 2912</sn_range>
             <sn_range>2921 2925</sn_range>
+            <sn_range>2931 2935</sn_range>
           </level3>
         </level2>
         <level2 name="CRH380AL">
@@ -335,6 +336,12 @@
           <level3 name="CR400BF-S">
             <sn_range>3157 3193</sn_range>
             <sn_range>5281 5306</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-AS">
+          <level3 name="CR400BF-AS">
+            <sn_range>3224 3228</sn_range>
+            <sn_range>5364 5368</sn_range>
           </level3>
         </level2>
       </level1>

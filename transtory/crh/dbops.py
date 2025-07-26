@@ -65,7 +65,6 @@ class CrhDbOps(DatabaseOpsBase):
     """
     def __init__(self):
         self.configs: CrhSysConfigs = get_configs()
-        self.data_app: CrhPublicDataApp = get_public_data_app()
         self.dt_helper: DateTimeHelper = get_datetime_helper()
         self.data_app: CrhPublicDataApp = get_public_data_app()
         super(CrhDbOps, self).__init__(self.configs.db_path)

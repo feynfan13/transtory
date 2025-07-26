@@ -55,4 +55,4 @@ def switch_to_test_mode():
 
 get_datetime_helper = helpers.singleton(helpers.DateTimeHelper, [get_configs().date_zero])
 
-logger = helpers.transtory_logger.getChild("mobike")
+logger = helpers.transtory_logger.getChild("shanghaimetro")

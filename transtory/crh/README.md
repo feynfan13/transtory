@@ -2,7 +2,7 @@
 
 ## Train type
 ### Coding system
-The coding system is consisted of 4 numbers catenated by dash.
+The coding system is consisted of 4 numbers joined by dash.
 * The first number if for top-level series.
     - 1: CRH series
 	- 2: CRH380 series

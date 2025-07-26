@@ -56,7 +56,7 @@ class ShmTrainStats(object):
             train_sn, type_from_db = train[1], train[2]
             # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)
             type_from_app = self.data_app.get_type_of_train(train_sn)
-            logger.info('Train {:s}: {:s} passed'.format(train_sn, type_from_db))
+            logger.debug('Train {:s}: {:s} passed'.format(train_sn, type_from_db))
             if type_from_app != train[2]:
                 validate_pass = False
                 logger.warning('Train type from shanghai metro public data app and database do NOT match!')
@@ -81,7 +81,7 @@ class ShmTrainStats(object):
             yield results
 
     def save_train_list_csv(self):
-        logger.info('Begin saving all planes.')
+        logger.info('Begin saving all trains.')
         start_time = time.perf_counter()
         with open(self._get_stats_full_path('trains.csv'), 'w', encoding='utf8') as fout:
             fout.write('\ufeff')
@@ -122,7 +122,7 @@ class ShmTrainStats(object):
         yield results
 
     def save_train_type_list_csv(self):
-        logger.info('Begin saving all planes.')
+        logger.info('Begin saving all train types.')
         start_time = time.perf_counter()
         with open(self._get_stats_full_path("train_type.csv"), "w", encoding="utf8") as fout:
             fout.write('\ufeff')
@@ -146,7 +146,7 @@ class ShmTrainStats(object):
             yield results
 
     def save_line_list_csv(self):
-        logger.info('Begin saving all planes.')
+        logger.info('Begin saving all lines.')
         start_time = time.perf_counter()
         with open(self._get_stats_full_path('trains.csv'), 'w', encoding='utf8') as fout:
             fout.write('\ufeff')
@@ -167,14 +167,17 @@ class ShmTrainStats(object):
         line_list = self.data_app.get_line_list()
         output_str = ''
         for line in line_list:
-            output_str += 'Line {:s}: '.format(line)
             train_of_line = train_df[train_df['line'] == line]
+            one_line_str = 'Line {:s}: '.format(line)
+            num_unmet_trains = 0
             for _, sr_train in train_of_line.iterrows():
                 train_sn = sr_train['train']
                 if ('-' not in train_sn) and (train_sn not in train_set):
                     _, train_seq = self.data_app.get_line_and_seq_from_train_sn(sr_train['train'])
-                    output_str += '{:d}, '.format(train_seq)
-            output_str += '\n'
+                    one_line_str += '{:d}, '.format(train_seq)
+                    num_unmet_trains += 1
+            if num_unmet_trains > 0:
+                output_str += (one_line_str + '\n')
         return output_str
 
     def save_all_stats(self):

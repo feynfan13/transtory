@@ -51,7 +51,7 @@ class CrhRecorder(object):
 
     def _make_input_trip_entry(self, log_struct):
         trip_entry = InputTripEntry()
-        assert (log_struct['Version'] == 1)
+        assert (1 <= log_struct['Version'] <= 2)
         trip_entry.task = log_struct["Task"]
         trip_entry.train_num = log_struct["Train Number"]
         trip_entry.train_num_start = log_struct["Origin"]
