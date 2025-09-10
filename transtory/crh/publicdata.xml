@@ -254,6 +254,7 @@
             <sn_range>2124 2165</sn_range>
             <sn_range>2170 2182</sn_range>
             <sn_range>2222 2248</sn_range>
+            <sn_range>2254 2256</sn_range>
           </level3>
         </level2>
         <level2 name="CR400AF-A">
@@ -307,6 +308,9 @@
           </level3>
         </level2>
         <level2 name="CR400BF-B">
+          <level3 name="CR400BF-B 样车">
+            <sn_range>5097 5097</sn_range>
+          </level3>
           <level3 name="CR400BF-B">
             <sn_range>5098 5105</sn_range>
             <sn_range>5151 5155</sn_range>
