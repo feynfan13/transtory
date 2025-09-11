@@ -1,0 +1,24 @@
+<public_data>
+  <trains>
+    <line name="Line 01">
+      <train_type name="01A01-01">
+        <sn_range>1 1</sn_range>
+        <sn_range>3 10</sn_range>
+        <sn_range>14 14</sn_range>
+      </train_type>
+      <train_type name="01A01-02">
+        <sn_range>2 2</sn_range>
+      </train_type>
+      <train_type name="01A02-01">
+        <sn_range>18 25</sn_range>
+      </train_type>
+      <train_type name="01A02-02">
+        <sn_range>17 17</sn_range>
+      </train_type>
+      <train_type name="01A03">
+        <sn_range>11 13</sn_range>
+        <sn_range>15 16</sn_range>
+      </train_type>
+    </line>
+  </trains>
+</public_data>
