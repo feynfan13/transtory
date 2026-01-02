@@ -243,7 +243,7 @@
       <level1 name="CR400AF">
         <level2 name="CR400AF">
           <level3 name="CR400AF 样车">
-          (207, 208)
+            <sn_range>0207 0208</sn_range>
           </level3>
           <level3 name="CR400AF">
             <sn_range>1006 1025</sn_range>
@@ -284,26 +284,35 @@
             <sn_range>1041 1043</sn_range>
           </level3>
         </level2>
-		    <level2 name="CR400AF-AZ">
-		      <level3 name="CR400AF-AZ">
+        <level2 name="CR400AF-AZ">
+          <level3 name="CR400AF-AZ">
             <sn_range>2311 2315</sn_range>
           </level3>
-		    </level2>
-		    <level2 name="CR400AF-BZ">
-		      <level3 name="CR400AF-BZ">
+        </level2>
+        <level2 name="CR400AF-BZ">
+          <level3 name="CR400AF-BZ">
             <sn_range>2249 2250</sn_range>
           </level3>
-		    </level2>
-		    <level2 name="CR400AF-S">
-		      <level3 name="CR400AF-S">
-            <sn_range>0000 0000</sn_range>
+        </level2>
+        <level2 name="CR400AF-S">
+          <level3 name="CR400AF-S">
+            <sn_range>1064 1080</sn_range>
+            <sn_range>1081 1086</sn_range>
+            <sn_range>1087 1094</sn_range>
+            <sn_range>1095 1105</sn_range>
+            <sn_range>2346 2397</sn_range>
+            <sn_range>0224 0227</sn_range>
+            <sn_range>2403 2425</sn_range>
+            <sn_range>0228 0242</sn_range>
+            <sn_range>2426 2440</sn_range>
+            <sn_range>2441 2481</sn_range>
           </level3>
-		    </level2>
-		    <level2 name="CR400AF-BS">
-		      <level3 name="CR400AF-BS">
+        </level2>
+        <level2 name="CR400AF-BS">
+          <level3 name="CR400AF-BS">
             <sn_range>2341 2345</sn_range>
           </level3>
-		    </level2>
+        </level2>
       </level1>
       <level1 name="CR400BF">
         <level2 name="CR400BF">
@@ -371,7 +380,7 @@
             <sn_range>5364 5368</sn_range>
           </level3>
         </level2>
-		    <level2 name="CR400BF-BS">
+        <level2 name="CR400BF-BS">
           <level3 name="CR400BF-BS">
             <sn_range>5276 5280</sn_range>
             <sn_range>5347 5348</sn_range>
