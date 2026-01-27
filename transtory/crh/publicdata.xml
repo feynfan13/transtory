@@ -267,6 +267,15 @@
             <sn_range>2211 2212</sn_range>
           </level3>
         </level2>
+        <level2 name="CR400AF-B">
+          <level3 name="CR400AF-B 样车">
+            <sn_range>2116 2116</sn_range>
+          </level3>
+          <level3 name="CR400AF-B">
+            <sn_range>2117 2123</sn_range>
+            <sn_range>2206 2210</sn_range>
+          </level3>
+        </level2>
         <level2 name="CR400AF-Z">
           <level3 name="CR400AF-Z 样车">
             <sn_range>2253 2253</sn_range>

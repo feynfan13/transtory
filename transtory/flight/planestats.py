@@ -17,7 +17,7 @@ class FlightPlaneStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: FlightDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.plane_fields = ['seq', "model", "airline", "tail_number", "route_count"]
+        self.plane_fields = ['seq', 'model', 'airline', 'tail_number', 'msn', 'route_count']
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -45,6 +45,7 @@ class FlightPlaneStats(object):
             results.append(model.name)  # True for protection mode
             results.append(airline.name)
             results.append(plane.tail_number)
+            results.append(plane.msn)
             results.append(count)
             yield results
 

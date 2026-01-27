@@ -24,7 +24,8 @@ class CityTimeZoneMap(object):
         "Xi'an": timezone('Asia/Shanghai'),
         'Beijing': timezone('Asia/Shanghai'),
         'Wuxi': timezone('Asia/Shanghai'),
-        'Hefei': timezone('Asia/Shanghai')
+        'Hefei': timezone('Asia/Shanghai'),
+        'Quanzhou': timezone('Asia/Shanghai')
     }
 
     def get_time_zone_of_city(self, city):
