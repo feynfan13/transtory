@@ -54,10 +54,9 @@ class ShmTrainStats(object):
         columns, query = self._def_validate_train_list_query()
         for train in query.all():
             train_sn, type_from_db = train[1], train[2]
-            # line, seq = self.data_app.get_line_and_seq_from_train_sn(train_sn)
             type_from_app = self.data_app.get_type_of_train(train_sn)
             logger.debug('Train {:s}: {:s} passed'.format(train_sn, type_from_db))
-            if type_from_app != train[2]:
+            if type_from_app != type_from_db:
                 validate_pass = False
                 logger.warning('Train type from shanghai metro public data app and database do NOT match!')
                 logger.warning('    for train {:s}: app {:s}, database {:s}'.format(train_sn, type_from_app,
@@ -168,13 +167,12 @@ class ShmTrainStats(object):
         output_str = ''
         for line in line_list:
             train_of_line = train_df[train_df['line'] == line]
-            one_line_str = 'Line {:s}: '.format(line)
+            one_line_str = '{:s}: '.format(line)
             num_unmet_trains = 0
             for _, sr_train in train_of_line.iterrows():
                 train_sn = sr_train['train']
                 if ('-' not in train_sn) and (train_sn not in train_set):
-                    _, train_seq = self.data_app.get_line_and_seq_from_train_sn(sr_train['train'])
-                    one_line_str += '{:d}, '.format(train_seq)
+                    one_line_str += '{:d}, '.format(int(train_sn[-3:]))
                     num_unmet_trains += 1
             if num_unmet_trains > 0:
                 output_str += (one_line_str + '\n')

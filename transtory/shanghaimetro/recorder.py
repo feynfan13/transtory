@@ -14,14 +14,14 @@ class XlsxLogEntry(object):
         dt_helper: DateTimeHelper = get_datetime_helper()
         self.task = self._strip_if_not_none(sr_trip['Task'])
         self.date = dt_helper.get_date_from_str(self._strip_if_not_none(sr_trip['Date']))
-        # To accomodate both digit (previous) and text (after Pujiang line) line codename
+        # To accommodate both digit (previous) and text (after Pujiang line) line codename
         line = sr_trip['Line']
         if isinstance(line, int):
             self.line = '{:02d}'.format(line)
         else:
             self.line = self._strip_if_not_none(line)
         train_sn = self._strip_if_not_none(sr_trip['Train SN'])
-        # To accomodate both the old 4-digit format and new 5-digit format
+        # To accommodate both the old 4-digit format and new 5-digit format
         if train_sn[0].isalpha():
             assert(len(train_sn) == 6)
         else:

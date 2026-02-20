@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 
 from transtory.common import singleton
@@ -11,132 +12,51 @@ class ShmPublicData(object):
         -- Stations
         -- Trains
     """
-    train_json_name = 'trains.json'
 
     def __init__(self):
+        self.public_data_json = os.path.sep.join([os.path.dirname(__file__), 'publicdata.json'])
         self.train_vs_type = None
-
-    @staticmethod
-    def _get_train_sn_from_line_and_seq(line, seq, digits=3, gen=None):
-        if gen is None:
-            sn = '{num:0{width}}'.format(num=seq, width=digits)
-            return '{:s}{:s}'.format(line, sn)
-        else:
-            return '{:s}{:03d}-{:02d}'.format(line, seq, gen)
-
-    def _add_train_and_type_in_sn_range(self, line, train_type: str, sn_range, digits=3, gen=None):
-        seq_list = range(sn_range[0], sn_range[1] + 1)
-        for seq in seq_list:
-            self.train_line_type_list[0].append(self._get_train_sn_from_line_and_seq(line, seq, digits, gen))
-            self.train_line_type_list[1].append(line)
-            self.train_line_type_list[2].append(train_type)
 
     def get_train_vs_type_table(self):
         if self.train_vs_type is None:
             self.train_vs_type = self._make_train_vs_type_table()
         return self.train_vs_type
 
-    def _load_train_table_from_json(self):
-        configs: ShmSysConfigs = get_configs()
-        json_path = os.sep.join([configs.publicdata_folder, self.train_json_name])
+    @staticmethod
+    def _get_seq_list(train_type_json):
+        train_sn_list = []
+        id = train_type_json['sn_id']
+        digits = train_type_json.get('sn_digits', 3)
+        seq_list = train_type_json['sn_range']
+        gen = train_type_json.get('generation', 0)
+        assert (len(seq_list) % 2 == 0)
+        num_pairs = int(len(seq_list) / 2)
+        for idx_pair in range(num_pairs):
+            seq_0 = seq_list[idx_pair * 2]
+            seq_1 = seq_list[idx_pair * 2 + 1]
+            assert (seq_0 <= seq_1)
+            for idx in range(seq_0, seq_1 + 1):
+                sn = '{:s}{num:0{width}}'.format(id, num=idx, width=digits)
+                if gen != 0:
+                    sn += '-{:d}'.format(gen)
+                train_sn_list.append(sn)
+        return train_sn_list
 
     def _make_train_vs_type_table(self):
-        self.train_line_type_list = [[], [], []]
-        # Line 01
-        self._add_train_and_type_in_sn_range('01', "01A01-01", (1, 1))
-        self._add_train_and_type_in_sn_range('01', "01A01-02", (2, 2))
-        self._add_train_and_type_in_sn_range('01', "01A01-01", (3, 10))
-        self._add_train_and_type_in_sn_range('01', "01A03", (11, 13))
-        self._add_train_and_type_in_sn_range('01', "01A01-01", (14, 14))
-        self._add_train_and_type_in_sn_range('01', "01A03", (15, 16))
-        self._add_train_and_type_in_sn_range('01', "01A02-02", (17, 17))
-        self._add_train_and_type_in_sn_range('01', "01A02-01", (18, 25))
-        self._add_train_and_type_in_sn_range('01', "01A04-01", (26, 29))
-        self._add_train_and_type_in_sn_range('01', "01A04-02", (30, 37))
-        self._add_train_and_type_in_sn_range('01', "01A05", (40, 55))
-        self._add_train_and_type_in_sn_range('01', "01A06", (56, 66))
-        self._add_train_and_type_in_sn_range('01', "01A06", (67, 86))
-        # Line 02
-        self._add_train_and_type_in_sn_range('02', '02A01', (1, 16))
-        self._add_train_and_type_in_sn_range('02', '02A02', (33, 53))
-        self._add_train_and_type_in_sn_range('02', '02A03', (54, 69))
-        self._add_train_and_type_in_sn_range('02', '02A04-01', (70, 85), gen=1)
-        self._add_train_and_type_in_sn_range('02', '02A04', (70, 85))
-        self._add_train_and_type_in_sn_range('02', '02A05', (86, 116))
-        # Line 03
-        self._add_train_and_type_in_sn_range('03', "03A01", (1, 28))
-        self._add_train_and_type_in_sn_range('03', "03A02&04A02", (29, 36))
-        #   Train 37-49 is borrowed from Line 04 and patched to 03xxx
-        #   We use 04xxx when registering the respective trips
-        # Line 04
-        self._add_train_and_type_in_sn_range('04', "04A01", (1, 2))  # Siemens
-        self._add_train_and_type_in_sn_range('04', "04A01", (3, 28))  # 南车株洲
-        self._add_train_and_type_in_sn_range('04', "03A02&04A02", (29, 29))  # 中车长春
-        self._add_train_and_type_in_sn_range('04', "03A02&04A02", (30, 36))  # Alstom上海
-        self._add_train_and_type_in_sn_range('04', "03A02&04A02", (37, 49))  # Alstom上海
-        self._add_train_and_type_in_sn_range('04', "03A02&04A02", (50, 55))  # Alstom上海
-        # Line 05
-        self._add_train_and_type_in_sn_range('05', "05C01", (1, 13))
-        self._add_train_and_type_in_sn_range('05', "05C01", (15, 18))
-        self._add_train_and_type_in_sn_range('05', "05C02", (19, 51))
-        # Line 06
-        self._add_train_and_type_in_sn_range('06', "06C01", (1, 3))
-        self._add_train_and_type_in_sn_range('06', "06C01", (5, 13))
-        self._add_train_and_type_in_sn_range('06', "06C01", (15, 23))
-        self._add_train_and_type_in_sn_range('06', "06C02", (25, 33))
-        self._add_train_and_type_in_sn_range('06', "06C02", (35, 36))
-        self._add_train_and_type_in_sn_range('06', "06C03", (37, 43))
-        self._add_train_and_type_in_sn_range('06', "06C03", (45, 53))
-        self._add_train_and_type_in_sn_range('06', "06C03", (55, 56))
-        self._add_train_and_type_in_sn_range('06', "06C04", (57, 82))
-        # Line 07
-        self._add_train_and_type_in_sn_range('07', "07A01", (1, 42))
-        self._add_train_and_type_in_sn_range('07', "07A02", (43, 72))
-        self._add_train_and_type_in_sn_range('07', "07A03", (73, 79))
-        # Line 08
-        self._add_train_and_type_in_sn_range('08', "08C01", (1, 28))
-        self._add_train_and_type_in_sn_range('08', "08C02", (29, 45))
-        self._add_train_and_type_in_sn_range('08', "08C03", (46, 66))
-        self._add_train_and_type_in_sn_range('08', "08C04", (67, 90))
-        # Line 09
-        self._add_train_and_type_in_sn_range('09', "09A01", (1, 10))
-        self._add_train_and_type_in_sn_range('09', "09A02", (11, 51))
-        self._add_train_and_type_in_sn_range('09', "09A03", (53, 88))
-        self._add_train_and_type_in_sn_range('09', "09A04", (89, 105))
-        # Line 10
-        self._add_train_and_type_in_sn_range('10', "10A01", (1, 41))
-        self._add_train_and_type_in_sn_range('10', "10A02", (42, 67))
-        # Line 11
-        self._add_train_and_type_in_sn_range('11', "11A01", (1, 66))
-        self._add_train_and_type_in_sn_range('11', "11A02", (67, 72))
-        self._add_train_and_type_in_sn_range('11', "11A03", (73, 82))
-        # Line 12
-        self._add_train_and_type_in_sn_range('12', "12A01", (1, 41))
-        self._add_train_and_type_in_sn_range('12', "12A02", (42, 56))
-        self._add_train_and_type_in_sn_range('12', "12A03", (57, 75))
-        # Line 13
-        self._add_train_and_type_in_sn_range('13', "13A01", (1, 24))
-        self._add_train_and_type_in_sn_range('13', "13A02", (25, 62))
-        # Line 14
-        self._add_train_and_type_in_sn_range('14', "14A01", (1, 49))
-        # Line 15
-        self._add_train_and_type_in_sn_range('15', "15A01", (1, 54))
-        # Line 16
-        self._add_train_and_type_in_sn_range('16', "16A01", (1, 46))
-        self._add_train_and_type_in_sn_range('16', "16A02", (47, 61))
-        # Line 17
-        self._add_train_and_type_in_sn_range('17', "17A01", (1, 5))
-        self._add_train_and_type_in_sn_range('17', "17A01", (6, 28))
-        # Line 18
-        self._add_train_and_type_in_sn_range('18', "18A01", (1, 50))
-        # Line T01
-        self._add_train_and_type_in_sn_range('T01', 'APM300', (1, 11))
-        # Line JY01
-        self._add_train_and_type_in_sn_range('JY01', 'JY01A01', (1, 7), digits=2)
+        with open(self.public_data_json) as json_file:
+            json_data = json.loads(json_file.read())
+        train_list = []
+        line_list = []
+        type_list = []
+        for line in json_data['all_trains']:
+            for train_type in line['train_types']:
+                trains_of_type = self._get_seq_list(train_type)
+                for train in trains_of_type:
+                    train_list.append(train)
+                    line_list.append(line['line'])
+                    type_list.append(train_type['train_type'])
 
-        train_vs_type_df = pd.DataFrame.from_dict(data={'train': self.train_line_type_list[0],
-                                                        'line': self.train_line_type_list[1],
-                                                        'type': self.train_line_type_list[2]})
+        train_vs_type_df = pd.DataFrame.from_dict(data={'train': train_list, 'line': line_list, 'type': type_list})
         train_vs_type_df.index = train_vs_type_df['train']
         return train_vs_type_df
 
@@ -190,14 +110,6 @@ class ShmPublicDataApp(object):
         """
         # return "{:2d}{:2d}".format(line, number)
         return '{:s}{:3d}'.format(line, seq)
-
-    @staticmethod
-    def get_line_and_seq_from_train_sn(train_sn):
-        if train_sn[0].isalpha():  # minor lines, such as APM
-            sep_loc = 3
-        else:  # main lines, such as Line 1
-            sep_loc = 2
-        return train_sn[0:sep_loc], int(train_sn[sep_loc:])
 
 
 get_public_data_app = singleton(ShmPublicDataApp)
