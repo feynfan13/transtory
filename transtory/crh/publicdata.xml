@@ -59,6 +59,10 @@
           <level3 name="CRH2B">
             <sn_range>2111 2120</sn_range>
           </level3>
+          <level3 name="CRH2B 统型">
+            <sn_range>2466 2472</sn_range>
+            <sn_range>4096 4105</sn_range>
+          </level3>
         </level2>
         <level2 name="CRH2C">
           <level3 name="CRH2C 第一阶段">
@@ -88,7 +92,8 @@
       <level1 name="CRH3">
         <level2 name="CRH3A">
           <level3 name="CRH3A">
-            <sn_range>5218 5218</sn_range>
+            <sn_range>3081 3111</sn_range>
+            <sn_range>5230 5256</sn_range>
           </level3>
         </level2>
         <level2 name="CRH3C">
@@ -287,10 +292,15 @@
             <sn_range>0211 0223</sn_range>
           </level3>
           <level3 name="CR400AF-Z 第三阶段">
-            <sn_range>2257 2271</sn_range>
-            <sn_range>2271 2285</sn_range>
-            <sn_range>2286 2310</sn_range>
             <sn_range>1041 1043</sn_range>
+            <sn_range>1044 1058</sn_range>
+            <sn_range>2257 2271</sn_range>
+            <sn_range>2272 2285</sn_range>
+            <sn_range>2286 2310</sn_range>
+          </level3>
+          <level3 name="CR400AF-Z 第四阶段">
+            <sn_range>1059 1063</sn_range>
+            <sn_range>2316 2340</sn_range>
           </level3>
         </level2>
         <level2 name="CR400AF-AZ">
@@ -317,6 +327,12 @@
             <sn_range>2441 2481</sn_range>
           </level3>
         </level2>
+        <level2 name="CR400AF-AS">
+          <level3 name="CR400AF-AS">
+            <sn_range>2482 2500</sn_range>
+            <sn_range>1106 1109</sn_range>
+          </level3>
+        </level2>
         <level2 name="CR400AF-BS">
           <level3 name="CR400AF-BS">
             <sn_range>2341 2345</sn_range>
@@ -341,8 +357,12 @@
         </level2>
         <level2 name="CR400BF-A">
           <level3 name="CR400BF-A">
-            <sn_range>3024 3056</sn_range>
-            <sn_range>5048 5096</sn_range>
+            <sn_range>3024 3033</sn_range>
+            <sn_range>3050 3058</sn_range>
+            <sn_range>3092 3105</sn_range>
+            <sn_range>5048 5067</sn_range>
+            <sn_range>5082 5096</sn_range>
+            <sn_range>5156 5161</sn_range>
           </level3>
         </level2>
         <level2 name="CR400BF-B">
@@ -352,6 +372,16 @@
           <level3 name="CR400BF-B">
             <sn_range>5098 5105</sn_range>
             <sn_range>5151 5155</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-G">
+        <level3 name="CR400BF-G 第一阶段">
+            <sn_range>5113 5142</sn_range>
+            <sn_range>5146 5150</sn_range>
+          </level3>
+          <level3 name="CR400BF-G 第二阶段">
+            <sn_range>3108 3116</sn_range>
+            <sn_range>5163 5202</sn_range>
           </level3>
         </level2>
         <level2 name="CR400BF-Z">
@@ -374,6 +404,24 @@
             <sn_range>3146 3156</sn_range>
           </level3>
         </level2>
+        <level2 name="CR400BF-AZ">
+          <level3 name="CR400BF-AZ">
+            <sn_range>0515 0520</sn_range>
+            <sn_range>5252 5255</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-BZ">
+          <level3 name="CR400BF-BZ">
+            <sn_range>5208 5209</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-GZ">
+          <level3 name="CR400BF-GZ">
+            <sn_range>5143 5143</sn_range>
+            <sn_range>5203 5207</sn_range>
+            <sn_range>5214 5219</sn_range>
+          </level3>
+        </level2>
         <level2 name="CR400BF-S">
           <level3 name="CR400BF-S">
             <sn_range>3157 3193</sn_range>
@@ -393,6 +441,14 @@
           <level3 name="CR400BF-BS">
             <sn_range>5276 5280</sn_range>
             <sn_range>5347 5348</sn_range>
+          </level3>
+        </level2>
+        <level2 name="CR400BF-GS">
+          <level3 name="CR400BF-GS">
+            <sn_range>5307 5319</sn_range>
+            <sn_range>5337 5346</sn_range>
+            <sn_range>5349 5363</sn_range>
+            <sn_range>5387 5416</sn_range>
           </level3>
         </level2>
       </level1>

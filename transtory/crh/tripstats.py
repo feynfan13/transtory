@@ -16,10 +16,12 @@ class CrhTripStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: CrhDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.route_fields = ['seq', "task", "train_number", "from", "from_time", "to", "to_time", "trainset", "note",
-                             'ticket', "seat_type", "seat", "from_gate", "from_platform", "to_platform", "to_gate",
+        self.route_fields = ['seq', "task", "train_number", "from", "from_time", "to", "to_time", "trainset",
+                             'passenger_section', 'emu_depot', 'note',
+                             'ticket', 'seat_type', 'seat', 'via', 'distance', 'price',
+                             "from_gate", "from_platform", "to_platform", "to_gate",
                              "from_time_plan", "to_time_plan", "from_note", "to_note", "train_origin", "train_final",
-                             "price", "ticket_short_sn", "ticket_long_sn", "ticket_sold_by", "ticket_sold_type"]
+                             "ticket_short_sn", "ticket_long_sn", "ticket_sold_by", "ticket_sold_type"]
 
     def _get_stats_full_path(self, fname):
         return os.path.sep.join([self.save_folder, fname])
@@ -27,6 +29,10 @@ class CrhTripStats(object):
     @staticmethod
     def _empty_str_for_none(astr):
         return '??' if astr is None else astr
+
+    @staticmethod
+    def _empty_str_for_none_int(num):
+        return '??' if num is None else str(num)
 
     @staticmethod
     def _write_lists_to_csv(fout, val_list):
@@ -78,17 +84,25 @@ class CrhTripStats(object):
             else:
                 raise Exception("More than 2 train service entry for one route.")
             results.append(trainset_str)
+            results.append(route.passenger_section)
+            results.append(route.emu_depot)
             results.append(route.note)
             # Ticket part I
             ticket_seg = trip.tickets[0].start.station.chn_name
-            seat_type, seat_number = '', ''
+            seat_type, seat_number, via, distance, price = '', '', '', '', ''
             for ticket in trip.tickets:
                 ticket_seg += ('-'+ticket.end.station.chn_name)
                 seat_type += (self._empty_str_for_none(ticket.seat_type) + '; ')
                 seat_number += (self._empty_str_for_none(ticket.seat_number) + '; ')
+                via += (self._empty_str_for_none(ticket.via) + '; ')
+                distance += (self._empty_str_for_none_int(ticket.distance) + '; ')
+                price += (self._empty_str_for_none(ticket.price) + '+ ')
             results.append(ticket_seg)
             results.append(seat_type[0:-2])
             results.append(seat_number[0:-2])
+            results.append(via[0:-2])
+            results.append(distance[0:-2])
+            results.append(price[0:-2])
             # Departure & arrival
             results.append(route.departure.gate)
             results.append(route.departure.platform)
@@ -105,14 +119,12 @@ class CrhTripStats(object):
                 results.append(trip.line.start.station.chn_name)
                 results.append(trip.line.final.station.chn_name)
             # Ticket part II
-            short_sn, long_sn, sold_by, sold_type, price = '', '', '', '', ''
+            short_sn, long_sn, sold_by, sold_type = '', '', '', ''
             for ticket in trip.tickets:
-                price += (self._empty_str_for_none(ticket.price) + '+')
                 short_sn += (self._empty_str_for_none(ticket.short_sn) + '; ')
                 long_sn += (self._empty_str_for_none(ticket.long_sn) + '; ')
                 sold_by += (self._empty_str_for_none(ticket.sold_by) + '; ')
                 sold_type += (self._empty_str_for_none(ticket.sold_type) + '; ')
-            results.append(price[0:-1])
             results.append(short_sn[0:-2])
             results.append(long_sn[0:-2])
             results.append(sold_by[0:-2])

@@ -35,6 +35,8 @@ class InputTicketEntry(object):
         self.price = None
         self.seat_type = None
         self.seat_num = None
+        self.via = None
+        self.distance = None
         self.start = None
         self.end = None
         self.note = None
@@ -49,6 +51,8 @@ class InputRouteEntry(object):
         # 0 for forward position; 1 for backward position
         self.seat_train_pos = None
         self.carriage = None
+        self.passenger_section = None
+        self.emu_depot = None
         self.note = None
         self.start = None
         self.start_time, self.start_time_schedule = None, None
@@ -192,6 +196,8 @@ class CrhDbOps(DatabaseOpsBase):
             train_service_orm.operation_type = route_entry.join_type
             self.session.add(train_service_orm)
         route_orm.carriage = route_entry.carriage
+        route_orm.passenger_section = route_entry.passenger_section
+        route_orm.emu_depot = route_entry.emu_depot
         route_orm.note = route_entry.note
         departure_orm = Departure()
         departure_orm.time = route_entry.start_time
@@ -233,6 +239,8 @@ class CrhDbOps(DatabaseOpsBase):
         ticket_orm.price = ticket_entry.price
         ticket_orm.seat_type = ticket_entry.seat_type
         ticket_orm.seat_number = ticket_entry.seat_num
+        ticket_orm.via = ticket_entry.via
+        ticket_orm.distance = ticket_entry.distance
         start_orm = TicketStart()
         start_orm.station = self.get_or_add_station(ticket_entry.start)
         ticket_orm.start = start_orm

@@ -17,7 +17,7 @@ class FlightTripStats(object):
         self.save_folder = self.configs.stats_folder
         self.dbops: FlightDbOps = get_db_ops()
         self.session = self.dbops.session
-        self.route_fields = ['seq', 'reservation', 'flight', 'from', 'pushback', 'takeoff',
+        self.route_fields = ['seq', 'reservation', 'flight', 'cabin', 'from', 'pushback', 'takeoff',
                              'to', 'landing', 'gate_arrival', 'plane', 'type']
 
     def _get_stats_full_path(self, fname):
@@ -45,6 +45,7 @@ class FlightTripStats(object):
             results.append(trip.confirmation_number)
             flight_number = self.dbops.get_flight_num(route.flight)
             results.append(flight_number)
+            results.append(route.fare_code)
             departure, arrival = leg.departure, leg.arrival
             airport0, airport1 = departure.airport, arrival.airport
             pushback, gate_arrival = departure.pushback_time, arrival.gate_arrival_time

@@ -77,6 +77,8 @@ class CrhRecorder(object):
         ticket_entry.seat_num = log_struct['Seat Number']
         ticket_entry.start = log_struct['Ticket start']
         ticket_entry.end = log_struct['Ticket end']
+        ticket_entry.via = log_struct['Via']
+        ticket_entry.distance = log_struct['Distance']
         ticket_entry.note = log_struct['Note']
         return ticket_entry
 
@@ -85,6 +87,8 @@ class CrhRecorder(object):
         train_return = self._get_trains_from_train_str(log_struct["Train"])
         route_entry.seat_train, route_entry.join_train, route_entry.join_type = train_return
         route_entry.carriage = log_struct["Carriage"]
+        route_entry.passenger_section = log_struct['RailwayGroup'] + '-' + log_struct['PassengerSection']
+        route_entry.emu_depot = log_struct['EMUDepot']
         route_entry.note = log_struct["Note"]
         route_entry.start = log_struct["From"]
         route_entry.start_time = self._make_datetime_str_from_log_data(log_struct["From Date"],
